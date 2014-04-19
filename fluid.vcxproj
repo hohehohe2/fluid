@@ -152,6 +152,7 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="geo\basicGeos.cpp" />
     <ClCompile Include="geo\Particles.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp" />
@@ -159,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="geo\basicGeos.h" />
     <ClInclude Include="geo\Particles.h" />
+    <ClInclude Include="sph\Constants.h" />
     <ClInclude Include="sph\FluidSolver.h" />
     <ClInclude Include="sph\FluidSolverSimpleSph.h" />
   </ItemGroup>

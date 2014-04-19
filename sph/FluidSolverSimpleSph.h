@@ -21,16 +21,28 @@ public:
 	///Destructor.
 	virtual ~FluidSolverSimpleSph(){}
 
+	///Initialize this solver.
+	void initSolver();
+
 	///Step the simulation.
 	virtual void step(float deltaT);
 
+private:
+
+	///Particles to solve.
+	Particles::SPtr m_particles;
+
+	///SPH kernel radius.
+	float m_kernelRadius;
 
 private:
 
-	void calcDensity_(Particles& particles);
-	void applyForce_(Particles& particles);
-	void project_(Particles& particles);
-	void integrate_(Particles& particles);
+	void updateNeighbors_();
+	void applyForce_();
+	void calcDensity_();
+	void project_();
+	void integrate_(float deltaT);
+	float densityToPressure_(float ro);
 };
 
 }

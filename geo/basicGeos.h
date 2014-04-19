@@ -1,7 +1,7 @@
 #ifndef hohe_basicGeos_H
 #define hohe_basicGeos_H
 
-#include <cudaCommon/BufferSet.h>
+#include <cudaCommon/Buffer.h>
 
 namespace hohehohe2
 {
@@ -9,28 +9,26 @@ namespace hohehohe2
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Points.
-struct Points : public BufferSetSameSizedMember
+struct Points : public BufferSetSameSized
 {
 
+	typedef std::shared_ptr < Points > SPtr;
+
 	//Constructor.
-	Points(unsigned int size=0)
-		: m_xs("xs", size), m_ys("ys", size), m_zs("zs", size)
-	{
-		addMember_(m_xs);
-		addMember_(m_ys);
-		addMember_(m_zs);
-	}
+	Points(const std::string& name="") : BufferSetSameSized(name){}
 
 	//Destructor.
 	virtual ~Points(){}
 
-	virtual unsigned int size() const {return m_xs.size();}
+	virtual unsigned int size() const {return (m_xs)? m_xs->size() : 0;}
+
+	void init(unsigned int size, bool xs=true, bool ys=true, bool zs=true);
 
 public:
 
-	Buffer < float > m_xs;
-	Buffer < float > m_ys;
-	Buffer < float > m_zs;
+	BufferFloat::SPtr m_xs;
+	BufferFloat::SPtr m_ys;
+	BufferFloat::SPtr m_zs;
 
 };
 
@@ -38,25 +36,25 @@ public:
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Linees.
-struct Lines : public BufferSetSameSizedMember
+struct Lines : public BufferSetSameSized
 {
 
+	typedef std::shared_ptr < Lines > SPtr;
+
 	//Constructor.
-	Lines(unsigned int size=0) : m_start(size), m_end(size)
-	{
-		addMember_(m_start);
-		addMember_(m_end);
-	}
+	Lines(const std::string& name="") : BufferSetSameSized(name){}
 
 	//Destructor.
 	virtual ~Lines(){}
 
-	virtual unsigned int size() const {return m_start.size();}
+	virtual unsigned int size() const {return (m_starts)? m_starts->size() : 0;}
+
+	void init(unsigned int size, bool starts=true, bool ends=true);
 
 public:
 
-	Points m_start;
-	Points m_end;
+	Points::SPtr m_starts;
+	Points::SPtr m_ends;
 
 };
 
@@ -64,28 +62,27 @@ public:
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Triangles.
-struct Triangles : public BufferSetSameSizedMember
+struct Triangles : public BufferSetSameSized
 {
 
+	typedef std::shared_ptr < Triangles > SPtr;
+
 	//Constructor.
-	Triangles(unsigned int size=0) : m_vtx0(size), m_vtx1(size), m_vtx2(size)
-	{
-		addMember_(m_vtx0);
-		addMember_(m_vtx1);
-		addMember_(m_vtx2);
-	}
+	Triangles(const std::string& name="") : BufferSetSameSized(name){}
 
 	//Destructor.
 	virtual ~Triangles(){}
 
-	virtual unsigned int size() const {return m_vtx0.size();}
+	virtual unsigned int size() const{return (m_pos)? m_pos->size() : 0;}
+
+	void init(unsigned int size, bool pos, bool v0s=true, bool v1s=true, bool v2s=true);
 
 public:
 
-	Points m_vtx0;
-	Points m_vtx1;
-	Points m_vtx2;
-
+	BufferUInt::SPtr m_v0s;
+	BufferUInt::SPtr m_v1s;
+	BufferUInt::SPtr m_v2s;
+	Points::SPtr m_pos;
 };
 
 

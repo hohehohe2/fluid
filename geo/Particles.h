@@ -10,45 +10,48 @@ namespace hohehohe2
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Particle cloud.
-class Particles : public BufferSetSameSizedMember
+class Particles : public BufferSetSameSized
 {
 
 public:
 
-	///Constructor.
-	/**
-	@param hasVelocity Set true if the partcles have a velocity buffer.
-	@param hasMass Set true if the partcles have a mass buffer.
-	@param hasForce Set true if the partcles have a force buffer.
-	@param size Number of particles.
-	**/
-	Particles(bool hasVelocity, bool hasMass, bool hasForce, unsigned int size=0);
+	typedef std::shared_ptr < Particles > SPtr;
 
+	///Constructor.
+	Particles(const std::string& name="") : BufferSetSameSized(name){}
 
 	///Destructor.
-	~Particles(){}
+	virtual ~Particles(){}
 
-	virtual unsigned int size() const {return m_pos.size();}
+	virtual unsigned int size() const {return m_pos->size();}
+
+	void init(unsigned int size, bool pppos, bool ppos, bool pos, bool velocity, bool mass, bool force, bool pressure, bool density);
 
 public:
 
 	///Particle prev prev position.
-	Points m_ppPos;
+	Points::SPtr m_ppPos;
 
 	///Particle prev position.
-	Points m_pPos;
+	Points::SPtr m_pPos;
 
-	///Particle position.
-	Points m_pos;
+	///Particle position. Always exists.
+	Points::SPtr m_pos;
 
 	///Particle velocity.
-	Buffer < float > m_velocity;
+	BufferFloat::SPtr m_velocity;
 
 	///Particle mass.
-	Buffer < float > m_mass;
+	BufferFloat::SPtr m_mass;
 
 	///Particle force.
-	Points m_force;
+	Points::SPtr m_force;
+
+	///Particle pressure.
+	BufferFloat::SPtr m_pressure;
+
+	///Particle density.
+	BufferFloat::SPtr m_density;
 
 };
 

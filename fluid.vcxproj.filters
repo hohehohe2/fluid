@@ -29,6 +29,9 @@
     <ClCompile Include="geo\Particles.cpp">
       <Filter>ファイル\geo</Filter>
     </ClCompile>
+    <ClCompile Include="geo\basicGeos.cpp">
+      <Filter>ファイル\geo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\FluidSolverSimpleSph.h">
@@ -42,6 +45,9 @@
     </ClInclude>
     <ClInclude Include="geo\basicGeos.h">
       <Filter>ファイル\geo</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\Constants.h">
+      <Filter>ファイル\sph</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
