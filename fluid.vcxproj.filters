@@ -26,6 +26,12 @@
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp">
       <Filter>ファイル\sph</Filter>
     </ClCompile>
+    <ClCompile Include="sph\SphKernel.cpp">
+      <Filter>ファイル\sph</Filter>
+    </ClCompile>
+    <ClCompile Include="geo\Particles.cpp">
+      <Filter>ファイル\geo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\FluidSolverSimpleSph.h">
@@ -41,6 +47,9 @@
       <Filter>ファイル\geo</Filter>
     </ClInclude>
     <ClInclude Include="sph\Constants.h">
+      <Filter>ファイル\sph</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\SphKernel.h">
       <Filter>ファイル\sph</Filter>
     </ClInclude>
   </ItemGroup>

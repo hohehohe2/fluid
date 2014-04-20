@@ -5,6 +5,8 @@
 namespace hohehohe2
 {
 
+class Particles;
+
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Base class of every fluid solver.
@@ -20,7 +22,7 @@ public:
 	virtual ~FluidSolver(){}
 
 	///Step the simulation.
-	virtual void step(float deltaT) = 0;
+	virtual void step(Particles& particles, float deltaT) = 0;
 };
 
 }
