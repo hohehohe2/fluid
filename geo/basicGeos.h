@@ -2,6 +2,7 @@
 #define hohe_Geos_H
 
 #include <cudaCommon/Buffer.h>
+#include <iostream>
 
 namespace hohehohe2
 {
@@ -25,7 +26,7 @@ struct Points : public BufferSetSameSizedChildren
 	}
 
 	//Destructor.
-	virtual ~Points(){}
+	virtual ~Points(){std::cout << "ew";}
 
 	virtual unsigned int size() const {return m_xs->size();}
 
@@ -56,7 +57,7 @@ struct Lines : public BufferSetSameSizedChildren
 	}
 
 	//Destructor.
-	virtual ~Lines(){}
+	virtual ~Lines(){std::cout<< "hi";}
 
 	virtual unsigned int size() const {return m_starts->size();}
 
