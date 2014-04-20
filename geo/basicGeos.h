@@ -1,5 +1,5 @@
-#ifndef hohe_basicGeos_H
-#define hohe_basicGeos_H
+#ifndef hohe_Geos_H
+#define hohe_Geos_H
 
 #include <cudaCommon/Buffer.h>
 
@@ -9,26 +9,31 @@ namespace hohehohe2
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Points.
-struct Points : public BufferSetSameSized
+struct Points : public BufferSetSameSizedChildren
 {
 
 	typedef std::shared_ptr < Points > SPtr;
 
 	//Constructor.
-	Points(const std::string& name="") : BufferSetSameSized(name){}
+	Points(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSameSizedChildren(name)
+	{
+		addChild(m_xs = new BufferFloat("point xs"));
+		addChild(m_ys = new BufferFloat("point ys"));
+		addChild(m_zs = new BufferFloat("point zs"));
+		setSize(size);
+		allocate(allocMemoryType);
+	}
 
 	//Destructor.
 	virtual ~Points(){}
 
-	virtual unsigned int size() const {return (m_xs)? m_xs->size() : 0;}
-
-	void init(unsigned int size, bool xs=true, bool ys=true, bool zs=true);
+	virtual unsigned int size() const {return m_xs->size();}
 
 public:
 
-	BufferFloat::SPtr m_xs;
-	BufferFloat::SPtr m_ys;
-	BufferFloat::SPtr m_zs;
+	BufferFloat* m_xs;
+	BufferFloat* m_ys;
+	BufferFloat* m_zs;
 
 };
 
@@ -36,25 +41,31 @@ public:
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Linees.
-struct Lines : public BufferSetSameSized
+struct Lines : public BufferSetSameSizedChildren
 {
 
 	typedef std::shared_ptr < Lines > SPtr;
 
 	//Constructor.
-	Lines(const std::string& name="") : BufferSetSameSized(name){}
+	Lines(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSameSizedChildren(name)
+	{
+		addChild(m_starts = new Points("line starts"));
+		addChild(m_ends = new Points("line ends"));
+		setSize(size);
+		allocate(allocMemoryType);
+	}
 
 	//Destructor.
 	virtual ~Lines(){}
 
-	virtual unsigned int size() const {return (m_starts)? m_starts->size() : 0;}
+	virtual unsigned int size() const {return m_starts->size();}
 
 	void init(unsigned int size, bool starts=true, bool ends=true);
 
 public:
 
-	Points::SPtr m_starts;
-	Points::SPtr m_ends;
+	Points* m_starts;
+	Points* m_ends;
 
 };
 
@@ -62,13 +73,21 @@ public:
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Triangles.
-struct Triangles : public BufferSetSameSized
+struct Triangles : public BufferSetSameSizedChildren
 {
 
 	typedef std::shared_ptr < Triangles > SPtr;
 
 	//Constructor.
-	Triangles(const std::string& name="") : BufferSetSameSized(name){}
+	Triangles(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSameSizedChildren(name)
+	{
+		addChild(m_v0s = new BufferUInt("triangle v0s"));
+		addChild(m_v1s = new BufferUInt("triangle v1s"));
+		addChild(m_v2s = new BufferUInt("triangle v2s"));
+		addChild(m_pos = new Points("triangle pos"));
+		setSize(size);
+		allocate(allocMemoryType);
+	}
 
 	//Destructor.
 	virtual ~Triangles(){}
@@ -79,12 +98,11 @@ struct Triangles : public BufferSetSameSized
 
 public:
 
-	BufferUInt::SPtr m_v0s;
-	BufferUInt::SPtr m_v1s;
-	BufferUInt::SPtr m_v2s;
-	Points::SPtr m_pos;
+	BufferUInt* m_v0s;
+	BufferUInt* m_v1s;
+	BufferUInt* m_v2s;
+	Points* m_pos;
 };
-
 
 }
 
