@@ -79,12 +79,25 @@ struct Triangles : public BufferSetSameSizedChildren
 	typedef std::shared_ptr < Triangles > SPtr;
 
 	//Constructor.
-	Triangles(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSameSizedChildren(name)
+	/**
+	@param name Name of this object.
+	@param size Data size of this object.
+	@param allocMemoryType Set BufferSet::HOST, BufferSet::DEVICE, or BufferSet::HOST|BufferSet::DEVICE to allocate memory.
+	@param vtxPos Position of the triangle vertices. Its memory will be freed if the size is different from the one specified here.
+	**/
+	Triangles(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST, Points* vtxPos=NULL) : BufferSetSameSizedChildren(name)
 	{
 		addChild(m_v0s = new BufferUInt("triangle v0s"));
 		addChild(m_v1s = new BufferUInt("triangle v1s"));
 		addChild(m_v2s = new BufferUInt("triangle v2s"));
-		addChild(m_pos = new Points("triangle pos"));
+
+		if ( ! vtxPos)
+		{
+			vtxPos = new Points("triangle pos");
+		}
+		m_vtxPos = vtxPos;
+		addChild(vtxPos);
+
 		setSize(size);
 		allocate(allocMemoryType);
 	}
@@ -92,7 +105,7 @@ struct Triangles : public BufferSetSameSizedChildren
 	//Destructor.
 	virtual ~Triangles(){}
 
-	virtual unsigned int size() const{return (m_pos)? m_pos->size() : 0;}
+	virtual unsigned int size() const{return m_v0s->size();}
 
 	void init(unsigned int size, bool pos, bool v0s=true, bool v1s=true, bool v2s=true);
 
@@ -101,7 +114,7 @@ public:
 	BufferUInt* m_v0s;
 	BufferUInt* m_v1s;
 	BufferUInt* m_v2s;
-	Points* m_pos;
+	Points* m_vtxPos;
 };
 
 }
