@@ -9,6 +9,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cudaCommon", "..\cudaCommon\cudaCommon.vcxproj", "{9BFA97FC-5243-4A6E-B1C8-4712119D070A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tests", "..\cudaCommon\tests\tests.vcxproj", "{FF12AE59-4022-4ACA-8169-467C2AB3B7BA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9BFA97FC-5243-4A6E-B1C8-4712119D070A} = {9BFA97FC-5243-4A6E-B1C8-4712119D070A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

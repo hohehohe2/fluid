@@ -12,8 +12,6 @@ namespace hohehohe2
 struct Points : public BufferSetSameSizedChildren
 {
 
-	typedef std::shared_ptr < Points > SPtr;
-
 	//Constructor.
 	Points(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSameSizedChildren(name)
 	{
@@ -44,8 +42,6 @@ public:
 struct Lines : public BufferSetSameSizedChildren
 {
 
-	typedef std::shared_ptr < Lines > SPtr;
-
 	//Constructor.
 	Lines(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSameSizedChildren(name)
 	{
@@ -75,8 +71,6 @@ public:
 ///Triangles.
 struct Triangles : public BufferSetSameSizedChildren
 {
-
-	typedef std::shared_ptr < Triangles > SPtr;
 
 	//Constructor.
 	/**
