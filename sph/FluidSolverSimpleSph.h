@@ -68,6 +68,8 @@ public:
 			obj->addChild(obj->m_density = new BufferFloat("particle density"));
 			obj->setSize(size);
 			obj->allocate(allocMemoryType);
+			obj->m_pos->memset(0, true);
+			obj->m_velocity->memset(0, true);
 		}
 
 	};
