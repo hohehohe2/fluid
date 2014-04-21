@@ -23,14 +23,6 @@ FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass) : m_particleMass(
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::setupParticles(Particles& particles, unsigned int numPartices)
-{
-	particles.createChildren(false, false, true, true, false, false, false, true, numPartices, BufferSet::HOST);
-}
-
-
-//-------------------------------------------------------------------
-//-------------------------------------------------------------------
 void FluidSolverSimpleSph::step(Particles& particles, float deltaT)
 {
 	float remaining = deltaT;

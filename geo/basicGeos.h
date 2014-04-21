@@ -1,5 +1,5 @@
-#ifndef hohe_Geos_H
-#define hohe_Geos_H
+#ifndef hohe_basicGeos_H
+#define hohe_basicGeos_H
 
 #include <cudaCommon/Buffer.h>
 
@@ -9,11 +9,11 @@ namespace hohehohe2
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Points.
-struct Points : public BufferSetSameSizedChildren
+struct Points : public BufferSetSized
 {
 
 	//Constructor.
-	Points(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSameSizedChildren(name)
+	Points(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSized(name)
 	{
 		addChild(m_xs = new BufferFloat("point xs"));
 		addChild(m_ys = new BufferFloat("point ys"));
@@ -39,11 +39,11 @@ public:
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Linees.
-struct Lines : public BufferSetSameSizedChildren
+struct Lines : public BufferSetSized
 {
 
 	//Constructor.
-	Lines(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSameSizedChildren(name)
+	Lines(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSized(name)
 	{
 		addChild(m_starts = new Points("line starts"));
 		addChild(m_ends = new Points("line ends"));
@@ -69,7 +69,7 @@ public:
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Triangles.
-struct Triangles : public BufferSetSameSizedChildren
+struct Triangles : public BufferSetSized
 {
 
 	//Constructor.
@@ -79,7 +79,7 @@ struct Triangles : public BufferSetSameSizedChildren
 	@param allocMemoryType Set BufferSet::HOST, BufferSet::DEVICE, or BufferSet::HOST|BufferSet::DEVICE to allocate memory.
 	@param vtxPos Position of the triangle vertices. Its memory will be freed if the size is different from the one specified here.
 	**/
-	Triangles(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST, Points* vtxPos=NULL) : BufferSetSameSizedChildren(name)
+	Triangles(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST, Points* vtxPos=NULL) : BufferSetSized(name)
 	{
 		addChild(m_v0s = new BufferUInt("triangle v0s"));
 		addChild(m_v1s = new BufferUInt("triangle v1s"));

@@ -1,6 +1,7 @@
 #ifndef hohe_FluidSolverSimpleSph_H
 #define hohe_FluidSolverSimpleSph_H
 
+#include <cudaCommon/Buffer.h>
 #include "FluidSolver.h"
 #include "SphKernel.h"
 #include <geo/Particles.h>
@@ -19,6 +20,50 @@ class FluidSolverSimpleSph : public FluidSolver
 
 public:
 
+	///Particles for this solver.
+	struct Particle : public BufferSetSized
+	{
+
+		///Particle position. Always exists.
+		Points* m_pos;
+
+		///Particle velocity.
+		Points* m_velocity;
+
+		///Particle acceleration.
+		Points* m_acceleration;
+
+		///Particle density.
+		BufferFloat* m_density;
+
+		///Constructor.
+		Particle() : m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_density(NULL){}
+
+		///Destructor.
+		virtual ~Particle(){}
+
+		virtual unsigned int size() const {return (m_pos)? m_pos->size() : 0;}
+
+		void setPos(Points* pos){removeChild(m_pos);addChild(pos);}
+		void setVelocity(Points* velocity){removeChild(velocity);addChild(velocity);}
+		void setAcceleration(Points* acceleration){removeChild(m_acceleration);addChild(acceleration);}
+		void setDensity(BufferFloat* density){removeChild(m_density);addChild(density);}
+
+		///Create and 
+		static Particle* createInstance(unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST)
+		{
+			Particle* obj = new Particle;
+			obj->addChild(obj->m_pos = new Points("particle pos"));
+			obj->addChild(obj->m_velocity = new Points("particle velocity"));
+			obj->addChild(obj->m_acceleration = new Points("particle acceleration"));
+			obj->addChild(obj->m_density = new BufferFloat("particle density"));
+			obj->setSize(size);
+			obj->allocate(allocMemoryType);
+			return obj;
+		};
+
+	};
+
 	///Constructor.
 	/**
 	@param particleMass in MKS.
@@ -27,12 +72,6 @@ public:
 
 	///Destructor.
 	virtual ~FluidSolverSimpleSph(){}
-
-	///Setup a particles for this solver.
-	/**
-	After colling this, particle pos and velocity must be filled before the first step.
-	**/
-	void setupParticles(Particles& particles, unsigned int numPartices);
 
 	///Step the simulation.
 	virtual void step(Particles& particles, float deltaT);

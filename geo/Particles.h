@@ -10,7 +10,7 @@ namespace hohehohe2
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Particle cloud.
-class Particles : public BufferSetSameSizedChildren
+class Particles : public BufferSetSized
 {
 
 public:
@@ -24,7 +24,7 @@ public:
 	Particles(const std::string& name="",
 		bool ppPos=false, bool pPos=false, bool velocity=false, bool acceleration=false, bool mass=false, bool force=false, bool pressure=false, bool density=false,
 		unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST)
-		: BufferSetSameSizedChildren(name)
+		: BufferSetSized(name)
 	{
 		createChildren(ppPos, pPos, velocity, acceleration, mass, force, pressure, density, allocMemoryType);
 	}
