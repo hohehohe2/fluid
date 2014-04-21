@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{578EB578-69C6-4FE6-BC68-0790742E1707}</ProjectGuid>
+    <ProjectGuid>{210D4AA0-FE6C-4216-AE36-F2CDA3786A0B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>fluid</RootNamespace>
+    <RootNamespace>fluidTests</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -31,7 +31,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -44,7 +44,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -52,7 +52,6 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 6.0.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -86,10 +85,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)/..;$(ProjectDir)/../..;D:\mylib\gtest\gtest-1.7.0\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:/mylib/gtest/gtest-1.7.0/msvc\x64/$(Configuration);$(ProjectDir)/../../cudaCommon/lib/$(Configuration);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cudart_static.lib;gtestd.lib;cudaCommon.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -99,17 +101,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)/../cudaCommon;D:\mylib\eigen\eigen-3.2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/..;$(ProjectDir)/../../cudaCommon;D:\mylib\gtest\gtest-1.7.0\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)\..\cudaCommon\lib\Debug;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cudart_static.lib;cudaCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../x64/$(Configuration);D:/mylib/gtest/gtest-1.7.0/msvc/x64/$(Configuration);$(ProjectDir)/../../cudaCommon/lib/$(Configuration);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fluid.lib;cudart_static.lib;gtestd.lib;cudaCommon.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <CudaCompile>
-      <Include>C:\ProgramData\NVIDIA Corporation\CUDA Samples\v6.0\common\inc</Include>
-    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -120,12 +119,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)/..;$(ProjectDir)/../..;D:\mylib\gtest\gtest-1.7.0\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>D:/mylib/gtest/gtest-1.7.0/msvc\x64/$(Configuration);$(ProjectDir)/../../cudaCommon/lib/$(Configuration);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cudart_static.lib;gtest.lib;cudaCommon.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -137,33 +139,22 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)/../cudaCommon;D:\mylib\eigen\eigen-3.2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/..;$(ProjectDir)/../../cudaCommon;D:\mylib\gtest\gtest-1.7.0\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(ProjectDir)\..\cudaCommon\lib\Release;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cudart_static.lib;cudaCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../x64/$(Configuration);D:/mylib/gtest/gtest-1.7.0/msvc/x64/$(Configuration);$(ProjectDir)/../../cudaCommon/lib/$(Configuration);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fluid.lib;cudart_static.lib;gtest.lib;cudaCommon.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <CudaCompile>
-      <Include>C:\ProgramData\NVIDIA Corporation\CUDA Samples\v6.0\common\inc</Include>
-    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="sph\FluidSolverSimpleSph.cpp" />
-    <ClCompile Include="sph\SphKernel.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="geo\basicGeos.h" />
-    <ClInclude Include="sph\Constants.h" />
-    <ClInclude Include="sph\FluidSolverSimpleSph.h" />
-    <ClInclude Include="sph\SphKernel.h" />
+    <ClCompile Include="testSolver.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 6.0.targets" />
   </ImportGroup>
 </Project>

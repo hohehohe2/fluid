@@ -20,14 +20,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp">
       <Filter>ファイル\sph</Filter>
     </ClCompile>
     <ClCompile Include="sph\SphKernel.cpp">
       <Filter>ファイル\sph</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
