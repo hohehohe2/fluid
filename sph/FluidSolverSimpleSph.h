@@ -2,9 +2,8 @@
 #define hohe_FluidSolverSimpleSph_H
 
 #include <cudaCommon/Buffer.h>
-#include "FluidSolver.h"
 #include "SphKernel.h"
-#include <geo/Particles.h>
+#include "geo/basicGeos.h"
 
 namespace hohehohe2
 {
@@ -15,32 +14,32 @@ namespace hohehohe2
 /**
 Physical quantities are measured in MKS, not normalized here.
 **/
-class FluidSolverSimpleSph : public FluidSolver
+class FluidSolverSimpleSph
 {
 
 public:
 
 	///Particles for this solver.
-	struct Particle : public BufferSetSized
+	struct Particles : public BufferSetSized
 	{
 
-		///Particle position. Always exists.
+		///Particles position. Always exists.
 		Points* m_pos;
 
-		///Particle velocity.
+		///Particles velocity.
 		Points* m_velocity;
 
-		///Particle acceleration.
+		///Particles acceleration.
 		Points* m_acceleration;
 
-		///Particle density.
+		///Particles density.
 		BufferFloat* m_density;
 
 		///Constructor.
-		Particle() : m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_density(NULL){}
+		Particles() : m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_density(NULL){}
 
 		///Destructor.
-		virtual ~Particle(){}
+		virtual ~Particles(){}
 
 		virtual unsigned int size() const {return (m_pos)? m_pos->size() : 0;}
 
@@ -50,9 +49,9 @@ public:
 		void setDensity(BufferFloat* density){removeChild(m_density);addChild(density);}
 
 		///Create and 
-		static Particle* createInstance(unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST)
+		static Particles* createInstance(unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST)
 		{
-			Particle* obj = new Particle;
+			Particles* obj = new Particles;
 			obj->addChild(obj->m_pos = new Points("particle pos"));
 			obj->addChild(obj->m_velocity = new Points("particle velocity"));
 			obj->addChild(obj->m_acceleration = new Points("particle acceleration"));
@@ -71,10 +70,10 @@ public:
 	FluidSolverSimpleSph(float particleMass=1.0);
 
 	///Destructor.
-	virtual ~FluidSolverSimpleSph(){}
+	~FluidSolverSimpleSph(){}
 
 	///Step the simulation.
-	virtual void step(Particles& particles, float deltaT);
+	void step(Particles& particles, float deltaT);
 
 private:
 

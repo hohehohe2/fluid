@@ -29,19 +29,10 @@
     <ClCompile Include="sph\SphKernel.cpp">
       <Filter>ファイル\sph</Filter>
     </ClCompile>
-    <ClCompile Include="geo\Particles.cpp">
-      <Filter>ファイル\geo</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\FluidSolverSimpleSph.h">
       <Filter>ファイル\sph</Filter>
-    </ClInclude>
-    <ClInclude Include="sph\FluidSolver.h">
-      <Filter>ファイル\sph</Filter>
-    </ClInclude>
-    <ClInclude Include="geo\Particles.h">
-      <Filter>ファイル\geo</Filter>
     </ClInclude>
     <ClInclude Include="geo\basicGeos.h">
       <Filter>ファイル\geo</Filter>
