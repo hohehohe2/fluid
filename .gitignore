@@ -23,3 +23,5 @@
 x64/
 *.opensdf
 *.sdf
+Release/
+Debug/
