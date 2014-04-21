@@ -13,7 +13,7 @@ struct Points : public BufferSetSized
 {
 
 	//Constructor.
-	Points(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSized(name)
+	Points(const std::string& name="points", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSized(name)
 	{
 		addChild(m_xs = new BufferFloat("point xs"));
 		addChild(m_ys = new BufferFloat("point ys"));
@@ -26,6 +26,11 @@ struct Points : public BufferSetSized
 	virtual ~Points(){}
 
 	virtual unsigned int size() const {return m_xs->size();}
+
+	//Make sure that every member has the same size.
+	void setXs(BufferFloat* xs){removeChild(m_xs); addChild(m_xs = xs);}
+	void setYs(BufferFloat* ys){removeChild(m_ys); addChild(m_ys = ys);}
+	void setZs(BufferFloat* zs){removeChild(m_zs); addChild(m_zs = zs);}
 
 public:
 
@@ -43,7 +48,7 @@ struct Lines : public BufferSetSized
 {
 
 	//Constructor.
-	Lines(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSized(name)
+	Lines(const std::string& name="lines", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSized(name)
 	{
 		addChild(m_starts = new Points("line starts"));
 		addChild(m_ends = new Points("line ends"));
@@ -56,7 +61,9 @@ struct Lines : public BufferSetSized
 
 	virtual unsigned int size() const {return m_starts->size();}
 
-	void init(unsigned int size, bool starts=true, bool ends=true);
+	//Make sure that both members have the same size.
+	void setStarts(Points* starts){removeChild(m_starts); addChild(m_starts = starts);}
+	void setEnds(Points* ends){removeChild(m_ends); addChild(m_ends = ends);}
 
 public:
 
@@ -69,17 +76,17 @@ public:
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Triangles.
-struct Triangles : public BufferSetSized
+struct Triangles : public BufferSet
 {
 
 	//Constructor.
 	/**
 	@param name Name of this object.
-	@param size Data size of this object.
+	@param size Data size of m_v0s, m_v1s, and m_v2s.
 	@param allocMemoryType Set BufferSet::HOST, BufferSet::DEVICE, or BufferSet::HOST|BufferSet::DEVICE to allocate memory.
-	@param vtxPos Position of the triangle vertices. Its memory will be freed if the size is different from the one specified here.
+	@param vtxPos Position of the triangle vertices.
 	**/
-	Triangles(const std::string& name="", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST, Points* vtxPos=NULL) : BufferSetSized(name)
+	Triangles(const std::string& name="triangles", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST, Points* vtxPos=NULL) : BufferSet(name)
 	{
 		addChild(m_v0s = new BufferUInt("triangle v0s"));
 		addChild(m_v1s = new BufferUInt("triangle v1s"));
@@ -92,16 +99,20 @@ struct Triangles : public BufferSetSized
 		m_vtxPos = vtxPos;
 		addChild(vtxPos);
 
-		setSize(size);
+		m_v0s->setSize(size);
+		m_v1s->setSize(size);
+		m_v2s->setSize(size);
 		allocate(allocMemoryType);
 	}
 
 	//Destructor.
 	virtual ~Triangles(){}
 
-	virtual unsigned int size() const{return m_v0s->size();}
-
-	void init(unsigned int size, bool pos, bool v0s=true, bool v1s=true, bool v2s=true);
+	//Make sure that m_v0s, m_v1s, and m_v2s have the same size.
+	void setV0s(BufferUInt* v0s){removeChild(m_v0s); addChild(m_v0s = v0s);}
+	void setV1s(BufferUInt* v1s){removeChild(m_v1s); addChild(m_v1s = v1s);}
+	void setV2s(BufferUInt* v2s){removeChild(m_v2s); addChild(m_v2s = v2s);}
+	void setVtxPos(Points* vtxPos){removeChild(m_vtxPos); addChild(m_vtxPos = vtxPos);}
 
 public:
 

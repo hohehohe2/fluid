@@ -37,17 +37,17 @@ public:
 		BufferFloat* m_density;
 
 		///Constructor.
-		Particles() : m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_density(NULL){}
+		Particles(const std::string& name="particles") : BufferSetSized(name), m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_density(NULL){}
 
 		///Destructor.
 		virtual ~Particles(){}
 
 		virtual unsigned int size() const {return (m_pos)? m_pos->size() : 0;}
 
-		void setPos(Points* pos){removeChild(m_pos);addChild(pos);}
-		void setVelocity(Points* velocity){removeChild(velocity);addChild(velocity);}
-		void setAcceleration(Points* acceleration){removeChild(m_acceleration);addChild(acceleration);}
-		void setDensity(BufferFloat* density){removeChild(m_density);addChild(density);}
+		void setPos(Points* pos){removeChild(m_pos); addChild(m_pos = pos);}
+		void setVelocity(Points* velocity){removeChild(m_velocity); addChild(m_velocity = velocity);}
+		void setAcceleration(Points* acceleration){removeChild(m_acceleration); addChild(m_acceleration = acceleration);}
+		void setDensity(BufferFloat* density){removeChild(m_density); addChild(m_density = density);}
 
 		///Create and 
 		static Particles* createInstance(unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST)
