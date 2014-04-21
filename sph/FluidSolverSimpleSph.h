@@ -5,6 +5,7 @@
 #include "SphKernel.h"
 #include "geo/basicGeos.h"
 
+
 namespace hohehohe2
 {
 
@@ -51,15 +52,23 @@ public:
 		///Create and 
 		static Particles* createInstance(unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST)
 		{
+			//Separated object creation and filling member variables so that we can reuse fillMembers_() in a subclass.
 			Particles* obj = new Particles;
+			fillMembers_(obj, size, allocMemoryType);
+			return obj;
+		};
+
+	protected:
+
+		static void fillMembers_(Particles* obj, unsigned int size, MemoryType allocMemoryType)
+		{
 			obj->addChild(obj->m_pos = new Points("particle pos"));
 			obj->addChild(obj->m_velocity = new Points("particle velocity"));
 			obj->addChild(obj->m_acceleration = new Points("particle acceleration"));
 			obj->addChild(obj->m_density = new BufferFloat("particle density"));
 			obj->setSize(size);
 			obj->allocate(allocMemoryType);
-			return obj;
-		};
+		}
 
 	};
 
