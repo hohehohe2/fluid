@@ -7,7 +7,7 @@ using namespace hohehohe2;
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 const float FluidSolverSimpleSph::K = 20000.0f;
-const float FluidSolverSimpleSph::C = 0.1f;
+const float FluidSolverSimpleSph::PET_PEEVE_COURANT_NUMBER = 0.1f;
 
 
 //-------------------------------------------------------------------
@@ -30,7 +30,7 @@ void FluidSolverSimpleSph::step(Particles& particles, float deltaT)
 	do
 	{
 		float maxVelocity = calcMaxVelocity_(particles);
-		float dt = C / maxVelocity;
+		float dt = PET_PEEVE_COURANT_NUMBER / maxVelocity;
 		if (dt > remaining)
 		{
 			dt = remaining;
@@ -102,6 +102,10 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 			ds[idP] += m_sphKernel.w(dist2);
 		}
 		ds[idP] *= m_particleMass;
+		if (ds[idP] < Constants::RO0)
+		{
+			ds[idP] = Constants::RO0;
+		}
 	}
 }
 
