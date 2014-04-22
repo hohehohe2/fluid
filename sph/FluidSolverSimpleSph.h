@@ -44,12 +44,13 @@ public:
 
 		virtual unsigned int size() const {return (m_pos)? m_pos->size() : 0;}
 
+		//Make sure every size is the same.
 		void setPos(Points* pos){removeChild(m_pos); addChild(m_pos = pos);}
 		void setVelocity(Points* velocity){removeChild(m_velocity); addChild(m_velocity = velocity);}
 		void setAcceleration(Points* acceleration){removeChild(m_acceleration); addChild(m_acceleration = acceleration);}
 		void setDensity(BufferFloat* density){removeChild(m_density); addChild(m_density = density);}
 
-		///Create and 
+		///Create and setup for simulation. m_pos and m_velocity must be filled with initial values before the first step().
 		static Particles* createInstance(unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST)
 		{
 			//Separated object creation and filling member variables so that we can reuse fillMembers_() in a subclass.
@@ -78,7 +79,7 @@ public:
 	/**
 	@param particleMass in MKS.
 	**/
-	FluidSolverSimpleSph(float particleMass=1.0);
+	FluidSolverSimpleSph(float particleMass=1.0f);
 
 	///Destructor.
 	~FluidSolverSimpleSph(){}
