@@ -60,25 +60,3 @@ TEST_F(Solver, singleParticle)
 
 	ASSERT_NEAR(pys[0], -9.8f, 0.001f);
 }
-//
-//TEST_F(Solver, twParticles)
-//{
-//	FluidSolverSimpleSph ssph;
-//	FluidSolverSimpleSph::Particles* particles = FluidSolverSimpleSph::Particles::createInstance(2);
-//	BufferSet::SPtr sptr = particles->getSelfSptr();
-//
-//	float* pxs = particles->m_pos->m_xs->get(true);
-//	float* pys = particles->m_pos->m_ys->get(true);
-//	float* vxs = particles->m_velocity->m_xs->get(true);
-//	float* vys = particles->m_velocity->m_ys->get(true);
-//
-//	pxs[0] = 0.0f;
-//	pys[0] = 0.0f;
-//	vxs[0] = 0.0f;
-//	vys[0] = 0.0f;
-//
-//	ssph.step(*particles, 1.0f);
-//
-//	ASSERT_NEAR(pys[0], -9.8f, 0.001f);
-//}
-//
