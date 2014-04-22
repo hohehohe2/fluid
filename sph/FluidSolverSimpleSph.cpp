@@ -51,6 +51,8 @@ void FluidSolverSimpleSph::step(Particles& particles, float deltaT)
 //-------------------------------------------------------------------
 float FluidSolverSimpleSph::calcMaxVelocity_(Particles& particles)
 {
+    particles.sync();
+
 	float maxVelocity2 = 0;
 
 	float* vxs = particles.m_velocity->m_xs->get(true);
@@ -81,6 +83,8 @@ void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
 //-------------------------------------------------------------------
 void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 {
+    particles.sync();
+
 	const float r2 = m_sphKernel.r() * m_sphKernel.r();
 
 	float* pxs = particles.m_pos->m_xs->get(true);
@@ -102,6 +106,8 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 			ds[idP] += m_sphKernel.w(dist2);
 		}
 		ds[idP] *= m_particleMass;
+
+		//Set rest density as minimum to fake air pressure.
 		if (ds[idP] < Constants::RO0)
 		{
 			ds[idP] = Constants::RO0;
@@ -114,6 +120,8 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 //-------------------------------------------------------------------
 void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 {
+    particles.sync();
+
 	float* pxs = particles.m_pos->m_xs->get(true);
 	float* pys = particles.m_pos->m_ys->get(true);
 	float* pzs = particles.m_pos->m_zs->get(true);
@@ -142,7 +150,7 @@ void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 			float densityN = ds[idN];
 			float pressureP = densityToPressure_(densityP);
 			float pressureN = densityToPressure_(densityN);
-			float c = m_particleMass * (pressureP + pressureN) / (2.0f * pressureN);
+			float c = m_particleMass * (pressureP + pressureN) / (2.0f * densityN);
 			float gradPx = c * gradW[0];
 			float gradPy = c * gradW[1];
 			float gradPz = c * gradW[2];
@@ -160,6 +168,8 @@ void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 //-------------------------------------------------------------------
 void FluidSolverSimpleSph::integrate_(Particles& particles, float deltaT)
 {
+    particles.sync();
+
 	float* pxs = particles.m_pos->m_xs->get(true);
 	float* pys = particles.m_pos->m_ys->get(true);
 	float* pzs = particles.m_pos->m_zs->get(true);
