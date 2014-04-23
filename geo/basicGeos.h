@@ -1,7 +1,7 @@
 #ifndef hohe_basicGeos_H
 #define hohe_basicGeos_H
 
-#include <cudaCommon/Buffer.h>
+#include <hohe2Common/cuda/Buffer.h>
 
 namespace hohehohe2
 {

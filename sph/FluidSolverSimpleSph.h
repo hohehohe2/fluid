@@ -1,7 +1,7 @@
 #ifndef hohe_FluidSolverSimpleSph_H
 #define hohe_FluidSolverSimpleSph_H
 
-#include <cudaCommon/Buffer.h>
+#include <hohe2Common/cuda/Buffer.h>
 #include "SphKernel.h"
 #include "geo/basicGeos.h"
 
