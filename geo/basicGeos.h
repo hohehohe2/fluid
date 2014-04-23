@@ -12,31 +12,48 @@ namespace hohehohe2
 struct Points : public BufferSetSized
 {
 
-	//Constructor.
+	///Constructor.
 	Points(const std::string& name="points", unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST) : BufferSetSized(name)
 	{
-		addChild(m_xs = new BufferFloat("point xs"));
-		addChild(m_ys = new BufferFloat("point ys"));
-		addChild(m_zs = new BufferFloat("point zs"));
+		addChild(m_xyzs = new BufferFloat("point xyzs"));
 		setSize(size);
 		allocate(allocMemoryType);
 	}
 
-	//Destructor.
+	///Destructor.
 	virtual ~Points(){}
 
-	virtual unsigned int size() const {return m_xs->size();}
+	///Overrided version of sizeSize().
+	virtual void setSize(unsigned int size){m_xyzs->setSize(size * 3);}
 
-	//Make sure that every member has the same size.
-	void setXs(BufferFloat* xs){removeChild(m_xs); addChild(m_xs = xs);}
-	void setYs(BufferFloat* ys){removeChild(m_ys); addChild(m_ys = ys);}
-	void setZs(BufferFloat* zs){removeChild(m_zs); addChild(m_zs = zs);}
+	///Overrided version of size().
+	virtual unsigned int size() const {return m_xyzs->size() / 3;}
+
+	///Set the new buffer for this Points object. No memory allocation / resize will be made. New buffer xyzs cannot be NULL.
+	void setXyzs(BufferFloat* xyzs)
+	{
+		assert(xyzs);
+		removeChild(m_xyzs);
+		addChild(m_xyzs = xyzs);
+	}
+
+	float* xs(MemoryType mType){return m_xyzs->get(mType);} ///Accessor.
+	float* ys(MemoryType mType){return m_xyzs->get(mType) + size();} ///Accessor.
+	float* zs(MemoryType mType){return m_xyzs->get(mType) + size() * 2;} ///Accessor.
+	const float* xs(MemoryType mType) const{return m_xyzs->get(mType);} ///Accessor.
+	const float* ys(MemoryType mType) const{return m_xyzs->get(mType) + size();} ///Accessor.
+	const float* zs(MemoryType mType) const{return m_xyzs->get(mType) + size() * 2;} ///Accessor.
+	float* xs(bool isHost){return m_xyzs->get(boolTo_(isHost));} ///Overloaded version of the accessor.
+	float* ys(bool isHost){return m_xyzs->get(boolTo_(isHost)) + size();} ///Overloaded version of the accessor.
+	float* zs(bool isHost){return m_xyzs->get(boolTo_(isHost)) + size() * 2;} ///Overloaded version of the accessor.
+	const float* xs(bool isHost) const{return m_xyzs->get(boolTo_(isHost));} ///Overloaded version of the accessor.
+	const float* ys(bool isHost) const{return m_xyzs->get(boolTo_(isHost)) + size();} ///Overloaded version of the accessor.
+	const float* zs(bool isHost) const{return m_xyzs->get(boolTo_(isHost)) + size() * 2;} ///Overloaded version of the accessor.
 
 public:
 
-	BufferFloat* m_xs;
-	BufferFloat* m_ys;
-	BufferFloat* m_zs;
+	///Buffer for the points. Use setXyzs() to assign a different buffer.
+	BufferFloat* m_xyzs;
 
 };
 

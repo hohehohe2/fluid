@@ -21,10 +21,10 @@ protected:
 		particles = FluidSolverSimpleSph::Particles::createInstance(1);
 		sptr = particles->getSelfSptr();
 
-		float* pxs = particles->m_pos->m_xs->get(true);
-		float* pys = particles->m_pos->m_ys->get(true);
-		float* vxs = particles->m_velocity->m_xs->get(true);
-		float* vys = particles->m_velocity->m_ys->get(true);
+		float* pxs = particles->m_pos->xs(true);
+		float* pys = particles->m_pos->ys(true);
+		float* vxs = particles->m_velocity->xs(true);
+		float* vys = particles->m_velocity->ys(true);
     }
 
 	virtual void TearDown()
@@ -46,10 +46,10 @@ TEST_F(Solver, singleParticle)
 	FluidSolverSimpleSph::Particles* particles = FluidSolverSimpleSph::Particles::createInstance(1);
 	BufferSet::SPtr sptr = particles->getSelfSptr();
 
-	float* pxs = particles->m_pos->m_xs->get(true);
-	float* pys = particles->m_pos->m_ys->get(true);
-	float* vxs = particles->m_velocity->m_xs->get(true);
-	float* vys = particles->m_velocity->m_ys->get(true);
+	float* pxs = particles->m_pos->xs(true);
+	float* pys = particles->m_pos->ys(true);
+	float* vxs = particles->m_velocity->xs(true);
+	float* vys = particles->m_velocity->ys(true);
 
 	pxs[0] = 0.0f;
 	pys[0] = 0.0f;

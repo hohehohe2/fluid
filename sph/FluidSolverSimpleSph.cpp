@@ -55,9 +55,9 @@ float FluidSolverSimpleSph::calcMaxVelocity_(Particles& particles)
 
 	float maxVelocity2 = 0;
 
-	float* vxs = particles.m_velocity->m_xs->get(true);
-	float* vys = particles.m_velocity->m_ys->get(true);
-	float* vzs = particles.m_velocity->m_zs->get(true);
+	float* vxs = particles.m_velocity->xs(true);
+	float* vys = particles.m_velocity->ys(true);
+	float* vzs = particles.m_velocity->zs(true);
 
 	unsigned int size = particles.size();
 	for (unsigned int idP = 0; idP < size; ++idP)
@@ -87,9 +87,9 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 
 	const float r2 = m_sphKernel.r() * m_sphKernel.r();
 
-	float* pxs = particles.m_pos->m_xs->get(true);
-	float* pys = particles.m_pos->m_ys->get(true);
-	float* pzs = particles.m_pos->m_zs->get(true);
+	float* pxs = particles.m_pos->xs(true);
+	float* pys = particles.m_pos->ys(true);
+	float* pzs = particles.m_pos->zs(true);
 	float* ds = particles.m_density->get(true);
 
 	unsigned int size = particles.size();
@@ -122,12 +122,12 @@ void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 {
     particles.sync();
 
-	float* pxs = particles.m_pos->m_xs->get(true);
-	float* pys = particles.m_pos->m_ys->get(true);
-	float* pzs = particles.m_pos->m_zs->get(true);
-	float* axs = particles.m_acceleration->m_xs->get(true);
-	float* ays = particles.m_acceleration->m_ys->get(true);
-	float* azs = particles.m_acceleration->m_zs->get(true);
+	float* pxs = particles.m_pos->xs(true);
+	float* pys = particles.m_pos->ys(true);
+	float* pzs = particles.m_pos->zs(true);
+	float* axs = particles.m_acceleration->xs(true);
+	float* ays = particles.m_acceleration->ys(true);
+	float* azs = particles.m_acceleration->zs(true);
 	float* ds = particles.m_density->get(true);
 
 	unsigned int size = particles.size();
@@ -170,15 +170,15 @@ void FluidSolverSimpleSph::integrate_(Particles& particles, float deltaT)
 {
     particles.sync();
 
-	float* pxs = particles.m_pos->m_xs->get(true);
-	float* pys = particles.m_pos->m_ys->get(true);
-	float* pzs = particles.m_pos->m_zs->get(true);
-	float* vxs = particles.m_velocity->m_xs->get(true);
-	float* vys = particles.m_velocity->m_ys->get(true);
-	float* vzs = particles.m_velocity->m_zs->get(true);
-	float* axs = particles.m_acceleration->m_xs->get(true);
-	float* ays = particles.m_acceleration->m_ys->get(true);
-	float* azs = particles.m_acceleration->m_zs->get(true);
+	float* pxs = particles.m_pos->xs(true);
+	float* pys = particles.m_pos->ys(true);
+	float* pzs = particles.m_pos->zs(true);
+	float* vxs = particles.m_velocity->xs(true);
+	float* vys = particles.m_velocity->ys(true);
+	float* vzs = particles.m_velocity->zs(true);
+	float* axs = particles.m_acceleration->xs(true);
+	float* ays = particles.m_acceleration->ys(true);
+	float* azs = particles.m_acceleration->zs(true);
 
 	unsigned int size = particles.size();
 	
