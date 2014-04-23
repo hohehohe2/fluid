@@ -129,6 +129,8 @@ struct Triangles : public BufferSet
 	void setV0s(BufferUInt* v0s){removeChild(m_v0s); addChild(m_v0s = v0s);}
 	void setV1s(BufferUInt* v1s){removeChild(m_v1s); addChild(m_v1s = v1s);}
 	void setV2s(BufferUInt* v2s){removeChild(m_v2s); addChild(m_v2s = v2s);}
+
+	//Make sure that m_v0s, m_v1s, m_v2s and m_vtxPos data are consistent.
 	void setVtxPos(Points* vtxPos){removeChild(m_vtxPos); addChild(m_vtxPos = vtxPos);}
 
 public:
