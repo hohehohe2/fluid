@@ -51,7 +51,7 @@ public:
 		void setDensity(BufferFloat* density){removeChild(m_density); addChild(m_density = density);}
 
 		///Create and setup for simulation. m_pos and m_velocity must be filled with initial values before the first step().
-		static Particles* createInstance(unsigned int size=0, MemoryType allocMemoryType=BufferSet::HOST)
+		static Particles* createInstance(unsigned int size=0, MemoryType allocMemoryType=HOST)
 		{
 			//Separated object creation and filling member variables so that we can reuse fillMembers_() in a subclass.
 			Particles* obj = new Particles;
@@ -69,8 +69,8 @@ public:
 			obj->addChild(obj->m_density = new BufferFloat("particle density"));
 			obj->setSize(size);
 			obj->allocate(allocMemoryType);
-			obj->m_pos->memset(0, true);
-			obj->m_velocity->memset(0, true);
+			obj->m_pos->memset(0, HOST);
+			obj->m_velocity->memset(0, HOST);
 		}
 
 	};
