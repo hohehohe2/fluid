@@ -51,7 +51,7 @@ void FluidSolverSimpleSph::step(Particles& particles, float deltaT)
 //-------------------------------------------------------------------
 float FluidSolverSimpleSph::calcMaxVelocity_(Particles& particles)
 {
-    particles.sync();
+    particles.sync(HOST);
 
 	float maxVelocity2 = 0;
 
@@ -83,7 +83,7 @@ void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
 //-------------------------------------------------------------------
 void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 {
-    particles.sync();
+    particles.sync(HOST);
 
 	const float r2 = m_sphKernel.r() * m_sphKernel.r();
 
@@ -120,7 +120,7 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 //-------------------------------------------------------------------
 void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 {
-    particles.sync();
+    particles.sync(HOST);
 
 	float* pxs = particles.m_pos->xs(HOST);
 	float* pys = particles.m_pos->ys(HOST);
@@ -168,7 +168,7 @@ void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 //-------------------------------------------------------------------
 void FluidSolverSimpleSph::integrate_(Particles& particles, float deltaT)
 {
-    particles.sync();
+    particles.sync(HOST);
 
 	float* pxs = particles.m_pos->xs(HOST);
 	float* pys = particles.m_pos->ys(HOST);
