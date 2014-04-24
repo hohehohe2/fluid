@@ -14,9 +14,9 @@ protected:
 	FluidSolverSimpleSph* m_ssph;
 	FluidSolverSimpleSph::Particles* particles;
 	BufferSet::SPtr sptr;
- 
-    virtual void SetUp()
-    {
+
+	virtual void SetUp()
+	{
 		m_ssph = new FluidSolverSimpleSph;
 		particles = FluidSolverSimpleSph::Particles::createInstance(1);
 		sptr = particles->getSelfSptr();
@@ -25,13 +25,13 @@ protected:
 		float* pys = particles->m_pos->ys(true);
 		float* vxs = particles->m_velocity->xs(true);
 		float* vys = particles->m_velocity->ys(true);
-    }
+	}
 
 	virtual void TearDown()
-    {
+	{
 		sptr.reset();
-        delete m_ssph;
-    }
+		delete m_ssph;
+	}
 };
 
 

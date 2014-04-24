@@ -111,8 +111,8 @@ private:
 	**/
 	static const float K;
 
-    ///So called Courant number (pet peeve for Prof. Bridson ;).
-    static const float PET_PEEVE_COURANT_NUMBER;
+	///So called Courant number (pet peeve for Prof. Bridson ;).
+	static const float PET_PEEVE_COURANT_NUMBER;
 
 };
 
