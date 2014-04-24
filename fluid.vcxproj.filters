@@ -12,9 +12,6 @@
     <Filter Include="ファイル\sph">
       <UniqueIdentifier>{4a1b9616-2990-4788-8c94-4e5b0d27f192}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ファイル\spatical">
-      <UniqueIdentifier>{5c82fdac-2dab-4639-b06b-edbb05f6ee20}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp">
