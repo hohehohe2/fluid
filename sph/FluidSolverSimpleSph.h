@@ -3,7 +3,7 @@
 
 #include <hohe2Common/cuda/Buffer.h>
 #include "SphKernel.h"
-#include "geo/basicGeos.h"
+#include "hohe2Common/geo/basicGeos.h"
 
 
 namespace hohehohe2
@@ -25,13 +25,13 @@ public:
 	{
 
 		///Particles position. Always exists.
-		Points* m_pos;
+		PointSet* m_pos;
 
 		///Particles velocity.
-		Points* m_velocity;
+		PointSet* m_velocity;
 
 		///Particles acceleration.
-		Points* m_acceleration;
+		PointSet* m_acceleration;
 
 		///Particles density.
 		BufferFloat* m_density;
@@ -45,9 +45,9 @@ public:
 		virtual unsigned int size() const {return (m_pos)? m_pos->size() : 0;}
 
 		//Make sure every size is the same.
-		void setPos(Points* pos){removeChild(m_pos); addChild(m_pos = pos);}
-		void setVelocity(Points* velocity){removeChild(m_velocity); addChild(m_velocity = velocity);}
-		void setAcceleration(Points* acceleration){removeChild(m_acceleration); addChild(m_acceleration = acceleration);}
+		void setPos(PointSet* pos){removeChild(m_pos); addChild(m_pos = pos);}
+		void setVelocity(PointSet* velocity){removeChild(m_velocity); addChild(m_velocity = velocity);}
+		void setAcceleration(PointSet* acceleration){removeChild(m_acceleration); addChild(m_acceleration = acceleration);}
 		void setDensity(BufferFloat* density){removeChild(m_density); addChild(m_density = density);}
 
 		///Create and setup for simulation. m_pos and m_velocity must be filled with initial values before the first step().
@@ -63,9 +63,9 @@ public:
 
 		static void fillMembers_(Particles* obj, unsigned int size, MemoryType allocMemoryType)
 		{
-			obj->addChild(obj->m_pos = new Points("particle pos"));
-			obj->addChild(obj->m_velocity = new Points("particle velocity"));
-			obj->addChild(obj->m_acceleration = new Points("particle acceleration"));
+			obj->addChild(obj->m_pos = new PointSet("particle pos"));
+			obj->addChild(obj->m_velocity = new PointSet("particle velocity"));
+			obj->addChild(obj->m_acceleration = new PointSet("particle acceleration"));
 			obj->addChild(obj->m_density = new BufferFloat("particle density"));
 			obj->setSize(size);
 			obj->allocate(allocMemoryType);

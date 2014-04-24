@@ -15,9 +15,6 @@
     <Filter Include="ファイル\spatical">
       <UniqueIdentifier>{5c82fdac-2dab-4639-b06b-edbb05f6ee20}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ファイル\geo">
-      <UniqueIdentifier>{2cd138b1-9a7b-49bd-952b-22ad3b583373}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp">
@@ -33,9 +30,6 @@
   <ItemGroup>
     <ClInclude Include="sph\FluidSolverSimpleSph.h">
       <Filter>ファイル\sph</Filter>
-    </ClInclude>
-    <ClInclude Include="geo\basicGeos.h">
-      <Filter>ファイル\geo</Filter>
     </ClInclude>
     <ClInclude Include="sph\Constants.h">
       <Filter>ファイル\sph</Filter>

@@ -157,7 +157,6 @@
     <ClCompile Include="sph\SphKernel.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="geo\basicGeos.h" />
     <ClInclude Include="sph\Constants.h" />
     <ClInclude Include="sph\FluidSolverSimpleSph.h" />
     <ClInclude Include="sph\SphKernel.h" />
