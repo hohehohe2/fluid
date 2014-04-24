@@ -20,9 +20,6 @@
     <ClCompile Include="sph\SphKernel.cpp">
       <Filter>ファイル\sph</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>ファイル</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\FluidSolverSimpleSph.h">
