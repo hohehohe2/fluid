@@ -37,7 +37,7 @@ public:
 		BufferFloat* m_density;
 
 		///Constructor.
-		Particles(const std::string& name="particles") : BufferSetSized(name), m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_density(NULL){}
+		Particles(const std::string& name="Particles") : BufferSetSized(name), m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_density(NULL){}
 
 		///Destructor.
 		virtual ~Particles(){}
