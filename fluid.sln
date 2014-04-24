@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fluidTests", "fluidTests\fl
 		{9BFA97FC-5243-4A6E-B1C8-4712119D070A} = {9BFA97FC-5243-4A6E-B1C8-4712119D070A}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "exampleApp", "exampleApp\exampleApp.vcxproj", "{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -77,6 +79,16 @@ Global
 		{210D4AA0-FE6C-4216-AE36-F2CDA3786A0B}.Release|Win32.Build.0 = Release|Win32
 		{210D4AA0-FE6C-4216-AE36-F2CDA3786A0B}.Release|x64.ActiveCfg = Release|x64
 		{210D4AA0-FE6C-4216-AE36-F2CDA3786A0B}.Release|x64.Build.0 = Release|x64
+		{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}.Debug|Win32.Build.0 = Debug|Win32
+		{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}.Debug|x64.ActiveCfg = Debug|Win32
+		{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}.Release|Win32.ActiveCfg = Release|Win32
+		{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}.Release|Win32.Build.0 = Release|Win32
+		{77AA2B47-8713-4D4D-88A1-1FB1BB6E6F3F}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
