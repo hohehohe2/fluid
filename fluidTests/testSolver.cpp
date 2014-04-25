@@ -25,6 +25,11 @@ protected:
 		float* pys = particles->m_pos->ys(true);
 		float* vxs = particles->m_velocity->xs(true);
 		float* vys = particles->m_velocity->ys(true);
+
+		pxs[0] = 0.0f;
+		pys[0] = 0.0f;
+		vxs[0] = 0.0f;
+		vys[0] = 0.0f;
 	}
 
 	virtual void TearDown()
