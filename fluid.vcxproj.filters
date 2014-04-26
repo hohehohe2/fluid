@@ -1,35 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx;h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="ファイル\sph">
+    <Filter Include="sph">
       <UniqueIdentifier>{4a1b9616-2990-4788-8c94-4e5b0d27f192}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp">
-      <Filter>ファイル\sph</Filter>
+      <Filter>sph</Filter>
     </ClCompile>
     <ClCompile Include="sph\SphKernel.cpp">
-      <Filter>ファイル\sph</Filter>
+      <Filter>sph</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\FluidSolverSimpleSph.h">
-      <Filter>ファイル\sph</Filter>
+      <Filter>sph</Filter>
     </ClInclude>
     <ClInclude Include="sph\Constants.h">
-      <Filter>ファイル\sph</Filter>
+      <Filter>sph</Filter>
     </ClInclude>
     <ClInclude Include="sph\SphKernel.h">
-      <Filter>ファイル\sph</Filter>
+      <Filter>sph</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
