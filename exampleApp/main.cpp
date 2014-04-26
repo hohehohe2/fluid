@@ -6,14 +6,17 @@ using namespace hohehohe2;
 
 ExampleSphApp esa;
 
+float  camera_x = 0.0;
+float  camera_y = 0.0;
+float  camera_z = -30.0;
 float  camera_pitch_x = 0.0;
 float  camera_pitch_y = 0.0;
 
 int drag_mouse_l = 0;
 int zoom_mouse_l = 0;
+int move_mouse_l = 0;
 int last_mouse_x;
 int last_mouse_y;
-double zoom = -30;
 
 void  display( void )
 {
@@ -21,7 +24,7 @@ void  display( void )
 
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
-	glTranslatef(0.0, 0.0, zoom);
+	glTranslatef(camera_x, camera_y, camera_z);
 	glRotatef(-camera_pitch_y, 1.0, 0.0, 0.0);
 	glRotatef(-camera_pitch_x, 0.0, 1.0, 0.0);
 
@@ -53,6 +56,11 @@ void  mouse( int button, int state, int mx, int my )
 	else if ( ( button == GLUT_LEFT_BUTTON ) && ( state == GLUT_UP ) )
 		drag_mouse_l = 0;
 
+	if ( ( button == GLUT_MIDDLE_BUTTON ) && ( state == GLUT_DOWN ) )
+		move_mouse_l = 1;
+	else if ( ( button == GLUT_MIDDLE_BUTTON ) && ( state == GLUT_UP ) )
+		move_mouse_l = 0;
+
 	if ( ( button == GLUT_RIGHT_BUTTON ) && ( state == GLUT_DOWN ) )
 		zoom_mouse_l = 1;
 	else if ( ( button == GLUT_RIGHT_BUTTON ) && ( state == GLUT_UP ) )
@@ -72,18 +80,24 @@ void  motion( int mx, int my )
 {
 	if ( drag_mouse_l == 1 )
 	{
-		camera_pitch_y -= ( my - last_mouse_y ) * 1.0;
+		camera_pitch_y -= ( my - last_mouse_y );
 		if ( camera_pitch_y < -90.0 )
 			camera_pitch_y = -90.0;
 
-		camera_pitch_x -= ( mx - last_mouse_x ) * 1.0;
+		camera_pitch_x -= ( mx - last_mouse_x );
 		if ( camera_pitch_x < -90.0 )
 			camera_pitch_x = -90.0;
 	}
 
+	if ( move_mouse_l == 1 )
+	{
+		camera_y -= ( my - last_mouse_y ) * 0.1f;
+		camera_x += ( mx - last_mouse_x ) * 0.1f;
+	}
+
 	if ( zoom_mouse_l == 1 )
 	{
-		zoom += my - last_mouse_y;
+		camera_z += my - last_mouse_y;
 	}
 
 	last_mouse_x = mx;

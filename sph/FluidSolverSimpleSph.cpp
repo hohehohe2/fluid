@@ -77,6 +77,7 @@ float FluidSolverSimpleSph::calcMaxVelocity_(Particles& particles)
 //-------------------------------------------------------------------
 void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
 {
+	particles.sync(HOST);
 }
 
 
