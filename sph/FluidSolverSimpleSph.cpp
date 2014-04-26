@@ -74,6 +74,8 @@ float FluidSolverSimpleSph::calcMaxVelocity_(Particles& particles)
 		}
 	}
 	return sqrt(maxVelocity2);
+
+	particles.setClean(HOST);
 }
 
 
@@ -82,6 +84,7 @@ float FluidSolverSimpleSph::calcMaxVelocity_(Particles& particles)
 void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
 {
 	particles.sync(HOST);
+	particles.setClean(HOST);
 }
 
 
@@ -120,6 +123,8 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 			ds[idP] = Constants::RO0;
 		}
 	}
+
+	particles.setClean(HOST);
 }
 
 
@@ -170,6 +175,8 @@ void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 
 		///Viscosity omitted.
 	}
+
+	particles.setClean(HOST);
 }
 
 
@@ -201,6 +208,8 @@ void FluidSolverSimpleSph::integrate_(Particles& particles, float deltaT)
 		pys[idP] += vys[idP] * deltaT;
 		pzs[idP] += vzs[idP] * deltaT;
 	}
+
+	particles.setClean(HOST);
 }
 
 
@@ -209,5 +218,4 @@ void FluidSolverSimpleSph::integrate_(Particles& particles, float deltaT)
 float FluidSolverSimpleSph::densityToPressure_(float density)
 {
 	return K * (density * density / (Constants::RO0 * Constants::RO0) - 1.0f);
-
 }
