@@ -106,8 +106,8 @@ private:
 
 private:
 
-	float calcMaxVelocity_(Particles& particles);
-	void updateNeighbors_(Particles& particles);
+	float calcMaxVelocity_(const Particles& particles);
+	void updateNeighbors_(const Particles& particles);
 	void calcDensity_(Particles& particles);
 	void calcAcceleration_(Particles& particles);
 	void integrate_(Particles& particles, float deltaT);

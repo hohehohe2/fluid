@@ -1,5 +1,6 @@
 #include "FluidSolverSimpleSph.h"
 #include "Constants.h"
+#include <hohe2Common/util/BitOperationsBuffer.h>
 
 using namespace hohehohe2;
 
@@ -53,7 +54,7 @@ void FluidSolverSimpleSph::step(Particles& particles, float deltaT)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-float FluidSolverSimpleSph::calcMaxVelocity_(Particles& particles)
+float FluidSolverSimpleSph::calcMaxVelocity_(const Particles& particles)
 {
 	particles.sync(HOST);
 
@@ -74,17 +75,20 @@ float FluidSolverSimpleSph::calcMaxVelocity_(Particles& particles)
 		}
 	}
 	return sqrt(maxVelocity2);
-
-	particles.setClean(HOST);
 }
 
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
+void FluidSolverSimpleSph::updateNeighbors_(const Particles& particles)
 {
 	particles.sync(HOST);
-	particles.setClean(HOST);
+
+	BufferUInt codeSet;
+	BoundingBox bbox;
+	particles.m_pos->calcBoundingBox(bbox, HOST);
+	BitOperationsBuffer::calcMortonCode32(codeSet, *particles.m_pos, HOST, bbox);
+	m_cHash.build(codeSet, HOST);
 }
 
 
