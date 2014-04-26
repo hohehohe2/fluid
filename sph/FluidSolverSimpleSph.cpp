@@ -1,6 +1,7 @@
 #include "FluidSolverSimpleSph.h"
 #include "Constants.h"
 #include <hohe2Common/util/BitOperationsBuffer.h>
+#include <hohe2Common/util/SortBuffer.h>
 
 using namespace hohehohe2;
 
@@ -80,14 +81,28 @@ float FluidSolverSimpleSph::calcMaxVelocity_(const Particles& particles)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::updateNeighbors_(const Particles& particles)
+void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
 {
+	const float kernelRaidus = m_sphKernel.r();
+
 	particles.sync(HOST);
 
-	BufferUInt codeSet;
 	BoundingBox bbox;
 	particles.m_pos->calcBoundingBox(bbox, HOST);
+
+	//Shift min values a little bit to make sure the particles which have min values are inside the cell.
+	bbox.m_min -= Point(kernelRaidus, kernelRaidus, kernelRaidus) / 100.0f;
+
+	//Adjust max values so that the cell size is equal to the kernel radius; 
+	bbox.m_max << bbox.m_min.x() + kernelRaidus * 1024, bbox.m_min.y() + kernelRaidus * 1024, bbox.m_min.z() + kernelRaidus * 1024;
+
+	BufferUInt codeSet;
 	BitOperationsBuffer::calcMortonCode32(codeSet, *particles.m_pos, HOST, bbox);
+
+	//Sort it.
+	SortBuffer::createSortedIdMap(*particles.m_sortedIdMap, codeSet, DEVICE);
+
+	//Create compact hash.
 	m_cHash.build(codeSet, HOST);
 }
 

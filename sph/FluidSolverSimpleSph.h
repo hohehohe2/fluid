@@ -36,6 +36,13 @@ public:
 		///Particles density.
 		BufferFloat* m_density;
 
+		///Sorted m_pos index -> (unsorted) m_pos index map.
+		/**
+		(array of m_pos sorted in e.g. morton code order)[id] = m_pos[m_sortedIdMap[id]].
+		id can be obtained using the Compact hash.
+		**/
+		BufferUInt* m_sortedIdMap;
+
 		///Constructor.
 		Particles(const std::string& name="Particles") : BufferSetSized(name), m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_density(NULL){}
 
@@ -49,6 +56,7 @@ public:
 		void setVelocity(PointSet* velocity){removeChild(m_velocity); addChild(m_velocity = velocity);}
 		void setAcceleration(PointSet* acceleration){removeChild(m_acceleration); addChild(m_acceleration = acceleration);}
 		void setDensity(BufferFloat* density){removeChild(m_density); addChild(m_density = density);}
+		void setSortedIdMap(BufferUInt* sortedIdMap){removeChild(m_sortedIdMap); addChild(m_sortedIdMap = sortedIdMap);}
 
 		///Create and setup for simulation. m_pos and m_velocity must be filled with initial values before the first step().
 		static Particles* createInstance(unsigned int size=0, MemoryType allocMemoryType=HOST)
@@ -67,6 +75,7 @@ public:
 			obj->addChild(obj->m_velocity = new PointSet("particle velocity"));
 			obj->addChild(obj->m_acceleration = new PointSet("particle acceleration"));
 			obj->addChild(obj->m_density = new BufferFloat("particle density"));
+			obj->addChild(obj->m_sortedIdMap = new BufferUInt("particle sortedIdMap"));
 			obj->setSize(size);
 			obj->allocate(allocMemoryType);
 			obj->m_pos->memset(0, HOST);
@@ -107,7 +116,7 @@ private:
 private:
 
 	float calcMaxVelocity_(const Particles& particles);
-	void updateNeighbors_(const Particles& particles);
+	void updateNeighbors_(Particles& particles);
 	void calcDensity_(Particles& particles);
 	void calcAcceleration_(Particles& particles);
 	void integrate_(Particles& particles, float deltaT);
