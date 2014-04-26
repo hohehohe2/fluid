@@ -1,28 +1,25 @@
 #include "ExampleSphApp.h"
+
 #include <hohe2Common/gl/Drawer.h>
+#include "InitParticleDistributor.h"
 
 using namespace hohehohe2;
 
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void ExampleSphApp::reset(unsigned int type)
+void ExampleSphApp::reset(unsigned int id)
 {
-    if (type == 0)
-    {
-        m_particles = FluidSolverSimpleSph::Particles::createInstance(1);
-        m_sptr = m_particles->getSelfSptr();
+	PointSet* pos = new PointSet("particle pos");
+	PointSet* velocity = new PointSet("particle velocity");
 
-		float* pxs = m_particles->m_pos->xs(true);
-		float* pys = m_particles->m_pos->ys(true);
-		float* vxs = m_particles->m_velocity->xs(true);
-		float* vys = m_particles->m_velocity->ys(true);
+	InitParticleDistributor::set(*pos, *velocity, m_ssph.restLength(), id);
 
-		pxs[0] = 0.0f;
-		pys[0] = 0.0f;
-		vxs[0] = 0.0f;
-		vys[0] = 0.0f;
-	}
+	m_particles = FluidSolverSimpleSph::Particles::createInstance(pos->size());
+	m_particles->setPos(pos);
+	m_particles->setVelocity(velocity);
+    m_sptr = m_particles->getSelfSptr();
+
 }
 
 
@@ -30,14 +27,34 @@ void ExampleSphApp::reset(unsigned int type)
 //---------------------------------------------------------------------------
 void ExampleSphApp::onKey(unsigned char key)
 {
-    if (key == ' ')
+    if (key == 27)
+    {
+		exit(1);
+	}
+
+	if (key == ' ')
     {
         m_ssph.step(*m_particles, 0.1f);
+		return;
     }
-    else if (key == '0')
-    {
-        reset(0);
-    }
+
+	switch (key)
+	{
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+        reset(key - '0');
+		break;
+	default:
+		break;
+	}
 }
 
 

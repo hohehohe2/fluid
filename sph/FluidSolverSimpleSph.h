@@ -87,7 +87,13 @@ public:
 	///Step the simulation.
 	void step(Particles& particles, float deltaT);
 
+	///Get the distance between particles at rest density.
+	float restLength() const {return m_restLength;}
+
 private:
+
+	///Distance between particles at rest density, just for initial distribution hint. (volume per particle) ^ (1/3).
+	float m_restLength;
 
 	///Mass per single particle.
 	float m_particleMass;

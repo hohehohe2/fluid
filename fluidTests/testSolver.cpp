@@ -23,13 +23,17 @@ protected:
 
 		float* pxs = particles->m_pos->xs(true);
 		float* pys = particles->m_pos->ys(true);
+		float* pzs = particles->m_pos->ys(true);
 		float* vxs = particles->m_velocity->xs(true);
 		float* vys = particles->m_velocity->ys(true);
+		float* vzs = particles->m_velocity->ys(true);
 
 		pxs[0] = 0.0f;
 		pys[0] = 0.0f;
+		pzs[0] = 0.0f;
 		vxs[0] = 0.0f;
 		vys[0] = 0.0f;
+		vzs[0] = 0.0f;
 	}
 
 	virtual void TearDown()
@@ -53,13 +57,17 @@ TEST_F(Solver, singleParticle)
 
 	float* pxs = particles->m_pos->xs(true);
 	float* pys = particles->m_pos->ys(true);
+	float* pzs = particles->m_pos->ys(true);
 	float* vxs = particles->m_velocity->xs(true);
 	float* vys = particles->m_velocity->ys(true);
+	float* vzs = particles->m_velocity->ys(true);
 
 	pxs[0] = 0.0f;
 	pys[0] = 0.0f;
+	pzs[0] = 0.0f;
 	vxs[0] = 0.0f;
 	vys[0] = 0.0f;
+	vzs[0] = 0.0f;
 
 	ssph.step(*particles, 1.0f);
 
