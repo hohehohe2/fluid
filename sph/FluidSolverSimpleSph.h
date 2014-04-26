@@ -4,7 +4,7 @@
 #include <hohe2Common/cuda/Buffer.h>
 #include "SphKernel.h"
 #include "hohe2Common/geo/basicGeos.h"
-
+#include <hohe2Common/container/CompactHash.h>
 
 namespace hohehohe2
 {
@@ -101,6 +101,9 @@ private:
 	///SPH kernel calculator.
 	SphKernel m_sphKernel;
 
+	///Compact hash for neighbor search.
+	CompactHash m_cHash;
+
 private:
 
 	float calcMaxVelocity_(Particles& particles);
@@ -119,6 +122,11 @@ private:
 
 	///So called Courant number (pet peeve for Prof. Bridson ;).
 	static const float PET_PEEVE_COURANT_NUMBER;
+
+	//Compact hash parameters. Need adjustment.
+	static const unsigned int COMPACT_HASH_NUM_HASH_ENTRIES = 2048;
+	static const unsigned int COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST = 256;
+	static const unsigned int COMPACT_HASH_NUM_LISTS = 16;
 
 };
 

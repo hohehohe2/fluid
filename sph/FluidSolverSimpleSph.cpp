@@ -12,7 +12,10 @@ const float FluidSolverSimpleSph::PET_PEEVE_COURANT_NUMBER = 0.1f;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass) : m_particleMass(particleMass)
+FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
+	:
+	m_particleMass(particleMass),
+	m_cHash(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST)
 {
 	//Adjust the kernel radius so that several dozens of neighbor particles are in the radius at rest density.
 	float particleVolume = particleMass / Constants::RO0;
@@ -56,9 +59,10 @@ float FluidSolverSimpleSph::calcMaxVelocity_(Particles& particles)
 
 	float maxVelocity2 = 0;
 
-	float* vxs = particles.m_velocity->xs(HOST);
-	float* vys = particles.m_velocity->ys(HOST);
-	float* vzs = particles.m_velocity->zs(HOST);
+	particles.m_velocity->sync(HOST);
+	const float* vxs = particles.m_velocity->xs(HOST);
+	const float* vys = particles.m_velocity->ys(HOST);
+	const float* vzs = particles.m_velocity->zs(HOST);
 
 	unsigned int size = particles.size();
 	for (unsigned int idP = 0; idP < size; ++idP)
@@ -89,9 +93,10 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 
 	const float r2 = m_sphKernel.r() * m_sphKernel.r();
 
-	float* pxs = particles.m_pos->xs(HOST);
-	float* pys = particles.m_pos->ys(HOST);
-	float* pzs = particles.m_pos->zs(HOST);
+	particles.m_pos->sync(HOST);
+	const float* pxs = particles.m_pos->xs(HOST);
+	const float* pys = particles.m_pos->ys(HOST);
+	const float* pzs = particles.m_pos->zs(HOST);
 	float* ds = particles.m_density->get(HOST);
 
 	unsigned int size = particles.size();
@@ -124,13 +129,15 @@ void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 {
 	particles.sync(HOST);
 
-	float* pxs = particles.m_pos->xs(HOST);
-	float* pys = particles.m_pos->ys(HOST);
-	float* pzs = particles.m_pos->zs(HOST);
+	particles.m_pos->sync(HOST);
+	particles.m_density->sync(HOST);
+	const float* pxs = particles.m_pos->xs(HOST);
+	const float* pys = particles.m_pos->ys(HOST);
+	const float* pzs = particles.m_pos->zs(HOST);
+	const float* ds = particles.m_density->get(HOST);
 	float* axs = particles.m_acceleration->xs(HOST);
 	float* ays = particles.m_acceleration->ys(HOST);
 	float* azs = particles.m_acceleration->zs(HOST);
-	float* ds = particles.m_density->get(HOST);
 
 	unsigned int size = particles.size();
 
@@ -172,15 +179,16 @@ void FluidSolverSimpleSph::integrate_(Particles& particles, float deltaT)
 {
 	particles.sync(HOST);
 
+	particles.m_acceleration->sync(HOST);
+	const float* axs = particles.m_acceleration->xs(HOST);
+	const float* ays = particles.m_acceleration->ys(HOST);
+	const float* azs = particles.m_acceleration->zs(HOST);
 	float* pxs = particles.m_pos->xs(HOST);
 	float* pys = particles.m_pos->ys(HOST);
 	float* pzs = particles.m_pos->zs(HOST);
 	float* vxs = particles.m_velocity->xs(HOST);
 	float* vys = particles.m_velocity->ys(HOST);
 	float* vzs = particles.m_velocity->zs(HOST);
-	float* axs = particles.m_acceleration->xs(HOST);
-	float* ays = particles.m_acceleration->ys(HOST);
-	float* azs = particles.m_acceleration->zs(HOST);
 
 	unsigned int size = particles.size();
 
