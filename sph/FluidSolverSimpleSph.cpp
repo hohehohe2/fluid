@@ -206,13 +206,51 @@ void FluidSolverSimpleSph::calcAcceleration_host_(Particles& particles)
 	for (int idP = 0; idP < (int)size; ++idP)
 	{
 		float densityP = ds[idP];
+		float pressureP = densityToPressure_(densityP);
 
-		///Gravity.
+		//----Gravity.
 		axs[idP] = 0.0f;
 		ays[idP] = Constants::G;
 		azs[idP] = 0.0f;
 
-		///Pressure.
+
+		//----Pressure.
+		//for (unsigned int i= 0; i < 27; ++i)
+		//{
+		//	bool isValid;
+		//	unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
+		//	if ( ! isValid)
+		//	{
+		//		continue;
+		//	}
+
+		//	unsigned int index;
+		//	unsigned int numObjects = m_cHash.lookup(index, code);
+		//	for (unsigned int j = 0; j < numObjects; ++j)
+		//	{
+		//		unsigned int idN = sortedIdMaps[index + j];
+
+		//		float gradW[3];
+		//		m_sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
+
+		//		float densityN = ds[idN];
+		//		float pressureN = densityToPressure_(densityN);
+		//		float c = m_particleMass * (pressureP + pressureN) / (2.0f * densityN);
+		//		float gradPx = c * gradW[0];
+		//		float gradPy = c * gradW[1];
+		//		float gradPz = c * gradW[2];
+		//		axs[idP] += - gradPx / densityP;
+		//		ays[idP] += - gradPy / densityP;
+		//		azs[idP] += - gradPz / densityP;
+		//	}
+		//}
+
+
+		//----Pressure with incompressible approximation.
+		float sumGradW[3];
+		sumGradW[0] = 0.0f;
+		sumGradW[1] = 0.0f;
+		sumGradW[2] = 0.0f;
 		for (unsigned int i= 0; i < 27; ++i)
 		{
 			bool isValid;
@@ -227,24 +265,20 @@ void FluidSolverSimpleSph::calcAcceleration_host_(Particles& particles)
 			for (unsigned int j = 0; j < numObjects; ++j)
 			{
 				unsigned int idN = sortedIdMaps[index + j];
-
 				float gradW[3];
 				m_sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
-
-				float densityN = ds[idN];
-				float pressureP = densityToPressure_(densityP);
-				float pressureN = densityToPressure_(densityN);
-				float c = m_particleMass * (pressureP + pressureN) / (2.0f * densityN);
-				float gradPx = c * gradW[0];
-				float gradPy = c * gradW[1];
-				float gradPz = c * gradW[2];
-				axs[idP] += - gradPx / densityP;
-				ays[idP] += - gradPy / densityP;
-				azs[idP] += - gradPz / densityP;
+				sumGradW[0] += gradW[0];
+				sumGradW[1] += gradW[1];
+				sumGradW[2] += gradW[2];
 			}
 		}
+		float c = - m_particleMass * pressureP / (densityP * densityP);
+		axs[idP] += c * sumGradW[0];
+		ays[idP] += c * sumGradW[1];
+		azs[idP] += c * sumGradW[2];
 
-		///Viscosity
+
+		//----Viscosity.
 		for (unsigned int i= 0; i < 27; ++i)
 		{
 			bool isValid;
