@@ -11,8 +11,7 @@ using namespace hohehohe2;
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 const float FluidSolverSimpleSph::K = 20000.0f;
-const float FluidSolverSimpleSph::PET_PEEVE_COURANT_NUMBER = 0.1f;
-
+const float FluidSolverSimpleSph::PET_PEEVE_COURANT_NUMBER = 0.5f;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
@@ -38,7 +37,7 @@ void FluidSolverSimpleSph::step(Particles& particles, float deltaT)
 	do
 	{
 		float maxVelocity = calcMaxVelocity_(particles);
-		float dt = PET_PEEVE_COURANT_NUMBER / maxVelocity;
+		float dt = PET_PEEVE_COURANT_NUMBER * m_sphKernel.r() / maxVelocity;
 		if (dt > remaining)
 		{
 			dt = remaining;
@@ -46,9 +45,13 @@ void FluidSolverSimpleSph::step(Particles& particles, float deltaT)
 		}
 		remaining -= dt;
 
+		std::cout << remaining << ": updateNeighbors - ";
 		updateNeighbors_(particles);
-		calcDensity_(particles);
-		calcAcceleration_(particles);
+		std::cout << "calcDensity - ";
+		calcDensity_host_(particles);
+		std::cout << "calcAcceleration - ";
+		calcAcceleration_host_(particles);
+		std::cout << "integrate\n";
 		integrate_(particles, dt);
 
 	} while(loop);
@@ -116,7 +119,7 @@ void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::calcDensity_(Particles& particles)
+void FluidSolverSimpleSph::calcDensity_host_(Particles& particles)
 {
 	particles.sync(HOST);
 
@@ -135,7 +138,8 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 
 	CellCodeCalculator ccc(particles.m_pos->m_lastCalculatedBbox.m_min, m_sphKernel.r());
 
-	for (unsigned int idP = 0; idP < size; ++idP)
+	#pragma omp parallel for
+	for (int idP = 0; idP < (int)size; ++idP)
 	{
 		ds[idP] = 0.0f;
 
@@ -176,7 +180,7 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
+void FluidSolverSimpleSph::calcAcceleration_host_(Particles& particles)
 {
 	particles.sync(HOST);
 
@@ -196,7 +200,8 @@ void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 
 	CellCodeCalculator ccc(particles.m_pos->m_lastCalculatedBbox.m_min, m_sphKernel.r());
 
-	for (unsigned int idP = 0; idP < size; ++idP)
+	#pragma omp parallel for
+	for (int idP = 0; idP < (int)size; ++idP)
 	{
 		float densityP = ds[idP];
 
@@ -271,6 +276,19 @@ void FluidSolverSimpleSph::integrate_(Particles& particles, float deltaT)
 		pxs[idP] += vxs[idP] * deltaT;
 		pys[idP] += vys[idP] * deltaT;
 		pzs[idP] += vzs[idP] * deltaT;
+
+		//Adhoc boundary.
+		if (pxs[idP] < 0.0f)
+		{
+			pxs[idP] = 0.0f;
+			vxs[idP] = 0;
+		}
+
+		if (pzs[idP] < 0.0f)
+		{
+			pzs[idP] = 0.0f;
+			vzs[idP] = 0;
+		}
 
 		if (pys[idP] < -1.0f)
 		{
