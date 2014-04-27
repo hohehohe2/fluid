@@ -125,6 +125,9 @@ private:
 	**/
 	static const float K;
 
+	///Viscosity coefficient.
+	static const float MU;
+
 	///So called Courant number (pet peeve for Prof. Bridson ;).
 	static const float PET_PEEVE_COURANT_NUMBER;
 
