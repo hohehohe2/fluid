@@ -3,6 +3,7 @@
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include "Constants.h"
 #include "FluidParticles.h"
+#include "PressureCalculator.h"
 
 
 using namespace hohehohe2;
@@ -19,7 +20,8 @@ const float FluidSolverSimpleSph::PET_PEEVE_COURANT_NUMBER = 0.5f;
 FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 	:
 	m_particleMass(particleMass),
-	m_cHash(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST)
+	m_cHash(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
+	m_pressureCalculator(particleMass)
 {
 	//Adjust the kernel radius so that several dozens of neighbor particles are in the radius at rest density.
 	float particleVolume = particleMass / Constants::RO0;
@@ -52,6 +54,7 @@ void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
 		calcDensity_host_(particles);
 		std::cout << "calcAcceleration - ";
 		calcAcceleration_host_(particles);
+		m_pressureCalculator.calcAcceleration(particles, m_sphKernel, HOST, m_cHash);
 		std::cout << "integrate\n";
 		integrate_(particles, dt);
 
@@ -213,71 +216,6 @@ void FluidSolverSimpleSph::calcAcceleration_host_(FluidParticles& particles)
 		axs[idP] = 0.0f;
 		ays[idP] = Constants::G;
 		azs[idP] = 0.0f;
-
-
-		//----Pressure.
-		//for (unsigned int i= 0; i < 27; ++i)
-		//{
-		//	bool isValid;
-		//	unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
-		//	if ( ! isValid)
-		//	{
-		//		continue;
-		//	}
-
-		//	unsigned int index;
-		//	unsigned int numObjects = m_cHash.lookup(index, code);
-		//	for (unsigned int j = 0; j < numObjects; ++j)
-		//	{
-		//		unsigned int idN = sortedIdMaps[index + j];
-
-		//		float gradW[3];
-		//		m_sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
-
-		//		float densityN = ds[idN];
-		//		float pressureN = densityToPressure_(densityN);
-		//		float c = m_particleMass * (pressureP + pressureN) / (2.0f * densityN);
-		//		float gradPx = c * gradW[0];
-		//		float gradPy = c * gradW[1];
-		//		float gradPz = c * gradW[2];
-		//		axs[idP] += - gradPx / densityP;
-		//		ays[idP] += - gradPy / densityP;
-		//		azs[idP] += - gradPz / densityP;
-		//	}
-		//}
-
-
-		//----Pressure with incompressible approximation.
-		float sumGradW[3];
-		sumGradW[0] = 0.0f;
-		sumGradW[1] = 0.0f;
-		sumGradW[2] = 0.0f;
-		for (unsigned int i= 0; i < 27; ++i)
-		{
-			bool isValid;
-			unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
-			if ( ! isValid)
-			{
-				continue;
-			}
-
-			unsigned int index;
-			unsigned int numObjects = m_cHash.lookup(index, code);
-			for (unsigned int j = 0; j < numObjects; ++j)
-			{
-				unsigned int idN = sortedIdMaps[index + j];
-				float gradW[3];
-				m_sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
-				sumGradW[0] += gradW[0];
-				sumGradW[1] += gradW[1];
-				sumGradW[2] += gradW[2];
-			}
-		}
-		float c = - m_particleMass * pressureP / (densityP * densityP);
-		axs[idP] += c * sumGradW[0];
-		ays[idP] += c * sumGradW[1];
-		azs[idP] += c * sumGradW[2];
-
 
 		//----Viscosity.
 		for (unsigned int i= 0; i < 27; ++i)

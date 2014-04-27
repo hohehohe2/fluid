@@ -2,9 +2,11 @@
 #define hohe_FluidSolverSimpleSph_H
 
 #include <hohe2Common/cuda/Buffer.h>
-#include "SphKernel.h"
-#include "hohe2Common/geo/basicGeos.h"
+#include <hohe2Common/geo/basicGeos.h>
 #include <hohe2Common/container/CompactHash.h>
+#include "SphKernel.h"
+#include "PressureCalculator.h"
+
 
 namespace hohehohe2
 {
@@ -51,6 +53,8 @@ private:
 
 	///Compact hash for neighbor search.
 	CompactHash m_cHash;
+
+	PressureCalculator m_pressureCalculator;
 
 private:
 

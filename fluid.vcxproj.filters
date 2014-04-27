@@ -12,6 +12,9 @@
     <ClCompile Include="sph\SphKernel.cpp">
       <Filter>sph</Filter>
     </ClCompile>
+    <ClCompile Include="sph\PressureCalculator.cpp">
+      <Filter>sph</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\FluidSolverSimpleSph.h">
@@ -24,6 +27,9 @@
       <Filter>sph</Filter>
     </ClInclude>
     <ClInclude Include="sph\FluidParticles.h">
+      <Filter>sph</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\PressureCalculator.h">
       <Filter>sph</Filter>
     </ClInclude>
   </ItemGroup>
