@@ -12,7 +12,7 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void DensityCalculator::calcAcceleration_host_(FluidParticles& particles, const SphKernel& sphKernel, const CompactHash& cHash)
+void DensityCalculator::calcAcceleration_host_(FluidParticles& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
 {
 	particles.m_pos->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);
@@ -23,8 +23,6 @@ void DensityCalculator::calcAcceleration_host_(FluidParticles& particles, const 
 	float* ds = particles.m_density->get(HOST);
 
 	unsigned int size = particles.size();
-
-	CellCodeCalculator ccc(particles.m_pos->m_lastCalculatedBbox.m_min, sphKernel.r());
 
 	#pragma omp parallel for
 	for (int idP = 0; idP < (int)size; ++idP)

@@ -45,13 +45,14 @@ void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
 		remaining -= dt;
 
 		std::cout << remaining << ": updateNeighbors - ";
-		updateNeighbors_(particles);
+		CellCodeCalculator ccc;
+		updateNeighbors_(particles, ccc);
 		std::cout << "calcDensity - ";
-		m_densityCalculator.calcAcceleration(particles, m_sphKernel, m_cHash, HOST);
+		m_densityCalculator.calcAcceleration(particles, m_sphKernel, ccc, m_cHash, HOST);
 		std::cout << "calcAcceleration - ";
 		initAcceleration_host_(particles);
-		m_pressureCalculator.calcAcceleration(particles, m_sphKernel, m_cHash, HOST);
-		m_viscosityCalculator.calcAcceleration(particles, m_sphKernel, m_cHash, HOST);
+		m_pressureCalculator.calcAcceleration(particles, m_sphKernel, ccc, m_cHash, HOST);
+		m_viscosityCalculator.calcAcceleration(particles, m_sphKernel, ccc, m_cHash, HOST);
 		std::cout << "integrate\n";
 		m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
 
@@ -61,7 +62,7 @@ void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::updateNeighbors_(FluidParticles& particles)
+void FluidSolverSimpleSph::updateNeighbors_(FluidParticles& particles, CellCodeCalculator& ccc)
 {
 	const float kernelRaidus = m_sphKernel.r();
 
@@ -72,9 +73,8 @@ void FluidSolverSimpleSph::updateNeighbors_(FluidParticles& particles)
 
 	//Shift min values a little bit to make sure the particles which have min values are inside the cell.
 	bbox.m_min -= Point(kernelRaidus, kernelRaidus, kernelRaidus) / 100.0f;
-	particles.m_pos->m_lastCalculatedBbox.m_min = bbox.m_min;
 
-	CellCodeCalculator ccc(bbox.m_min, kernelRaidus);
+	ccc.reset(bbox.m_min, kernelRaidus);
 
 	//Get the unsorted code list.
 	BufferUInt codeSet;

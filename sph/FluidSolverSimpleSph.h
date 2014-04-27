@@ -14,7 +14,7 @@ namespace hohehohe2
 {
 
 struct FluidParticles;
-
+class CellCodeCalculator;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
@@ -63,7 +63,7 @@ private:
 
 private:
 
-	void updateNeighbors_(FluidParticles& particles);
+	void updateNeighbors_(FluidParticles& particles, CellCodeCalculator& ccc);
 	void initAcceleration_host_(FluidParticles& particles);
 
 	///So called Courant number (pet peeve for Prof. Bridson ;).
