@@ -47,9 +47,6 @@ private:
 	///Distance between particles at rest density, just for initial distribution hint. (volume per particle) ^ (1/3).
 	float m_restLength;
 
-	///Mass per single particle.
-	float m_particleMass;
-
 	///SPH kernel calculator.
 	SphKernel m_sphKernel;
 
@@ -61,9 +58,9 @@ private:
 	ViscosityCalculator m_viscosityCalculator;
 
 	DensityCalculator m_densityCalculator;
+
 private:
 
-	float calcMaxVelocity_(const FluidParticles& particles);
 	void updateNeighbors_(FluidParticles& particles);
 	void initAcceleration_host_(FluidParticles& particles);
 	void integrate_(FluidParticles& particles, float deltaT);

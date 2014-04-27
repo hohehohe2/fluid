@@ -17,7 +17,6 @@ const float FluidSolverSimpleSph::PET_PEEVE_COURANT_NUMBER = 0.5f;
 //-------------------------------------------------------------------
 FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 	:
-	m_particleMass(particleMass),
 	m_cHash(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
 	m_pressureCalculator(particleMass), m_viscosityCalculator(particleMass), m_densityCalculator(particleMass)
 {
@@ -37,7 +36,7 @@ void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
 	bool loop = true;
 	do
 	{
-		float maxVelocity = calcMaxVelocity_(particles);
+		float maxVelocity = particles.m_velocity->calcMaxLength(HOST);
 		float dt = PET_PEEVE_COURANT_NUMBER * m_sphKernel.r() / maxVelocity;
 		if (dt > remaining)
 		{
@@ -58,32 +57,6 @@ void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
 		integrate_(particles, dt);
 
 	} while(loop);
-}
-
-
-//-------------------------------------------------------------------
-//-------------------------------------------------------------------
-float FluidSolverSimpleSph::calcMaxVelocity_(const FluidParticles& particles)
-{
-	particles.sync(HOST);
-
-	float maxVelocity2 = 0;
-
-	particles.m_velocity->sync(HOST);
-	const float* vxs = particles.m_velocity->xs(HOST);
-	const float* vys = particles.m_velocity->ys(HOST);
-	const float* vzs = particles.m_velocity->zs(HOST);
-
-	unsigned int size = particles.size();
-	for (unsigned int idP = 0; idP < size; ++idP)
-	{
-		float mv2 = vxs[idP] * vxs[idP] + vys[idP] * vys[idP] + vzs[idP] * vzs[idP];
-		if (maxVelocity2 < mv2)
-		{
-			maxVelocity2 = mv2;
-		}
-	}
-	return sqrt(maxVelocity2);
 }
 
 
