@@ -157,6 +157,7 @@
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp" />
     <ClCompile Include="sph\PressureCalculator.cpp" />
     <ClCompile Include="sph\SphKernel.cpp" />
+    <ClCompile Include="sph\ViscosityCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\Constants.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="sph\FluidSolverSimpleSph.h" />
     <ClInclude Include="sph\PressureCalculator.h" />
     <ClInclude Include="sph\SphKernel.h" />
+    <ClInclude Include="sph\ViscosityCalculator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

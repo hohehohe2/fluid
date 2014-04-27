@@ -6,6 +6,7 @@
 #include <hohe2Common/container/CompactHash.h>
 #include "SphKernel.h"
 #include "PressureCalculator.h"
+#include "ViscosityCalculator.h"
 
 
 namespace hohehohe2
@@ -56,16 +57,15 @@ private:
 
 	PressureCalculator m_pressureCalculator;
 
+	ViscosityCalculator m_viscosityCalculator;
+
 private:
 
 	float calcMaxVelocity_(const FluidParticles& particles);
 	void updateNeighbors_(FluidParticles& particles);
 	void calcDensity_host_(FluidParticles& particles);
-	void calcAcceleration_host_(FluidParticles& particles);
+	void initAcceleration_host_(FluidParticles& particles);
 	void integrate_(FluidParticles& particles, float deltaT);
-
-	///Viscosity coefficient.
-	static const float MU;
 
 	///So called Courant number (pet peeve for Prof. Bridson ;).
 	static const float PET_PEEVE_COURANT_NUMBER;

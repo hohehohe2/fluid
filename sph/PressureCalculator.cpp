@@ -20,8 +20,6 @@ const float PressureCalculator::K = 20000.0f;
 //-------------------------------------------------------------------
 void PressureCalculator::calcAcceleration_host_(FluidParticles& particles, const SphKernel& sphKernel, const CompactHash& cHash)
 {
-	particles.sync(HOST);
-
 	particles.m_pos->sync(HOST);
 	particles.m_density->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);

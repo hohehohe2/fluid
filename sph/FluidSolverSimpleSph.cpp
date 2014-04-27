@@ -3,7 +3,6 @@
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include "Constants.h"
 #include "FluidParticles.h"
-#include "PressureCalculator.h"
 
 
 using namespace hohehohe2;
@@ -11,8 +10,8 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-const float FluidSolverSimpleSph::MU = 0.1f;
 const float FluidSolverSimpleSph::PET_PEEVE_COURANT_NUMBER = 0.5f;
+
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
@@ -20,7 +19,7 @@ FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 	:
 	m_particleMass(particleMass),
 	m_cHash(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
-	m_pressureCalculator(particleMass)
+	m_pressureCalculator(particleMass), m_viscosityCalculator(particleMass)
 {
 	//Adjust the kernel radius so that several dozens of neighbor particles are in the radius at rest density.
 	float particleVolume = particleMass / Constants::RO0;
@@ -52,8 +51,9 @@ void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
 		std::cout << "calcDensity - ";
 		calcDensity_host_(particles);
 		std::cout << "calcAcceleration - ";
-		calcAcceleration_host_(particles);
+		initAcceleration_host_(particles);
 		m_pressureCalculator.calcAcceleration(particles, m_sphKernel, HOST, m_cHash);
+		m_viscosityCalculator.calcAcceleration(particles, m_sphKernel, HOST, m_cHash);
 		std::cout << "integrate\n";
 		integrate_(particles, dt);
 
@@ -181,68 +181,20 @@ void FluidSolverSimpleSph::calcDensity_host_(FluidParticles& particles)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::calcAcceleration_host_(FluidParticles& particles)
+void FluidSolverSimpleSph::initAcceleration_host_(FluidParticles& particles)
 {
-	particles.sync(HOST);
-
-	particles.m_pos->sync(HOST);
-	particles.m_velocity->sync(HOST);
-	particles.m_density->sync(HOST);
-	particles.m_sortedIdMap->sync(HOST);
-	const float* pxs = particles.m_pos->xs(HOST);
-	const float* pys = particles.m_pos->ys(HOST);
-	const float* pzs = particles.m_pos->zs(HOST);
-	const float* vxs = particles.m_velocity->xs(HOST);
-	const float* vys = particles.m_velocity->ys(HOST);
-	const float* vzs = particles.m_velocity->zs(HOST);
-	const float* ds = particles.m_density->get(HOST);
-	const unsigned int* sortedIdMaps = particles.m_sortedIdMap->get(HOST);
 	float* axs = particles.m_acceleration->xs(HOST);
 	float* ays = particles.m_acceleration->ys(HOST);
 	float* azs = particles.m_acceleration->zs(HOST);
 
 	unsigned int size = particles.size();
 
-	CellCodeCalculator ccc(particles.m_pos->m_lastCalculatedBbox.m_min, m_sphKernel.r());
-
-	#pragma omp parallel for
 	for (int idP = 0; idP < (int)size; ++idP)
 	{
-
 		//----Gravity.
 		axs[idP] = 0.0f;
 		ays[idP] = Constants::G;
 		azs[idP] = 0.0f;
-
-		//----Viscosity.
-		for (unsigned int i= 0; i < 27; ++i)
-		{
-			bool isValid;
-			unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
-			if ( ! isValid)
-			{
-				continue;
-			}
-
-			unsigned int index;
-			unsigned int numObjects = m_cHash.lookup(index, code);
-			for (unsigned int j = 0; j < numObjects; ++j)
-			{
-				unsigned int idN = sortedIdMaps[index + j];
-
-				float distx = pxs[idN] - pxs[idP];
-				float disty = pys[idN] - pys[idP];
-				float distz = pzs[idN] - pzs[idP];
-				float dist2 = distx * distx + disty * disty + distz * distz;
-				float laplace = m_sphKernel.laplaceW(dist2);
-				float viscosCoef = MU / ds[idN] * laplace;
-
-                axs[idP] += viscosCoef * (vxs[idN] - vxs[idP]) / m_particleMass;
-                ays[idP] += viscosCoef * (vys[idN] - vys[idP]) / m_particleMass;
-                azs[idP] += viscosCoef * (vzs[idN] - vzs[idP]) / m_particleMass;
-			}
-		}
-
 	}
 
 	particles.setClean(HOST);
