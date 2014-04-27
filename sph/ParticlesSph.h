@@ -37,7 +37,6 @@ struct ParticlesSph : public BufferSetSized
 	///Create and setup for simulation. m_pos and m_velocity must be filled with initial values before the first step().
 	static ParticlesSph* createInstance(unsigned int size=0, MemoryType allocMemoryType=HOST)
 	{
-		//Separated object creation and filling member variables so that we can reuse fillMembers_() in a subclass.
 		ParticlesSph* obj = new ParticlesSph;
 		fillMembers_(obj, size, allocMemoryType);
 		return obj;
