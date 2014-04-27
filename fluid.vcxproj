@@ -154,6 +154,7 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="sph\DensityCalculator.cpp" />
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp" />
     <ClCompile Include="sph\PressureCalculator.cpp" />
     <ClCompile Include="sph\SphKernel.cpp" />
@@ -161,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\Constants.h" />
+    <ClInclude Include="sph\DensityCalculator.h" />
     <ClInclude Include="sph\FluidParticles.h" />
     <ClInclude Include="sph\FluidSolverSimpleSph.h" />
     <ClInclude Include="sph\PressureCalculator.h" />

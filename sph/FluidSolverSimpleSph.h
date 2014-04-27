@@ -7,6 +7,7 @@
 #include "SphKernel.h"
 #include "PressureCalculator.h"
 #include "ViscosityCalculator.h"
+#include "DensityCalculator.h"
 
 
 namespace hohehohe2
@@ -59,11 +60,11 @@ private:
 
 	ViscosityCalculator m_viscosityCalculator;
 
+	DensityCalculator m_densityCalculator;
 private:
 
 	float calcMaxVelocity_(const FluidParticles& particles);
 	void updateNeighbors_(FluidParticles& particles);
-	void calcDensity_host_(FluidParticles& particles);
 	void initAcceleration_host_(FluidParticles& particles);
 	void integrate_(FluidParticles& particles, float deltaT);
 
