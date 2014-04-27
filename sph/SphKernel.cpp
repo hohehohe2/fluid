@@ -8,9 +8,9 @@ using namespace hohehohe2;
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void SphKernel::setR(float r)
+void SphKernel::setKernelRadius(float radius)
 {
-	m_r = r;
+	m_r = radius;
 	m_r6 = m_r * m_r * m_r * m_r * m_r * m_r;
 	m_r9 = m_r * m_r * m_r * m_r * m_r * m_r * m_r * m_r * m_r;
 }

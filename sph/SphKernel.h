@@ -14,7 +14,7 @@ class SphKernel
 public:
 
 	///Set the kernel radius.
-	void setR(float r);
+	void setKernelRadius(float radius);
 
 	///Calculate w.
 	float w(float dist2) const;
