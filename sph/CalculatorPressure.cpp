@@ -96,9 +96,9 @@ void CalculatorPressure::calcAcceleration_host_(ParticlesFluid& particles, const
 				sumGradW[1] += gradW[1];
 				sumGradW[2] += gradW[2];
 			}
-		} 
-		float mass = m_particleMass;
-		float c = - mass * pressureP / (densityP * densityP);
+		}
+
+		float c = - m_particleMass * pressureP / (densityP * densityP);
 		axs[idP] += c * sumGradW[0];
 		ays[idP] += c * sumGradW[1];
 		azs[idP] += c * sumGradW[2];
