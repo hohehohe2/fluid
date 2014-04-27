@@ -123,8 +123,6 @@ void FluidSolverSimpleSph::calcDensity_host_(Particles& particles)
 {
 	particles.sync(HOST);
 
-	const float r2 = m_sphKernel.r() * m_sphKernel.r();
-
 	particles.m_pos->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);
 	const float* pxs = particles.m_pos->xs(HOST);
