@@ -24,8 +24,14 @@ private:
 	///2 particles.
 	static void placement1_(PointSet& pos, PointSet& velocity, float restLength);
 
-	///n x n x n.
+	///Small n x n x n.
 	static void placement2_(PointSet& pos, PointSet& velocity, float restLength);
+
+	///1 x n x 1.
+	static void placement3_(PointSet& pos, PointSet& velocity, float restLength);
+
+	///Large n x n x n.
+	static void placement4_(PointSet& pos, PointSet& velocity, float restLength);
 
 };
 

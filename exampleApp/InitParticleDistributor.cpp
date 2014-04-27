@@ -18,6 +18,12 @@ void InitParticleDistributor::set(PointSet& pos, PointSet& velocity, float restL
 	case 2:
 		placement2_(pos, velocity, restLength);
 		break;
+	case 3:
+		placement3_(pos, velocity, restLength);
+		break;
+	case 4:
+		placement4_(pos, velocity, restLength);
+		break;
 	default:
 		placement0_(pos, velocity, restLength);
 		break;
@@ -112,6 +118,70 @@ void InitParticleDistributor::placement2_(PointSet& pos, PointSet& velocity, flo
 				pxs[pid] = restLength / 1.1f * (i - NUM_LINES / 2);
 				pys[pid] = restLength / 1.1f * (j - NUM_LINES / 2);
 				pzs[pid] = restLength / 1.1f * (k - NUM_LINES / 2);;
+				vxs[pid] = 0.0f;
+				vys[pid] = 0.0f;
+				vzs[pid] = 0.0f;
+			}
+		}
+	}
+}
+
+
+//-------------------------------------------------------------------
+//-------------------------------------------------------------------
+void InitParticleDistributor::placement3_(PointSet& pos, PointSet& velocity, float restLength)
+{
+	pos.setSize(10);
+	pos.allocate(HOST);
+	velocity.setSize(10);
+	velocity.allocate(HOST);
+
+	float* pxs = pos.xs(true);
+	float* pys = pos.ys(true);
+	float* pzs = pos.zs(true);
+	float* vxs = velocity.xs(true);
+	float* vys = velocity.ys(true);
+	float* vzs = velocity.zs(true);
+
+	for (unsigned int i = 0; i < 10; ++i)
+	{
+		pxs[i] = 0;
+		pys[i] = restLength * (9 - i);
+		pzs[i] = 0;
+		vxs[i] = 0.0f;
+		vys[i] = 0.0f;
+		vzs[i] = 0.0f;
+	}
+}
+
+
+//-------------------------------------------------------------------
+//-------------------------------------------------------------------
+void InitParticleDistributor::placement4_(PointSet& pos, PointSet& velocity, float restLength)
+{
+	const unsigned int NUM_LINES = 15;
+	pos.setSize(NUM_LINES * NUM_LINES * NUM_LINES);
+	pos.allocate(HOST);
+	velocity.setSize(NUM_LINES * NUM_LINES * NUM_LINES);
+	velocity.allocate(HOST);
+
+	float* pxs = pos.xs(true);
+	float* pys = pos.ys(true);
+	float* pzs = pos.zs(true);
+	float* vxs = velocity.xs(true);
+	float* vys = velocity.ys(true);
+	float* vzs = velocity.zs(true);
+
+	for (unsigned int i = 0; i < NUM_LINES; ++i)
+	{
+		for (unsigned int j = 0; j < NUM_LINES; ++j)
+		{
+			for (unsigned int k = 0; k < NUM_LINES; ++k)
+			{
+				unsigned int pid = i * NUM_LINES * NUM_LINES + j * NUM_LINES + k;
+				pxs[pid] = restLength / 1.0f * (i - NUM_LINES / 2);
+				pys[pid] = restLength / 1.0f * (j - NUM_LINES / 2);
+				pzs[pid] = restLength / 1.0f * (k - NUM_LINES / 2);;
 				vxs[pid] = 0.0f;
 				vys[pid] = 0.0f;
 				vzs[pid] = 0.0f;
