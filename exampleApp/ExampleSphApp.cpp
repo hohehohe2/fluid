@@ -15,7 +15,7 @@ void ExampleSphApp::reset(unsigned int id)
 
 	InitParticleDistributor::set(*pos, *velocity, m_ssph.restLength(), id);
 
-	m_particles = FluidSolverSimpleSph::Particles::createInstance(pos->size());
+	m_particles = FluidParticles::createInstance(pos->size());
 	m_particles->setPos(pos);
 	m_particles->setVelocity(velocity);
     m_sptr = m_particles->getSelfSptr();

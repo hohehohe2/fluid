@@ -3,6 +3,7 @@
 
 #include <hohe2Common/geo/basicGeos.h>
 #include <sph/FluidSolverSimpleSph.h>
+#include <sph/FluidParticles.h>
 
 namespace hohehohe2
 {

@@ -1,7 +1,8 @@
 #include "FluidSolverSimpleSph.h"
-#include "Constants.h"
 #include <hohe2Common/util/BufferUtil.h>
 #include <hohe2Common/container/CellCodeCalculator.h>
+#include "Constants.h"
+#include "FluidParticles.h"
 
 
 using namespace hohehohe2;
@@ -30,7 +31,7 @@ FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::step(Particles& particles, float deltaT)
+void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
 {
 	float remaining = deltaT;
 	bool loop = true;
@@ -60,7 +61,7 @@ void FluidSolverSimpleSph::step(Particles& particles, float deltaT)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-float FluidSolverSimpleSph::calcMaxVelocity_(const Particles& particles)
+float FluidSolverSimpleSph::calcMaxVelocity_(const FluidParticles& particles)
 {
 	particles.sync(HOST);
 
@@ -86,7 +87,7 @@ float FluidSolverSimpleSph::calcMaxVelocity_(const Particles& particles)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
+void FluidSolverSimpleSph::updateNeighbors_(FluidParticles& particles)
 {
 	const float kernelRaidus = m_sphKernel.r();
 
@@ -119,7 +120,7 @@ void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::calcDensity_host_(Particles& particles)
+void FluidSolverSimpleSph::calcDensity_host_(FluidParticles& particles)
 {
 	particles.sync(HOST);
 
@@ -178,7 +179,7 @@ void FluidSolverSimpleSph::calcDensity_host_(Particles& particles)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::calcAcceleration_host_(Particles& particles)
+void FluidSolverSimpleSph::calcAcceleration_host_(FluidParticles& particles)
 {
 	particles.sync(HOST);
 
@@ -315,7 +316,7 @@ void FluidSolverSimpleSph::calcAcceleration_host_(Particles& particles)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::integrate_(Particles& particles, float deltaT)
+void FluidSolverSimpleSph::integrate_(FluidParticles& particles, float deltaT)
 {
 	particles.sync(HOST);
 

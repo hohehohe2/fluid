@@ -23,5 +23,8 @@
     <ClInclude Include="sph\SphKernel.h">
       <Filter>sph</Filter>
     </ClInclude>
+    <ClInclude Include="sph\FluidParticles.h">
+      <Filter>sph</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

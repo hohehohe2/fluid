@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\Constants.h" />
+    <ClInclude Include="sph\FluidParticles.h" />
     <ClInclude Include="sph\FluidSolverSimpleSph.h" />
     <ClInclude Include="sph\SphKernel.h" />
   </ItemGroup>
