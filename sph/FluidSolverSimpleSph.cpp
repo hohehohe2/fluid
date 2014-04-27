@@ -47,11 +47,11 @@ void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
 		std::cout << remaining << ": updateNeighbors - ";
 		updateNeighbors_(particles);
 		std::cout << "calcDensity - ";
-		m_densityCalculator.calcAcceleration(particles, m_sphKernel, HOST, m_cHash);
+		m_densityCalculator.calcAcceleration(particles, m_sphKernel, m_cHash, HOST);
 		std::cout << "calcAcceleration - ";
 		initAcceleration_host_(particles);
-		m_pressureCalculator.calcAcceleration(particles, m_sphKernel, HOST, m_cHash);
-		m_viscosityCalculator.calcAcceleration(particles, m_sphKernel, HOST, m_cHash);
+		m_pressureCalculator.calcAcceleration(particles, m_sphKernel, m_cHash, HOST);
+		m_viscosityCalculator.calcAcceleration(particles, m_sphKernel, m_cHash, HOST);
 		std::cout << "integrate\n";
 		m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
 

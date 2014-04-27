@@ -24,7 +24,7 @@ public:
 	PressureCalculator(float particleMass) : m_particleMass(particleMass){}
 
 	///Main method to calculate the acceleration contribution by the pressure force.
-	void calcAcceleration(FluidParticles& particles, const SphKernel& sphKernel, MemoryType mType, const CompactHash& cHash)
+	void calcAcceleration(FluidParticles& particles, const SphKernel& sphKernel, const CompactHash& cHash, MemoryType mType)
 	{
 		if (mType == HOST)
 		{
