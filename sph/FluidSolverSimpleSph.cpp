@@ -1,6 +1,6 @@
 #include "FluidSolverSimpleSph.h"
 #include "Constants.h"
-#include <hohe2Common/util/SortBuffer.h>
+#include <hohe2Common/util/BufferUtil.h>
 #include <hohe2Common/container/CellCodeCalculator.h>
 
 
@@ -106,7 +106,7 @@ void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
 
 	//Sort it. Once we create the hash, we don't have to keep using it so it's not a particles member variable.
 	BufferUInt sortedCodeSet;
-	SortBuffer::createSortedIdMap(*particles.m_sortedIdMap, sortedCodeSet, codeSet, DEVICE);
+	BufferUtil::sortByKey(*particles.m_sortedIdMap, sortedCodeSet, codeSet, DEVICE);
 
 	//Create compact hash.
 	if ( ! m_cHash.build(sortedCodeSet, HOST))
@@ -137,7 +137,7 @@ void FluidSolverSimpleSph::calcDensity_host_(Particles& particles)
 
 	CellCodeCalculator ccc(particles.m_pos->m_lastCalculatedBbox.m_min, m_sphKernel.r());
 
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (int idP = 0; idP < (int)size; ++idP)
 	{
 		ds[idP] = 0.0f;
