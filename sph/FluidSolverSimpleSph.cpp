@@ -11,7 +11,6 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-const float FluidSolverSimpleSph::K = 20000.0f;
 const float FluidSolverSimpleSph::MU = 0.1f;
 const float FluidSolverSimpleSph::PET_PEEVE_COURANT_NUMBER = 0.5f;
 
@@ -209,8 +208,6 @@ void FluidSolverSimpleSph::calcAcceleration_host_(FluidParticles& particles)
 	#pragma omp parallel for
 	for (int idP = 0; idP < (int)size; ++idP)
 	{
-		float densityP = ds[idP];
-		float pressureP = densityToPressure_(densityP);
 
 		//----Gravity.
 		axs[idP] = 0.0f;
@@ -303,10 +300,3 @@ void FluidSolverSimpleSph::integrate_(FluidParticles& particles, float deltaT)
 	particles.setClean(HOST);
 }
 
-
-//-------------------------------------------------------------------
-//-------------------------------------------------------------------
-float FluidSolverSimpleSph::densityToPressure_(float density)
-{
-	return K * (density * density / (Constants::RO0 * Constants::RO0) - 1.0f);
-}

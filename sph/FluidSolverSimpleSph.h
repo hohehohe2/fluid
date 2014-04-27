@@ -64,14 +64,6 @@ private:
 	void calcAcceleration_host_(FluidParticles& particles);
 	void integrate_(FluidParticles& particles, float deltaT);
 
-	float densityToPressure_(float density);
-
-	///Density->pressure stiffness coefficient.
-	/**
-	It is not in Constants.h because this is an artificially enough physical value.
-	**/
-	static const float K;
-
 	///Viscosity coefficient.
 	static const float MU;
 
