@@ -1,9 +1,9 @@
-#include "DensityCalculator.h"
+#include "CalculatorDensity.h"
 
 #include "Constants.h"
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include <hohe2Common/container/CompactHash.h>
-#include "FluidParticles.h"
+#include "ParticlesFluid.h"
 #include "SphKernel.h"
 
 
@@ -12,7 +12,7 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void DensityCalculator::calcAcceleration_host_(FluidParticles& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
+void CalculatorDensity::calcAcceleration_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
 {
 	particles.m_pos->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);

@@ -2,7 +2,8 @@
 #include <hohe2Common/util/BufferUtil.h>
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include "Constants.h"
-#include "FluidParticles.h"
+#include "ParticlesFluid.h"
+#include "ParticlesWall.h"
 
 
 using namespace hohehohe2;
@@ -18,6 +19,7 @@ const float FluidSolverSimpleSph::PET_PEEVE_COURANT_NUMBER = 0.5f;
 FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 	:
 	m_cHash(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
+	m_cHashWall(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
 	m_pressureCalculator(particleMass), m_viscosityCalculator(particleMass), m_densityCalculator(particleMass)
 {
 	//Adjust the kernel radius so that several dozens of neighbor particles are in the radius at rest density.
@@ -29,7 +31,7 @@ FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
+void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& particlesWall, float deltaT)
 {
 	float remaining = deltaT;
 	bool loop = true;
@@ -46,12 +48,12 @@ void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
 
 		std::cout << remaining << ": updateNeighbors - ";
 		CellCodeCalculator ccc;
-		updateNeighbors_(particles, ccc);
+		updateNeighbors_(particles, particlesWall, ccc);
 		std::cout << "calcDensity - ";
 		m_densityCalculator.calcAcceleration(particles, m_sphKernel, ccc, m_cHash, HOST);
 		std::cout << "calcAcceleration - ";
 		initAcceleration_host_(particles);
-		m_pressureCalculator.calcAcceleration(particles, m_sphKernel, ccc, m_cHash, HOST);
+		m_pressureCalculator.calcAcceleration(particles, m_sphKernel, ccc, m_cHash, false, HOST);
 		m_viscosityCalculator.calcAcceleration(particles, m_sphKernel, ccc, m_cHash, HOST);
 		std::cout << "integrate\n";
 		m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
@@ -62,20 +64,26 @@ void FluidSolverSimpleSph::step(FluidParticles& particles, float deltaT)
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::updateNeighbors_(FluidParticles& particles, CellCodeCalculator& ccc)
+void FluidSolverSimpleSph::updateNeighbors_(ParticlesFluid& particles, ParticlesWall& particlesWall, CellCodeCalculator& ccc)
 {
+
+	//---- Define spatial grid cells and create CellCodeCalculator.
 	const float kernelRaidus = m_sphKernel.r();
 
 	particles.sync(HOST);
 
 	BoundingBox bbox;
 	particles.m_pos->calcBoundingBox(bbox, HOST);
+	BoundingBox bboxWall;
+	particlesWall.m_pos->calcBoundingBox(bboxWall, HOST);
+	bbox.makeUnion(bboxWall);
 
 	//Shift min values a little bit to make sure the particles which have min values are inside the cell.
 	bbox.m_min -= Point(kernelRaidus, kernelRaidus, kernelRaidus) / 100.0f;
 
 	ccc.reset(bbox.m_min, kernelRaidus);
 
+	//---- Create hash for the fluid particles.
 	//Get the unsorted code list.
 	BufferUInt codeSet;
 	ccc.getCode32(codeSet, *particles.m_pos, HOST);
@@ -87,14 +95,23 @@ void FluidSolverSimpleSph::updateNeighbors_(FluidParticles& particles, CellCodeC
 	//Create compact hash.
 	if ( ! m_cHash.build(sortedCodeSet, HOST))
 	{
-		std::cerr << "Hash full\n";
+		std::cerr << "Fluid hash full\n";
 	}
+
+	//----Do the same for the wall particles.
+	ccc.getCode32(codeSet, *particlesWall.m_pos, HOST);
+	BufferUtil::sortByKey(*particlesWall.m_sortedIdMap, sortedCodeSet, codeSet, DEVICE);
+	if ( ! m_cHashWall.build(sortedCodeSet, HOST))
+	{
+		std::cerr << "Wall hash full\n";
+	}
+
 }
 
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void FluidSolverSimpleSph::initAcceleration_host_(FluidParticles& particles)
+void FluidSolverSimpleSph::initAcceleration_host_(ParticlesFluid& particles)
 {
 	float* axs = particles.m_acceleration->xs(HOST);
 	float* ays = particles.m_acceleration->ys(HOST);

@@ -1,9 +1,9 @@
-#include "PressureCalculator.h"
+#include "CalculatorPressure.h"
 
 #include "Constants.h"
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include <hohe2Common/container/CompactHash.h>
-#include "FluidParticles.h"
+#include "ParticlesFluid.h"
 #include "SphKernel.h"
 
 
@@ -12,12 +12,12 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-const float PressureCalculator::K = 20000.0f;
+const float CalculatorPressure::K = 20000.0f;
 
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void PressureCalculator::calcAcceleration_host_(FluidParticles& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
+void CalculatorPressure::calcAcceleration_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, bool isWall)
 {
 	particles.m_pos->sync(HOST);
 	particles.m_density->sync(HOST);
@@ -96,8 +96,9 @@ void PressureCalculator::calcAcceleration_host_(FluidParticles& particles, const
 				sumGradW[1] += gradW[1];
 				sumGradW[2] += gradW[2];
 			}
-		}
-		float c = - m_particleMass * pressureP / (densityP * densityP);
+		} 
+		float mass = m_particleMass;
+		float c = - mass * pressureP / (densityP * densityP);
 		axs[idP] += c * sumGradW[0];
 		ays[idP] += c * sumGradW[1];
 		azs[idP] += c * sumGradW[2];
@@ -110,7 +111,7 @@ void PressureCalculator::calcAcceleration_host_(FluidParticles& particles, const
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-float PressureCalculator::densityToPressure_(float density)
+float CalculatorPressure::densityToPressure_(float density)
 {
 	return K * (density * density / (Constants::RO0 * Constants::RO0) - 1.0f);
 }

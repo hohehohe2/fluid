@@ -1,9 +1,9 @@
-#include "ViscosityCalculator.h"
+#include "CalculatorViscosity.h"
 
 #include "Constants.h"
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include <hohe2Common/container/CompactHash.h>
-#include "FluidParticles.h"
+#include "ParticlesFluid.h"
 #include "SphKernel.h"
 
 
@@ -12,12 +12,12 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-const float ViscosityCalculator::MU = 0.1f;
+const float CalculatorViscosity::MU = 0.1f;
 
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void ViscosityCalculator::calcAcceleration_host_(FluidParticles& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
+void CalculatorViscosity::calcAcceleration_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
 {
 	particles.m_pos->sync(HOST);
 	particles.m_velocity->sync(HOST);

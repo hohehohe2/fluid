@@ -1,11 +1,13 @@
 #include "InitParticleDistributor.h"
+#include <sph/ParticlesFluid.h>
+#include <sph/ParticlesWall.h>
 
 using namespace hohehohe2;
 
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void InitParticleDistributor::set(PointSet& pos, PointSet& velocity, float restLength, unsigned int id)
+void InitParticleDistributor::set(PointSet& pos, PointSet& velocity, PointSet& posWall, PointSet& velocityWall, float restLength, unsigned int id)
 {
 	switch (id)
 	{

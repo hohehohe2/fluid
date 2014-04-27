@@ -154,22 +154,24 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="sph\DensityCalculator.cpp" />
+    <ClCompile Include="sph\CalculatorDensity.cpp" />
+    <ClCompile Include="sph\CalculatorPressure.cpp" />
+    <ClCompile Include="sph\CalculatorSemiImplicitEulerIntegrate.cpp" />
+    <ClCompile Include="sph\CalculatorViscosity.cpp" />
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp" />
-    <ClCompile Include="sph\PressureCalculator.cpp" />
-    <ClCompile Include="sph\SemiImplicitEulerIntegrateCalculator.cpp" />
     <ClCompile Include="sph\SphKernel.cpp" />
-    <ClCompile Include="sph\ViscosityCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="sph\CalculatorDensity.h" />
+    <ClInclude Include="sph\CalculatorPressure.h" />
+    <ClInclude Include="sph\CalculatorSemiImplicitEulerIntegrate.h" />
+    <ClInclude Include="sph\CalculatorViscosity.h" />
     <ClInclude Include="sph\Constants.h" />
-    <ClInclude Include="sph\DensityCalculator.h" />
-    <ClInclude Include="sph\FluidParticles.h" />
     <ClInclude Include="sph\FluidSolverSimpleSph.h" />
-    <ClInclude Include="sph\PressureCalculator.h" />
-    <ClInclude Include="sph\SemiImplicitEulerIntegrateCalculator.h" />
+    <ClInclude Include="sph\ParticlesFluid.h" />
+    <ClInclude Include="sph\ParticlesSph.h" />
+    <ClInclude Include="sph\ParticlesWall.h" />
     <ClInclude Include="sph\SphKernel.h" />
-    <ClInclude Include="sph\ViscosityCalculator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

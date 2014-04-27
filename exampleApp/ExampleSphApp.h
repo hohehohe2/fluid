@@ -16,7 +16,8 @@ public:
 private:
 
 	FluidSolverSimpleSph m_ssph;
-	FluidParticles* m_particles;
+	ParticlesFluid* m_particles;
+	ParticlesWall* m_particlesWall;
 	BufferSet::SPtr m_sptr;
 
 };

@@ -2,6 +2,8 @@
 
 #include <hohe2Common/gl/Drawer.h>
 #include "InitParticleDistributor.h"
+#include <sph/ParticlesFluid.h>
+#include <sph/ParticlesWall.h>
 
 using namespace hohehohe2;
 
@@ -10,12 +12,15 @@ using namespace hohehohe2;
 //---------------------------------------------------------------------------
 void ExampleSphApp::reset(unsigned int id)
 {
-	PointSet* pos = new PointSet("particle pos");
-	PointSet* velocity = new PointSet("particle velocity");
+	PointSet* pos = new PointSet("particles pos");
+	PointSet* velocity = new PointSet("particles velocity");
+	PointSet* posWall = new PointSet("particlesWall pos");
+	PointSet* velocityWall = new PointSet("particlesWall velocity");
 
-	InitParticleDistributor::set(*pos, *velocity, m_ssph.restLength(), id);
+	InitParticleDistributor::set(*pos, *velocity, *posWall, *velocityWall, m_ssph.restLength(), id);
 
-	m_particles = FluidParticles::createInstance(pos->size());
+	m_particles = ParticlesFluid::createInstance(pos->size());
+	m_particlesWall = ParticlesWall::createInstance(pos->size());
 	m_particles->setPos(pos);
 	m_particles->setVelocity(velocity);
     m_sptr = m_particles->getSelfSptr();
@@ -34,7 +39,7 @@ void ExampleSphApp::onKey(unsigned char key)
 
 	if (key == ' ')
     {
-        m_ssph.step(*m_particles, 0.1f);
+        m_ssph.step(*m_particles, *m_particlesWall, 0.1f);
 		return;
     }
 

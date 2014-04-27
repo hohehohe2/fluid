@@ -5,15 +5,16 @@
 #include <hohe2Common/geo/basicGeos.h>
 #include <hohe2Common/container/CompactHash.h>
 #include "SphKernel.h"
-#include "PressureCalculator.h"
-#include "ViscosityCalculator.h"
-#include "DensityCalculator.h"
-#include "SemiImplicitEulerIntegrateCalculator.h"
+#include "CalculatorPressure.h"
+#include "CalculatorViscosity.h"
+#include "CalculatorDensity.h"
+#include "CalculatorSemiImplicitEulerIntegrate.h"
 
 namespace hohehohe2
 {
 
-struct FluidParticles;
+struct ParticlesFluid;
+struct ParticlesWall;
 class CellCodeCalculator;
 
 //-------------------------------------------------------------------
@@ -37,7 +38,7 @@ public:
 	~FluidSolverSimpleSph(){}
 
 	///Step the simulation.
-	void step(FluidParticles& particles, float deltaT);
+	void step(ParticlesFluid& particles, ParticlesWall& particlesWall, float deltaT);
 
 	///Get the distance between particles at rest density.
 	float restLength() const {return m_restLength;}
@@ -50,21 +51,24 @@ private:
 	///SPH kernel calculator.
 	SphKernel m_sphKernel;
 
-	///Compact hash for neighbor search.
+	///Compact hash for neighbor fluid particle search.
 	CompactHash m_cHash;
 
-	PressureCalculator m_pressureCalculator;
+	///Compact hash for neighbor wall particle search.
+	CompactHash m_cHashWall;
 
-	ViscosityCalculator m_viscosityCalculator;
+	CalculatorPressure m_pressureCalculator;
 
-	DensityCalculator m_densityCalculator;
+	CalculatorViscosity m_viscosityCalculator;
 
-	SemiImplicitEulerIntegrateCalculator m_semiImplicitEulerIntegrateCalculator;
+	CalculatorDensity m_densityCalculator;
+
+	CalculatorSemiImplicitEulerIntegrate m_semiImplicitEulerIntegrateCalculator;
 
 private:
 
-	void updateNeighbors_(FluidParticles& particles, CellCodeCalculator& ccc);
-	void initAcceleration_host_(FluidParticles& particles);
+	void updateNeighbors_(ParticlesFluid& particles, ParticlesWall& particlesWall, CellCodeCalculator& ccc);
+	void initAcceleration_host_(ParticlesFluid& particles);
 
 	///So called Courant number (pet peeve for Prof. Bridson ;).
 	static const float PET_PEEVE_COURANT_NUMBER;

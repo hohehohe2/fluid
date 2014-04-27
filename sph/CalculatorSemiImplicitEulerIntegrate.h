@@ -1,5 +1,5 @@
-#ifndef hohe_SemiImplicitEulerIntegrateCalculator_H
-#define hohe_SemiImplicitEulerIntegrateCalculator_H
+#ifndef hohe_CalculatorSemiImplicitEulerIntegrate_H
+#define hohe_CalculatorSemiImplicitEulerIntegrate_H
 
 #include <hohe2Common/cuda/Buffer.h>
 
@@ -7,20 +7,20 @@ namespace hohehohe2
 {
 
 class SphKernel;
-struct FluidParticles;
+struct ParticlesFluid;
 class CompactHash;
 
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Semi implicit euler time integration.
-class SemiImplicitEulerIntegrateCalculator
+class CalculatorSemiImplicitEulerIntegrate
 {
 
 public:
 
 	///Main method to integrate.
-	void integrate(FluidParticles& particles, float deltaT, MemoryType mType)
+	void integrate(ParticlesFluid& particles, float deltaT, MemoryType mType)
 	{
 		if (mType == HOST)
 		{
@@ -35,8 +35,8 @@ public:
 
 private:
 
-	void integrate_host_(FluidParticles& particles, float deltaT);
-	void integrate_device_(FluidParticles& particles, float deltaT)
+	void integrate_host_(ParticlesFluid& particles, float deltaT);
+	void integrate_device_(ParticlesFluid& particles, float deltaT)
 	{
 		//To be implemented.
 		assert(false);

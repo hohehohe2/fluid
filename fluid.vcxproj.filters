@@ -12,16 +12,16 @@
     <ClCompile Include="sph\SphKernel.cpp">
       <Filter>sph</Filter>
     </ClCompile>
-    <ClCompile Include="sph\PressureCalculator.cpp">
+    <ClCompile Include="sph\CalculatorDensity.cpp">
       <Filter>sph</Filter>
     </ClCompile>
-    <ClCompile Include="sph\ViscosityCalculator.cpp">
+    <ClCompile Include="sph\CalculatorPressure.cpp">
       <Filter>sph</Filter>
     </ClCompile>
-    <ClCompile Include="sph\DensityCalculator.cpp">
+    <ClCompile Include="sph\CalculatorViscosity.cpp">
       <Filter>sph</Filter>
     </ClCompile>
-    <ClCompile Include="sph\SemiImplicitEulerIntegrateCalculator.cpp">
+    <ClCompile Include="sph\CalculatorSemiImplicitEulerIntegrate.cpp">
       <Filter>sph</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,19 +35,25 @@
     <ClInclude Include="sph\SphKernel.h">
       <Filter>sph</Filter>
     </ClInclude>
-    <ClInclude Include="sph\FluidParticles.h">
+    <ClInclude Include="sph\ParticlesFluid.h">
       <Filter>sph</Filter>
     </ClInclude>
-    <ClInclude Include="sph\PressureCalculator.h">
+    <ClInclude Include="sph\ParticlesSph.h">
       <Filter>sph</Filter>
     </ClInclude>
-    <ClInclude Include="sph\ViscosityCalculator.h">
+    <ClInclude Include="sph\CalculatorDensity.h">
       <Filter>sph</Filter>
     </ClInclude>
-    <ClInclude Include="sph\DensityCalculator.h">
+    <ClInclude Include="sph\CalculatorPressure.h">
       <Filter>sph</Filter>
     </ClInclude>
-    <ClInclude Include="sph\SemiImplicitEulerIntegrateCalculator.h">
+    <ClInclude Include="sph\CalculatorViscosity.h">
+      <Filter>sph</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\CalculatorSemiImplicitEulerIntegrate.h">
+      <Filter>sph</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\ParticlesWall.h">
       <Filter>sph</Filter>
     </ClInclude>
   </ItemGroup>
