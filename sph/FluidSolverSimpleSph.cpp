@@ -322,9 +322,9 @@ void FluidSolverSimpleSph::integrate_(Particles& particles, float deltaT)
 			vzs[idP] = 0;
 		}
 
-		if (pys[idP] < -1.0f)
+		if (pys[idP] < 0.0f)
 		{
-			pys[idP] = -1.0f;
+			pys[idP] = 0.0f;
 			vys[idP] = 0;
 		}
 	}
