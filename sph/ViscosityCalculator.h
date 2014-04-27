@@ -2,12 +2,11 @@
 #define hohe_ViscosityCalculator_H
 
 #include <hohe2Common/cuda/Buffer.h>
-#include "SphKernel.h"
-#include "hohe2Common/geo/basicGeos.h"
 
 namespace hohehohe2
 {
 
+class SphKernel;
 struct FluidParticles;
 class CompactHash;
 
