@@ -1,6 +1,5 @@
 #include "FluidSolverSimpleSph.h"
 #include "Constants.h"
-#include <hohe2Common/util/BitOperationsBuffer.h>
 #include <hohe2Common/util/SortBuffer.h>
 #include <hohe2Common/container/CellCodeCalculator.h>
 
@@ -103,7 +102,7 @@ void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
 
 	//Get the unsorted code list.
 	BufferUInt codeSet;
-	BitOperationsBuffer::calcMortonCode32FromPosition(codeSet, *particles.m_pos, ccc, HOST);
+	ccc.getCode32(codeSet, *particles.m_pos, HOST);
 
 	//Sort it. Once we create the hash, we don't have to keep using it so it's not a particles member variable.
 	BufferUInt sortedCodeSet;

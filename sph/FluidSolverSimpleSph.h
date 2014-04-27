@@ -113,7 +113,7 @@ private:
 
 	float calcMaxVelocity_(const Particles& particles);
 	void updateNeighbors_(Particles& particles);
-	void calcDensity_(Particles& particles);
+	void calcDensity_host_(Particles& particles);
 	void calcAcceleration_host_(Particles& particles);
 	void integrate_(Particles& particles, float deltaT);
 
