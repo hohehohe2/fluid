@@ -159,7 +159,7 @@ void InitParticleDistributor::placement3_(PointSet& pos, PointSet& velocity, flo
 //-------------------------------------------------------------------
 void InitParticleDistributor::placement4_(PointSet& pos, PointSet& velocity, float restLength)
 {
-	const unsigned int NUM_LINES = 15;
+	const unsigned int NUM_LINES = 50;
 	pos.setSize(NUM_LINES * NUM_LINES * NUM_LINES);
 	pos.allocate(HOST);
 	velocity.setSize(NUM_LINES * NUM_LINES * NUM_LINES);

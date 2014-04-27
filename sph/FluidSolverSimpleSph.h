@@ -36,14 +36,11 @@ public:
 		///Particles density.
 		BufferFloat* m_density;
 
-		///Codes (unsorted).
-		BufferUInt* m_code;
-
 		///m_pos etc. index sorted by its code.
 		BufferUInt* m_sortedIdMap;
 
 		///Constructor.
-		Particles(const std::string& name="Particles") : BufferSetSized(name), m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_density(NULL), m_code(NULL), m_sortedIdMap(NULL){}
+		Particles(const std::string& name="Particles") : BufferSetSized(name), m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_density(NULL), m_sortedIdMap(NULL){}
 
 		///Destructor.
 		virtual ~Particles(){}
@@ -55,7 +52,6 @@ public:
 		void setVelocity(PointSet* velocity){removeChild(m_velocity); addChild(m_velocity = velocity);}
 		void setAcceleration(PointSet* acceleration){removeChild(m_acceleration); addChild(m_acceleration = acceleration);}
 		void setDensity(BufferFloat* density){removeChild(m_density); addChild(m_density = density);}
-		void setCode(BufferUInt* code){removeChild(m_code); addChild(m_code = code);}
 		void setSortedIdMap(BufferUInt* sortedIdMap){removeChild(m_sortedIdMap); addChild(m_sortedIdMap = sortedIdMap);}
 
 		///Create and setup for simulation. m_pos and m_velocity must be filled with initial values before the first step().
@@ -75,7 +71,6 @@ public:
 			obj->addChild(obj->m_velocity = new PointSet("particle velocity"));
 			obj->addChild(obj->m_acceleration = new PointSet("particle acceleration"));
 			obj->addChild(obj->m_density = new BufferFloat("particle density"));
-			obj->addChild(obj->m_code = new BufferUInt("particle code"));
 			obj->addChild(obj->m_sortedIdMap = new BufferUInt("particle sortedIdMap"));
 			obj->setSize(size);
 			obj->allocate(allocMemoryType);
@@ -136,7 +131,7 @@ private:
 	//Compact hash parameters. Need adjustment.
 	static const unsigned int COMPACT_HASH_NUM_HASH_ENTRIES = 2048;
 	static const unsigned int COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST = 256;
-	static const unsigned int COMPACT_HASH_NUM_LISTS = 16;
+	static const unsigned int COMPACT_HASH_NUM_LISTS = 1024;
 
 };
 

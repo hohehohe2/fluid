@@ -2,6 +2,8 @@
 #include "Constants.h"
 #include <hohe2Common/util/BitOperationsBuffer.h>
 #include <hohe2Common/util/SortBuffer.h>
+#include <hohe2Common/container/CellCodeCalculator.h>
+
 
 using namespace hohehohe2;
 
@@ -92,19 +94,23 @@ void FluidSolverSimpleSph::updateNeighbors_(Particles& particles)
 
 	//Shift min values a little bit to make sure the particles which have min values are inside the cell.
 	bbox.m_min -= Point(kernelRaidus, kernelRaidus, kernelRaidus) / 100.0f;
+	particles.m_pos->m_lastCalculatedBbox.m_min = bbox.m_min;
 
-	//Adjust max values so that the cell size is equal to the kernel radius; 
-	bbox.m_max << bbox.m_min.x() + kernelRaidus * 1024, bbox.m_min.y() + kernelRaidus * 1024, bbox.m_min.z() + kernelRaidus * 1024;
+	CellCodeCalculator ccc(bbox.m_min, kernelRaidus);
 
 	//Get the unsorted code list.
-	BitOperationsBuffer::calcMortonCode32FromPosition(*particles.m_code, *particles.m_pos, HOST, bbox);
+	BufferUInt codeSet;
+	BitOperationsBuffer::calcMortonCode32FromPosition(codeSet, *particles.m_pos, ccc, HOST);
 
 	//Sort it. Once we create the hash, we don't have to keep using it so it's not a particles member variable.
 	BufferUInt sortedCodeSet;
-	SortBuffer::createSortedIdMap(*particles.m_sortedIdMap, sortedCodeSet, *particles.m_code, DEVICE);
+	SortBuffer::createSortedIdMap(*particles.m_sortedIdMap, sortedCodeSet, codeSet, DEVICE);
 
 	//Create compact hash.
-	m_cHash.build(sortedCodeSet, HOST);
+	if ( ! m_cHash.build(sortedCodeSet, HOST))
+	{
+		std::cerr << "Hash full\n";
+	}
 }
 
 
@@ -117,32 +123,43 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 	const float r2 = m_sphKernel.r() * m_sphKernel.r();
 
 	particles.m_pos->sync(HOST);
-	particles.m_code->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);
 	const float* pxs = particles.m_pos->xs(HOST);
 	const float* pys = particles.m_pos->ys(HOST);
 	const float* pzs = particles.m_pos->zs(HOST);
-	const unsigned int* codes = particles.m_code->get(HOST);
 	const unsigned int* sortedIdMaps = particles.m_sortedIdMap->get(HOST);
 
 	float* ds = particles.m_density->get(HOST);
 
 	unsigned int size = particles.size();
 
+	CellCodeCalculator ccc(particles.m_pos->m_lastCalculatedBbox.m_min, m_sphKernel.r());
+
 	for (unsigned int idP = 0; idP < size; ++idP)
 	{
 		ds[idP] = 0.0f;
-		unsigned int index;
-		unsigned int numObjects = m_cHash.lookup(index, codes[idP]);
-		for (unsigned int j = 0; j < numObjects; ++j)
+
+		for (unsigned int i= 0; i < 27; ++i)
 		{
-			unsigned int idN = sortedIdMaps[index + j];
-			float distx = pxs[idN] - pxs[idP];
-			float disty = pys[idN] - pys[idP];
-			float distz = pzs[idN] - pzs[idP];
-			float dist2 = distx * distx + disty * disty + distz * distz;
-			ds[idP] += m_sphKernel.w(dist2);
+			bool isValid;
+			unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
+			if ( ! isValid)
+			{
+				continue;
+			}
+			unsigned int index;
+			unsigned int numObjects = m_cHash.lookup(index, code);
+			for (unsigned int j = 0; j < numObjects; ++j)
+			{
+				unsigned int idN = sortedIdMaps[index + j];
+				float distx = pxs[idN] - pxs[idP];
+				float disty = pys[idN] - pys[idP];
+				float distz = pzs[idN] - pzs[idP];
+				float dist2 = distx * distx + disty * disty + distz * distz;
+				ds[idP] += m_sphKernel.w(dist2);
+			}
 		}
+
 		ds[idP] *= m_particleMass;
 
 		//Set rest density as minimum to fake air pressure.
@@ -150,6 +167,7 @@ void FluidSolverSimpleSph::calcDensity_(Particles& particles)
 		{
 			ds[idP] = Constants::RO0;
 		}
+
 	}
 
 	particles.setClean(HOST);
@@ -164,19 +182,19 @@ void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 
 	particles.m_pos->sync(HOST);
 	particles.m_density->sync(HOST);
-	particles.m_code->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);
 	const float* pxs = particles.m_pos->xs(HOST);
 	const float* pys = particles.m_pos->ys(HOST);
 	const float* pzs = particles.m_pos->zs(HOST);
 	const float* ds = particles.m_density->get(HOST);
-	const unsigned int* codes = particles.m_code->get(HOST);
 	const unsigned int* sortedIdMaps = particles.m_sortedIdMap->get(HOST);
 	float* axs = particles.m_acceleration->xs(HOST);
 	float* ays = particles.m_acceleration->ys(HOST);
 	float* azs = particles.m_acceleration->zs(HOST);
 
 	unsigned int size = particles.size();
+
+	CellCodeCalculator ccc(particles.m_pos->m_lastCalculatedBbox.m_min, m_sphKernel.r());
 
 	for (unsigned int idP = 0; idP < size; ++idP)
 	{
@@ -188,25 +206,35 @@ void FluidSolverSimpleSph::calcAcceleration_(Particles& particles)
 		azs[idP] = 0.0f;
 
 		///Pressure.
-		unsigned int index;
-		unsigned int numObjects = m_cHash.lookup(index, codes[idP]);
-		for (unsigned int j = 0; j < numObjects; ++j)
+		for (unsigned int i= 0; i < 27; ++i)
 		{
-			unsigned int idN = sortedIdMaps[index + j];
+			bool isValid;
+			unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
+			if ( ! isValid)
+			{
+				continue;
+			}
 
-			float gradW[3];
-			m_sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
+			unsigned int index;
+			unsigned int numObjects = m_cHash.lookup(index, code);
+			for (unsigned int j = 0; j < numObjects; ++j)
+			{
+				unsigned int idN = sortedIdMaps[index + j];
 
-			float densityN = ds[idN];
-			float pressureP = densityToPressure_(densityP);
-			float pressureN = densityToPressure_(densityN);
-			float c = m_particleMass * (pressureP + pressureN) / (2.0f * densityN);
-			float gradPx = c * gradW[0];
-			float gradPy = c * gradW[1];
-			float gradPz = c * gradW[2];
-			axs[idP] += - gradPx / densityP;
-			ays[idP] += - gradPy / densityP;
-			azs[idP] += - gradPz / densityP;
+				float gradW[3];
+				m_sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
+
+				float densityN = ds[idN];
+				float pressureP = densityToPressure_(densityP);
+				float pressureN = densityToPressure_(densityN);
+				float c = m_particleMass * (pressureP + pressureN) / (2.0f * densityN);
+				float gradPx = c * gradW[0];
+				float gradPy = c * gradW[1];
+				float gradPz = c * gradW[2];
+				axs[idP] += - gradPx / densityP;
+				ays[idP] += - gradPy / densityP;
+				azs[idP] += - gradPz / densityP;
+			}
 		}
 
 		///Viscosity omitted.
