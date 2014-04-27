@@ -21,6 +21,9 @@
     <ClCompile Include="sph\DensityCalculator.cpp">
       <Filter>sph</Filter>
     </ClCompile>
+    <ClCompile Include="sph\SemiImplicitEulerIntegrateCalculator.cpp">
+      <Filter>sph</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\FluidSolverSimpleSph.h">
@@ -42,6 +45,9 @@
       <Filter>sph</Filter>
     </ClInclude>
     <ClInclude Include="sph\DensityCalculator.h">
+      <Filter>sph</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\SemiImplicitEulerIntegrateCalculator.h">
       <Filter>sph</Filter>
     </ClInclude>
   </ItemGroup>

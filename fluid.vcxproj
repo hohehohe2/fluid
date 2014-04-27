@@ -157,6 +157,7 @@
     <ClCompile Include="sph\DensityCalculator.cpp" />
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp" />
     <ClCompile Include="sph\PressureCalculator.cpp" />
+    <ClCompile Include="sph\SemiImplicitEulerIntegrateCalculator.cpp" />
     <ClCompile Include="sph\SphKernel.cpp" />
     <ClCompile Include="sph\ViscosityCalculator.cpp" />
   </ItemGroup>
@@ -166,6 +167,7 @@
     <ClInclude Include="sph\FluidParticles.h" />
     <ClInclude Include="sph\FluidSolverSimpleSph.h" />
     <ClInclude Include="sph\PressureCalculator.h" />
+    <ClInclude Include="sph\SemiImplicitEulerIntegrateCalculator.h" />
     <ClInclude Include="sph\SphKernel.h" />
     <ClInclude Include="sph\ViscosityCalculator.h" />
   </ItemGroup>

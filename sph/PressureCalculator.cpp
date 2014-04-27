@@ -1,7 +1,6 @@
 #include "PressureCalculator.h"
 
 #include "Constants.h"
-#include <hohe2Common/util/BufferUtil.h>
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include <hohe2Common/container/CompactHash.h>
 #include "FluidParticles.h"

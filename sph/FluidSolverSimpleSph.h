@@ -8,7 +8,7 @@
 #include "PressureCalculator.h"
 #include "ViscosityCalculator.h"
 #include "DensityCalculator.h"
-
+#include "SemiImplicitEulerIntegrateCalculator.h"
 
 namespace hohehohe2
 {
@@ -59,11 +59,12 @@ private:
 
 	DensityCalculator m_densityCalculator;
 
+	SemiImplicitEulerIntegrateCalculator m_semiImplicitEulerIntegrateCalculator;
+
 private:
 
 	void updateNeighbors_(FluidParticles& particles);
 	void initAcceleration_host_(FluidParticles& particles);
-	void integrate_(FluidParticles& particles, float deltaT);
 
 	///So called Courant number (pet peeve for Prof. Bridson ;).
 	static const float PET_PEEVE_COURANT_NUMBER;
