@@ -144,7 +144,7 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 				unsigned int numObjects = cHashWall->lookup(index, code);
 				for (unsigned int j = 0; j < numObjects; ++j)
 				{
-					unsigned int idW = sortedIdMaps[index + j];
+					unsigned int idW = wsortedIdMaps[index + j];
 					float gradW[3];
 					sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], wpxs[idW], wpys[idW], wpzs[idW]);
 					sumGradW[0] += gradW[0];
