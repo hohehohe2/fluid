@@ -50,7 +50,28 @@ void CalculatorVolume::calculation_host_(ParticlesWall& particles, const SphKern
 			}
 		}
 
-		vs[idP] = 1.0f / sumW;
+		//Need to adjust the coefficient so that a particle which distance from the wall is the same as the length between particles at the rest density
+		//gets the force from the wall which is equivalent from the force where the wall particle is uniformly distributed, i.e.
+		//
+		//     (A)              (B)
+		//
+		// ...........      ...........
+		// ...........      ...........
+		// .....o.....      .....o.....
+		// XXXXXXXXXXX      xxxxxxxxxxx
+		//                  xxxxxxxxxxx
+		//                  xxxxxxxxxxx
+		//
+		// o is the fluid partcle we are interested in
+		// . are neighbor fluid particles
+		// X are the weighted wall particles
+		// x are the un weighted wall particles (i.e. same influent as the neighbor fluid particles)
+		// Here (A) is Akinci2012 and (B) is the traditional multi-layer wall particle model.
+		// We need to adjust the scalingFactor so that
+		// sum of forces o gets from 'X's in (A) == sum of forces o gets from 'x's in (B)
+
+		float scalingFactor = 0.1f;
+		vs[idP] = scalingFactor / sumW;
 
 	}
 
