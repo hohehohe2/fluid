@@ -67,5 +67,5 @@ void ExampleSphApp::onKey(unsigned char key)
 //---------------------------------------------------------------------------
 void ExampleSphApp::draw()
 {
-	Drawer::draw(*m_particles->m_pos);
+	Drawer::draw(*m_particles->m_pos, m_particles->m_density, 4000.0f);
 }

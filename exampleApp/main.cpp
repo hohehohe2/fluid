@@ -28,8 +28,8 @@ void  display( void )
 	glRotatef(-camera_pitch_y, 1.0, 0.0, 0.0);
 	glRotatef(-camera_pitch_x, 0.0, 1.0, 0.0);
 
-	float  light0_position[] = { 10.0, 10.0, 10.0, 1.0 };
-	glLightfv( GL_LIGHT0, GL_POSITION, light0_position );
+	//float  light0_position[] = { 10.0, 10.0, 10.0, 1.0 };
+	//glLightfv( GL_LIGHT0, GL_POSITION, light0_position );
 
 	glEnable(GL_DEPTH_TEST);
 	esa.draw();
@@ -112,26 +112,26 @@ void  idle( void )
 }
 
 
-void  initEnvironment( void )
-{
-	float  light0_position[] = { 10.0, 10.0, 10.0, 1.0 };
-	float  light0_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
-	float  light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	float  light0_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
-	glLightfv( GL_LIGHT0, GL_POSITION, light0_position );
-	glLightfv( GL_LIGHT0, GL_DIFFUSE, light0_diffuse );
-	glLightfv( GL_LIGHT0, GL_SPECULAR, light0_specular );
-	glLightfv( GL_LIGHT0, GL_AMBIENT, light0_ambient );
-	glEnable( GL_LIGHT0 );
-
-	glEnable( GL_LIGHTING );
-
-	glEnable( GL_COLOR_MATERIAL );
-
-	glEnable( GL_DEPTH_TEST );
-
-	glClearColor( 1, 1, 1, 0.0 );
-}
+//void  initEnvironment( void )
+//{
+//	float  light0_position[] = { 10.0, 10.0, 10.0, 1.0 };
+//	float  light0_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
+//	float  light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+//	float  light0_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+//	glLightfv( GL_LIGHT0, GL_POSITION, light0_position );
+//	glLightfv( GL_LIGHT0, GL_DIFFUSE, light0_diffuse );
+//	glLightfv( GL_LIGHT0, GL_SPECULAR, light0_specular );
+//	glLightfv( GL_LIGHT0, GL_AMBIENT, light0_ambient );
+//	glEnable( GL_LIGHT0 );
+//
+//	glEnable( GL_LIGHTING );
+//
+//	glEnable( GL_COLOR_MATERIAL );
+//
+//	glEnable( GL_DEPTH_TEST );
+//
+//	glClearColor( 1, 1, 1, 0.0 );
+//}
 
 
 int main( int argc, char ** argv )
@@ -149,7 +149,7 @@ int main( int argc, char ** argv )
 	glutMotionFunc( motion );
 	glutIdleFunc( idle );
 
-	initEnvironment();
+	//initEnvironment();
 
 	esa.reset();
 
