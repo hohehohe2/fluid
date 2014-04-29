@@ -15,15 +15,16 @@ void ExampleSphApp::reset(unsigned int id)
 	PointSet* pos = new PointSet("particles pos");
 	PointSet* velocity = new PointSet("particles velocity");
 	PointSet* posWall = new PointSet("particlesWall pos");
-	PointSet* velocityWall = new PointSet("particlesWall velocity");
 
-	InitParticleDistributor::set(*pos, *velocity, *posWall, *velocityWall, m_ssph.restLength(), id);
+	InitParticleDistributor::set(*pos, *velocity, *posWall, m_ssph.restLength(), id);
 
 	m_particles = ParticlesFluid::createInstance(pos->size());
-	m_particlesWall = ParticlesWall::createInstance(posWall->size());
 	m_particles->setPos(pos);
 	m_particles->setVelocity(velocity);
     m_sptr = m_particles->getSelfSptr();
+
+	m_particlesWall = ParticlesWall::createInstance(posWall->size());
+	m_particlesWall->setPos(posWall);
 	m_sptrWall = m_particlesWall->getSelfSptr();
 }
 

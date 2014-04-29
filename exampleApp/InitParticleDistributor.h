@@ -17,24 +17,24 @@ class InitParticleDistributor
 public:
 
 	///Create particles and set initial values to them. pos and velocity will be setSize() and allocate()d.
-	static void set(PointSet& pos, PointSet& velocity, PointSet& posWall, PointSet& velocityWall, float restLength, unsigned int id);
+	static void set(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength, unsigned int id);
 
 private:
 
 	///Single particle.
-	static void placement0_(PointSet& pos, PointSet& velocity, float restLength);
+	static void placement0_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength);
 
 	///2 particles.
-	static void placement1_(PointSet& pos, PointSet& velocity, float restLength);
+	static void placement1_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength);
 
 	///Small n x n x n.
-	static void placement2_(PointSet& pos, PointSet& velocity, float restLength);
+	static void placement2_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength);
 
 	///1 x n x 1.
-	static void placement3_(PointSet& pos, PointSet& velocity, float restLength);
+	static void placement3_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength);
 
 	///Large n x n x n.
-	static void placement4_(PointSet& pos, PointSet& velocity, float restLength);
+	static void placement4_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength);
 
 };
 
