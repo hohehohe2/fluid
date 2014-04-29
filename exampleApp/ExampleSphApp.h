@@ -19,6 +19,7 @@ private:
 	ParticlesFluid* m_particles;
 	ParticlesWall* m_particlesWall;
 	BufferSet::SPtr m_sptr;
+	BufferSet::SPtr m_sptrWall;
 
 };
 

@@ -5,9 +5,10 @@
 #include <hohe2Common/geo/basicGeos.h>
 #include <hohe2Common/container/CompactHash.h>
 #include "SphKernel.h"
+#include "CalculatorVolume.h"
+#include "CalculatorDensity.h"
 #include "CalculatorPressure.h"
 #include "CalculatorViscosity.h"
-#include "CalculatorDensity.h"
 #include "CalculatorSemiImplicitEulerIntegrate.h"
 
 namespace hohehohe2
@@ -57,11 +58,13 @@ private:
 	///Compact hash for neighbor wall particle search.
 	CompactHash m_cHashWall;
 
+	CalculatorVolume m_volumeCalculator;
+
+	CalculatorDensity m_densityCalculator;
+
 	CalculatorPressure m_pressureCalculator;
 
 	CalculatorViscosity m_viscosityCalculator;
-
-	CalculatorDensity m_densityCalculator;
 
 	CalculatorSemiImplicitEulerIntegrate m_semiImplicitEulerIntegrateCalculator;
 

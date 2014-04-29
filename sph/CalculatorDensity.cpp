@@ -34,11 +34,11 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 		particlesWall->m_pos->sync(HOST);
 		particlesWall->m_volume->sync(HOST);
 		particlesWall->m_sortedIdMap->sync(HOST);
-		const float* wpxs = particlesWall->m_pos->xs(HOST);
-		const float* wpys = particlesWall->m_pos->ys(HOST);
-		const float* wpzs = particlesWall->m_pos->zs(HOST);
-		float* wvs = particlesWall->m_volume->get(HOST);
-		const unsigned int* wsortedIdMaps = particlesWall->m_sortedIdMap->get(HOST);
+		wpxs = particlesWall->m_pos->xs(HOST);
+		wpys = particlesWall->m_pos->ys(HOST);
+		wpzs = particlesWall->m_pos->zs(HOST);
+		wvs = particlesWall->m_volume->get(HOST);
+		wsortedIdMaps = particlesWall->m_sortedIdMap->get(HOST);
 	}
 
 	unsigned int size = particles.size();

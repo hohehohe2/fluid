@@ -49,8 +49,10 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 		std::cout << remaining << ": updateNeighbors - ";
 		CellCodeCalculator ccc;
 		updateNeighbors_(particles, particlesWall, ccc);
+		std::cout << "calcVolume - ";
+		m_volumeCalculator.calculation(particlesWall, m_sphKernel, ccc, m_cHashWall, HOST);
 		std::cout << "calcDensity - ";
-		m_densityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST);
+		m_densityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
 		std::cout << "calculation - ";
 		initAcceleration_host_(particles);
 		m_pressureCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, false, HOST);
