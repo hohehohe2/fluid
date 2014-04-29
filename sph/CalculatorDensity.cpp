@@ -73,9 +73,10 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 		ds[idP] = sumW * m_particleMass;
 
 
-		//----Contribution from neightbor wall particles.
+		//----Contribution from neightbor wall particles [Akinci2012].
 		if (particlesWall)
 		{
+			float densContribWall = 0.0f;
 			for (unsigned int i= 0; i < 27; ++i)
 			{
 				bool isValid;
@@ -93,9 +94,11 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 					float disty = wpys[idW] - pys[idP];
 					float distz = wpzs[idW] - pzs[idP];
 					float dist2 = distx * distx + disty * disty + distz * distz;
-					sumW += Constants::RO0 * wvs[idW] * sphKernel.w(dist2);
+					densContribWall += Constants::RO0 * wvs[idW] * sphKernel.w(dist2);
 				}
 			}
+
+			ds[idP] += densContribWall;
 		}
 
 		//----Set rest density as minimum to fake air pressure.
