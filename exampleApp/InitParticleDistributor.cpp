@@ -248,7 +248,7 @@ void InitParticleDistributor::placement5_(PointSet& pos, PointSet& velocity, Poi
 	pos.setClean(HOST);
 	velocity.setClean(HOST);
 
-	const int NUM_GROUND_LINES = 20;
+	const int NUM_GROUND_LINES = 100;
 	posWall.setSize(NUM_GROUND_LINES * NUM_GROUND_LINES);
 	posWall.allocate(HOST);
 

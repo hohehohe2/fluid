@@ -31,8 +31,6 @@ struct ParticlesSph : public BufferSetSized
 
 	//Make sure every size is the same.
 	void setPos(PointSet* pos){removeChild(m_pos); addChild(m_pos = pos);}
-	void setAcceleration(PointSet* acceleration){removeChild(m_acceleration); addChild(m_acceleration = acceleration);}
-	void setSortedIdMap(BufferUInt* sortedIdMap){removeChild(m_sortedIdMap); addChild(m_sortedIdMap = sortedIdMap);}
 
 	///Create and setup for simulation. m_pos and m_velocity must be filled with initial values before the first step().
 	static ParticlesSph* createInstance(unsigned int size=0, MemoryType allocMemoryType=HOST)

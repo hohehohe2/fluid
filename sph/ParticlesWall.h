@@ -23,9 +23,6 @@ struct ParticlesWall : public ParticlesSph
 
 	virtual unsigned int size() const {return (m_pos)? m_pos->size() : 0;}
 
-	//Make sure every size is the same.
-	void setAcceleration(PointSet* acceleration){removeChild(m_acceleration); addChild(m_acceleration = acceleration);}
-
 	///Create and setup for simulation. m_pos and m_velocity must be filled with initial values before the first step().
 	static ParticlesWall* createInstance(unsigned int size=0, MemoryType allocMemoryType=HOST)
 	{
