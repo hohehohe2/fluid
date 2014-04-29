@@ -33,24 +33,24 @@ void CalculatorSemiImplicitEulerIntegrate::integrate_host_(ParticlesFluid& parti
 		pys[idP] += vys[idP] * deltaT;
 		pzs[idP] += vzs[idP] * deltaT;
 
-		//Adhoc boundary.
-		if (pxs[idP] < 0.0f)
-		{
-			pxs[idP] = 0.0f;
-			vxs[idP] = 0;
-		}
+		////Adhoc boundary.
+		//if (pxs[idP] < 0.0f)
+		//{
+		//	pxs[idP] = 0.0f;
+		//	vxs[idP] = 0;
+		//}
 
-		if (pzs[idP] < 0.0f)
-		{
-			pzs[idP] = 0.0f;
-			vzs[idP] = 0;
-		}
+		//if (pzs[idP] < 0.0f)
+		//{
+		//	pzs[idP] = 0.0f;
+		//	vzs[idP] = 0;
+		//}
 
-		if (pys[idP] < 0.0f)
-		{
-			pys[idP] = 0.0f;
-			vys[idP] = 0;
-		}
+		//if (pys[idP] < 0.0f)
+		//{
+		//	pys[idP] = 0.0f;
+		//	vys[idP] = 0;
+		//}
 	}
 
 	particles.setClean(HOST);
