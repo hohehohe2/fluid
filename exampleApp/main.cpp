@@ -112,8 +112,8 @@ void  idle( void )
 }
 
 
-//void  initEnvironment( void )
-//{
+void  initEnvironment( void )
+{
 //	float  light0_position[] = { 10.0, 10.0, 10.0, 1.0 };
 //	float  light0_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
 //	float  light0_specular[] = { 1.0, 1.0, 1.0, 1.0 };
@@ -130,8 +130,8 @@ void  idle( void )
 //
 //	glEnable( GL_DEPTH_TEST );
 //
-//	glClearColor( 1, 1, 1, 0.0 );
-//}
+	glClearColor( 1, 1, 1, 1.0 );
+}
 
 
 int main( int argc, char ** argv )
@@ -149,7 +149,7 @@ int main( int argc, char ** argv )
 	glutMotionFunc( motion );
 	glutIdleFunc( idle );
 
-	//initEnvironment();
+	initEnvironment();
 
 	esa.reset();
 

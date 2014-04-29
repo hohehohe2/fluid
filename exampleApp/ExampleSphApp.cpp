@@ -1,6 +1,7 @@
 #include "ExampleSphApp.h"
 
-#include <hohe2Common/gl/Drawer.h>
+#include <GL/glut.h>
+//#include <hohe2Common/gl/Drawer.h>
 #include "InitParticleDistributor.h"
 #include <sph/ParticlesFluid.h>
 #include <sph/ParticlesWall.h>
@@ -68,5 +69,48 @@ void ExampleSphApp::onKey(unsigned char key)
 //---------------------------------------------------------------------------
 void ExampleSphApp::draw()
 {
-	Drawer::draw(*m_particles->m_pos, m_particles->m_density, 4000.0f);
+	const float MAX_DENSITY = 2000.0f;
+	const Point FLUID_RGB(1.0f, 0.0f, 0.0f);
+	const Point WALL_RGB(0.5f, 0.5f, 0.5f);
+
+	glPointSize(5.0f);
+
+
+	//----Fluid.
+	m_particles->m_pos->sync(HOST);
+	m_particles->m_density->sync(HOST);
+
+	const float* pxs = m_particles->m_pos->xs(HOST);
+	const float* pys = m_particles->m_pos->ys(HOST);
+	const float* pzs = m_particles->m_pos->zs(HOST);
+	const float* ds = m_particles->m_density->get(HOST);
+
+	glBegin(GL_POINTS);
+	for (unsigned int i = 0; i < m_particles->m_pos->size(); ++i)
+	{
+		float scale = ds[i] / MAX_DENSITY;
+		if (scale < 0.2f)
+		{
+			scale = 0.2f;
+		}
+		glColor3f(FLUID_RGB.x() * scale, FLUID_RGB.y() * scale, FLUID_RGB.z() * scale);
+		glVertex3f(pxs[i], pys[i], pzs[i]);
+	}
+	glEnd();
+
+	//----Wall.
+	m_particlesWall->m_pos->sync(HOST);
+
+	const float* wpxs = m_particlesWall->m_pos->xs(HOST);
+	const float* wpys = m_particlesWall->m_pos->ys(HOST);
+	const float* wpzs = m_particlesWall->m_pos->zs(HOST);
+
+	glBegin(GL_POINTS);
+	for (unsigned int i = 0; i < m_particlesWall->m_pos->size(); ++i)
+	{
+		float scale = 1.0f;
+		glColor3f(WALL_RGB.x() * scale, WALL_RGB.y() * scale, WALL_RGB.z() * scale);
+		glVertex3f(wpxs[i], wpys[i], wpzs[i]);
+	}
+	glEnd();
 }
