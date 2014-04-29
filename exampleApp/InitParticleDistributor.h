@@ -36,6 +36,9 @@ private:
 	///Large n x n x n.
 	static void placement4_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength);
 
+	///Small n x n x n with ground particles.
+	static void placement5_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength);
+
 };
 
 }

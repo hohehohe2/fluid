@@ -27,12 +27,12 @@ protected:
 		m_sptr = m_particles->getSelfSptr();
 		m_sptrWall = m_particlesWall->getSelfSptr();
 
-		float* pxs = m_particles->m_pos->xs(true);
-		float* pys = m_particles->m_pos->ys(true);
-		float* pzs = m_particles->m_pos->ys(true);
-		float* vxs = m_particles->m_velocity->xs(true);
-		float* vys = m_particles->m_velocity->ys(true);
-		float* vzs = m_particles->m_velocity->ys(true);
+		float* pxs = m_particles->m_pos->xs(HOST);
+		float* pys = m_particles->m_pos->ys(HOST);
+		float* pzs = m_particles->m_pos->ys(HOST);
+		float* vxs = m_particles->m_velocity->xs(HOST);
+		float* vys = m_particles->m_velocity->ys(HOST);
+		float* vzs = m_particles->m_velocity->ys(HOST);
 
 		pxs[0] = 0.0f;
 		pys[0] = 0.0f;
@@ -62,12 +62,12 @@ TEST_F(Solver, singleParticle)
 	BufferSet::SPtr sptr = particles->getSelfSptr();
 	BufferSet::SPtr sptrWall = particlesWall->getSelfSptr();
 
-	float* pxs = particles->m_pos->xs(true);
-	float* pys = particles->m_pos->ys(true);
-	float* pzs = particles->m_pos->ys(true);
-	float* vxs = particles->m_velocity->xs(true);
-	float* vys = particles->m_velocity->ys(true);
-	float* vzs = particles->m_velocity->ys(true);
+	float* pxs = particles->m_pos->xs(HOST);
+	float* pys = particles->m_pos->ys(HOST);
+	float* pzs = particles->m_pos->ys(HOST);
+	float* vxs = particles->m_velocity->xs(HOST);
+	float* vys = particles->m_velocity->ys(HOST);
+	float* vzs = particles->m_velocity->ys(HOST);
 
 	pxs[0] = 0.0f;
 	pys[0] = 0.0f;
