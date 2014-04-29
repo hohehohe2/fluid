@@ -4,6 +4,7 @@
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include <hohe2Common/container/CompactHash.h>
 #include "ParticlesFluid.h"
+#include "particlesWall.h"
 #include "SphKernel.h"
 
 
@@ -17,7 +18,8 @@ const float CalculatorPressure::K = 20000.0f;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, bool isWall)
+void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash,
+										   const ParticlesWall* particlesWall, const CompactHash* cHashWall)
 {
 	particles.m_pos->sync(HOST);
 	particles.m_density->sync(HOST);
@@ -30,6 +32,23 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 	float* axs = particles.m_acceleration->xs(HOST);
 	float* ays = particles.m_acceleration->ys(HOST);
 	float* azs = particles.m_acceleration->zs(HOST);
+
+	const float* wpxs;
+	const float* wpys;
+	const float* wpzs;
+	const float* wvs;
+	const unsigned int* wsortedIdMaps;
+	if (particlesWall)
+	{
+		particlesWall->m_pos->sync(HOST);
+		particlesWall->m_volume->sync(HOST);
+		particlesWall->m_sortedIdMap->sync(HOST);
+		wpxs = particlesWall->m_pos->xs(HOST);
+		wpys = particlesWall->m_pos->ys(HOST);
+		wpzs = particlesWall->m_pos->zs(HOST);
+		wvs = particlesWall->m_volume->get(HOST);
+		wsortedIdMaps = particlesWall->m_sortedIdMap->get(HOST);
+	}
 
 	unsigned int size = particles.size();
 
@@ -72,36 +91,75 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 
 
 		//----Pressure with incompressible approximation.
-		float sumGradW[3];
-		sumGradW[0] = 0.0f;
-		sumGradW[1] = 0.0f;
-		sumGradW[2] = 0.0f;
-		for (unsigned int i= 0; i < 27; ++i)
 		{
-			bool isValid;
-			unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
-			if ( ! isValid)
+			float sumGradW[3];
+			sumGradW[0] = 0.0f;
+			sumGradW[1] = 0.0f;
+			sumGradW[2] = 0.0f;
+			for (unsigned int i= 0; i < 27; ++i)
 			{
-				continue;
+				bool isValid;
+				unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
+				if ( ! isValid)
+				{
+					continue;
+				}
+
+				unsigned int index;
+				unsigned int numObjects = cHash.lookup(index, code);
+				for (unsigned int j = 0; j < numObjects; ++j)
+				{
+					unsigned int idN = sortedIdMaps[index + j];
+					float gradW[3];
+					sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
+					sumGradW[0] += gradW[0];
+					sumGradW[1] += gradW[1];
+					sumGradW[2] += gradW[2];
+				}
 			}
 
-			unsigned int index;
-			unsigned int numObjects = cHash.lookup(index, code);
-			for (unsigned int j = 0; j < numObjects; ++j)
+			float c = - m_particleMass * pressureP / (densityP * densityP);
+			axs[idP] += c * sumGradW[0];
+			ays[idP] += c * sumGradW[1];
+			azs[idP] += c * sumGradW[2];
+		}
+
+		//----Wall pressure akinci2012.
+		if (particlesWall)
+		{
+			float sumGradW[3];
+			sumGradW[0] = 0.0f;
+			sumGradW[1] = 0.0f;
+			sumGradW[2] = 0.0f;
+			for (unsigned int i= 0; i < 27; ++i)
 			{
-				unsigned int idN = sortedIdMaps[index + j];
-				float gradW[3];
-				sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
-				sumGradW[0] += gradW[0];
-				sumGradW[1] += gradW[1];
-				sumGradW[2] += gradW[2];
+				bool isValid;
+				unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
+				if ( ! isValid)
+				{
+					continue;
+				}
+
+				unsigned int index;
+				unsigned int numObjects = cHashWall->lookup(index, code);
+				for (unsigned int j = 0; j < numObjects; ++j)
+				{
+					unsigned int idW = sortedIdMaps[index + j];
+					float gradW[3];
+					sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], wpxs[idW], wpys[idW], wpzs[idW]);
+					sumGradW[0] += gradW[0];
+					sumGradW[1] += gradW[1];
+					sumGradW[2] += gradW[2];
+
+					float c = - Constants::RO0 * wvs[idW] * pressureP / (densityP * densityP);
+					axs[idP] += c * sumGradW[0];
+					ays[idP] += c * sumGradW[1];
+					azs[idP] += c * sumGradW[2];
+
+				}
 			}
 		}
 
-		float c = - m_particleMass * pressureP / (densityP * densityP);
-		axs[idP] += c * sumGradW[0];
-		ays[idP] += c * sumGradW[1];
-		azs[idP] += c * sumGradW[2];
 
 	}
 

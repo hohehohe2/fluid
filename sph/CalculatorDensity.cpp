@@ -14,7 +14,7 @@ using namespace hohehohe2;
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash,
-											   const ParticlesWall* particlesWall, const CompactHash* cHashWall)
+										  const ParticlesWall* particlesWall, const CompactHash* cHashWall)
 {
 	particles.m_pos->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);
@@ -27,7 +27,7 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 	const float* wpxs;
 	const float* wpys;
 	const float* wpzs;
-	float* wvs;
+	const float* wvs;
 	const unsigned int* wsortedIdMaps;
 	if (particlesWall)
 	{

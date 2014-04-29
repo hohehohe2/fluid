@@ -55,7 +55,7 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 		m_densityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
 		std::cout << "calculation - ";
 		initAcceleration_host_(particles);
-		m_pressureCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, false, HOST);
+		m_pressureCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
 		m_viscosityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST);
 		std::cout << "integrate\n";
 		m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
