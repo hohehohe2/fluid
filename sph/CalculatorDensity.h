@@ -24,7 +24,7 @@ public:
 	CalculatorDensity(float particleMass) : m_particleMass(particleMass){}
 
 	///Main method to calculate the acceleration contribution by the pressure force.
-	///if particlesWall is given the density is mofied for Akinci2012.
+	///if particlesWall/hash is given the density is mofied for Akinci2012.
 	void calculation(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType,
 		ParticlesWall* particlesWall=NULL, const CompactHash* cHashWall=NULL)
 	{
