@@ -12,11 +12,11 @@ namespace hohehohe2
 struct ParticlesWall : public ParticlesSph
 {
 
-	///Particles virtual mass.
-	BufferFloat* m_mass;
+	///Particle volumes.
+	BufferFloat* m_volume;
 
 	///Constructor.
-	ParticlesWall(const std::string& name="ParticlesWall") : ParticlesSph(name), m_mass(NULL){}
+	ParticlesWall(const std::string& name="ParticlesWall") : ParticlesSph(name), m_volume(NULL){}
 
 	///Destructor.
 	virtual ~ParticlesWall(){}
@@ -39,7 +39,7 @@ protected:
 	static void fillMembers_(ParticlesWall* obj, unsigned int size, MemoryType allocMemoryType)
 	{
 		ParticlesSph::fillMembers_(obj, size, allocMemoryType);
-		obj->addChild(obj->m_mass = new BufferFloat("particle mass"));
+		obj->addChild(obj->m_volume = new BufferFloat("particle volume"));
 		obj->setSize(size);
 		obj->allocate(allocMemoryType);
 	}

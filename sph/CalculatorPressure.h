@@ -24,15 +24,15 @@ public:
 	CalculatorPressure(float particleMass) : m_particleMass(particleMass){}
 
 	///Main method to calculate the acceleration contribution by the pressure force.
-	void calcAcceleration(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, bool isWall, MemoryType mType)
+	void calculation(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, bool isWall, MemoryType mType)
 	{
 		if (mType == HOST)
 		{
-			calcAcceleration_host_(particles, sphKernel, ccc, cHash, isWall);
+			calculation_host_(particles, sphKernel, ccc, cHash, isWall);
 		}
 		else
 		{
-			calcAcceleration_device_(particles, sphKernel, ccc, cHash, isWall);
+			calculation_device_(particles, sphKernel, ccc, cHash, isWall);
 		}
 
 	}
@@ -51,8 +51,8 @@ private:
 
 private:
 
-	void calcAcceleration_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, bool isWall);
-	void calcAcceleration_device_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, bool isWall)
+	void calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, bool isWall);
+	void calculation_device_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, bool isWall)
 	{
 		//To be implemented.
 		assert(false);

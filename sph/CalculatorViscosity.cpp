@@ -17,7 +17,7 @@ const float CalculatorViscosity::MU = 0.1f;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorViscosity::calcAcceleration_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
+void CalculatorViscosity::calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
 {
 	particles.m_pos->sync(HOST);
 	particles.m_velocity->sync(HOST);

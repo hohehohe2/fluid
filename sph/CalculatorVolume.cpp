@@ -1,9 +1,8 @@
-#include "CalculatorDensity.h"
+#include "CalculatorVolume.h"
 
 #include "Constants.h"
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include <hohe2Common/container/CompactHash.h>
-#include "ParticlesFluid.h"
 #include "ParticlesWall.h"
 #include "SphKernel.h"
 
@@ -13,8 +12,7 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash,
-											   const ParticlesWall* particlesWall, const CompactHash* cHashWall)
+void CalculatorVolume::calculation_host_(ParticlesWall& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
 {
 	particles.m_pos->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);
@@ -22,7 +20,7 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 	const float* pys = particles.m_pos->ys(HOST);
 	const float* pzs = particles.m_pos->zs(HOST);
 	const unsigned int* sortedIdMaps = particles.m_sortedIdMap->get(HOST);
-	float* ds = particles.m_density->get(HOST);
+	float* vs = particles.m_volume->get(HOST);
 
 	unsigned int size = particles.size();
 
@@ -52,13 +50,7 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 			}
 		}
 
-		ds[idP] = sumW * m_particleMass;
-
-		//Set rest density as minimum to fake air pressure.
-		if (ds[idP] < Constants::RO0)
-		{
-			ds[idP] = Constants::RO0;
-		}
+		vs[idP] = 1.0f / sumW;
 
 	}
 

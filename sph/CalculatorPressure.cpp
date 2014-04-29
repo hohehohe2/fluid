@@ -17,7 +17,7 @@ const float CalculatorPressure::K = 20000.0f;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorPressure::calcAcceleration_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, bool isWall)
+void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, bool isWall)
 {
 	particles.m_pos->sync(HOST);
 	particles.m_density->sync(HOST);
@@ -39,7 +39,7 @@ void CalculatorPressure::calcAcceleration_host_(ParticlesFluid& particles, const
 		float densityP = ds[idP];
 		float pressureP = densityToPressure_(densityP);
 
-		//----Pressure.
+		//----Pressure Muller 2003.
 		//for (unsigned int i= 0; i < 27; ++i)
 		//{
 		//	bool isValid;
