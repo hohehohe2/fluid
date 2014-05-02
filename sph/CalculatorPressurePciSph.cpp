@@ -54,7 +54,6 @@ void CalculatorPressurePciSph::precompute(float equilibriumDistance, int kernelR
 	float beta = m_deltaT * m_deltaT * m_particleMass * m_particleMass * 2.0f / (Constants::RO0 * Constants::RO0);
 	float denominator = beta * sumDotGradW;
 	m_delta = 1.0f / denominator;
-	//m_delta = 40133.0; //tako.
 
 	delete particles;
 }
@@ -113,7 +112,6 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 
 		//Compute density, density error -> update pressure to cancel the density error.
 		maxDensityError = 0.0f;
-		unsigned int tako = 0;
 		for (unsigned int idP = 0; idP < size; ++idP)
 		{
 			float sumW = 0.0f;
@@ -141,12 +139,20 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 			}
 
 			pds[idP] = m_particleMass * sumW;
-			const float densityError = pds[idP] - Constants::RO0;
-			if (maxDensityError < densityError) tako = idP;
+			float densityError = pds[idP] - Constants::RO0;
+
+			//The fluid gets glow up without this due to particle deficiency near the free surface.
+			//Let's keep it non-negative until I implement e.g. ghost SPH.
+			if (densityError < 0.0f) //tako.
+			{
+				densityError = 0.0f;
+			}
+
 			maxDensityError = std::max(maxDensityError, fabs(densityError));
-			pps[idP] += m_delta * densityError;
+			pps[idP] += m_delta * densityError; //Pressure to be canceled.
 		}
-		std::cerr << "maxDensityError " << maxDensityError << " " << tako << std::endl; //tako.
+		std::cerr << "maxDensityError " << maxDensityError << std::endl; //tako.
+		std::cerr << pds[364] - Constants::RO0 << std::endl; //tako.
 
 		//Compute acceleration caused by the pressure.
 		for (unsigned int idP = 0; idP < size; ++idP)
@@ -160,7 +166,6 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 			sumCGradW[1] = 0.0f;
 			sumCGradW[2] = 0.0f;
 
-			
 			for (unsigned int i= 0; i < 27; ++i)
 			{
 				bool isFilled;
