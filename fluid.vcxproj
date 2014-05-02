@@ -156,15 +156,18 @@
   <ItemGroup>
     <ClCompile Include="sph\CalculatorDensity.cpp" />
     <ClCompile Include="sph\CalculatorPressure.cpp" />
+    <ClCompile Include="sph\CalculatorPressurePciSph.cpp" />
     <ClCompile Include="sph\CalculatorSemiImplicitEulerIntegrate.cpp" />
     <ClCompile Include="sph\CalculatorViscosity.cpp" />
     <ClCompile Include="sph\CalculatorVolume.cpp" />
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp" />
+    <ClCompile Include="sph\SphInterpolationFuncs.cpp" />
     <ClCompile Include="sph\SphKernel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\CalculatorDensity.h" />
     <ClInclude Include="sph\CalculatorPressure.h" />
+    <ClInclude Include="sph\CalculatorPressurePciSph.h" />
     <ClInclude Include="sph\CalculatorSemiImplicitEulerIntegrate.h" />
     <ClInclude Include="sph\CalculatorViscosity.h" />
     <ClInclude Include="sph\CalculatorVolume.h" />
@@ -173,6 +176,7 @@
     <ClInclude Include="sph\ParticlesFluid.h" />
     <ClInclude Include="sph\ParticlesSph.h" />
     <ClInclude Include="sph\ParticlesWall.h" />
+    <ClInclude Include="sph\SphInterpolationFuncs.h" />
     <ClInclude Include="sph\SphKernel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -7,7 +7,11 @@ namespace hohehohe2
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-///SPH kernel. Muller2003.
+///SPH kernel.
+/**
+Technically we can fully define the parameters and can create a base interface class, but these methods
+tend to be placed inside the inner most loops, so it will be good to leave the method non-virtual.
+**/
 class SphKernel
 {
 

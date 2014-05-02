@@ -7,30 +7,30 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void InitParticleDistributor::set(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength, unsigned int id)
+void InitParticleDistributor::set(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance, unsigned int id)
 {
 	switch (id)
 	{
 	case 0:
-		placement0_(pos, velocity, posWall, restLength);
+		placement0_(pos, velocity, posWall, equilibriumDistance);
 		break;
 	case 1:
-		placement1_(pos, velocity, posWall, restLength);
+		placement1_(pos, velocity, posWall, equilibriumDistance);
 		break;
 	case 2:
-		placement2_(pos, velocity, posWall, restLength);
+		placement2_(pos, velocity, posWall, equilibriumDistance);
 		break;
 	case 3:
-		placement3_(pos, velocity, posWall, restLength);
+		placement3_(pos, velocity, posWall, equilibriumDistance);
 		break;
 	case 4:
-		placement4_(pos, velocity, posWall, restLength);
+		placement4_(pos, velocity, posWall, equilibriumDistance);
 		break;
 	case 5:
-		placement5_(pos, velocity, posWall, restLength);
+		placement5_(pos, velocity, posWall, equilibriumDistance);
 		break;
 	default:
-		placement0_(pos, velocity, posWall, restLength);
+		placement0_(pos, velocity, posWall, equilibriumDistance);
 		break;
 	}
 
@@ -41,7 +41,7 @@ void InitParticleDistributor::set(PointSet& pos, PointSet& velocity, PointSet& p
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void InitParticleDistributor::placement0_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength)
+void InitParticleDistributor::placement0_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance)
 {
 	pos.setSize(1);
 	pos.allocate(HOST);
@@ -69,7 +69,7 @@ void InitParticleDistributor::placement0_(PointSet& pos, PointSet& velocity, Poi
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void InitParticleDistributor::placement1_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength)
+void InitParticleDistributor::placement1_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance)
 {
 	pos.setSize(2);
 	pos.allocate(HOST);
@@ -83,14 +83,14 @@ void InitParticleDistributor::placement1_(PointSet& pos, PointSet& velocity, Poi
 	float* vys = velocity.ys(HOST);
 	float* vzs = velocity.zs(HOST);
 
-	pxs[0] = -restLength;
+	pxs[0] = -equilibriumDistance;
 	pys[0] = 0.0f;
 	pzs[0] = 0.0f;
 	vxs[0] = 0.0f;
 	vys[0] = 0.0f;
 	vzs[0] = 0.0f;
 
-	pxs[1] = restLength;
+	pxs[1] = equilibriumDistance;
 	pys[1] = 0.0f;
 	pzs[1] = 0.0f;
 	vxs[1] = 0.0f;
@@ -104,7 +104,7 @@ void InitParticleDistributor::placement1_(PointSet& pos, PointSet& velocity, Poi
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void InitParticleDistributor::placement2_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength)
+void InitParticleDistributor::placement2_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance)
 {
 	const int NUM_LINES = 10;
 	pos.setSize(NUM_LINES * NUM_LINES * NUM_LINES);
@@ -126,9 +126,9 @@ void InitParticleDistributor::placement2_(PointSet& pos, PointSet& velocity, Poi
 			for (int k = 0; k < NUM_LINES; ++k)
 			{
 				unsigned int pid = i * NUM_LINES * NUM_LINES + j * NUM_LINES + k;
-				pxs[pid] = restLength / 1.1f * (i - NUM_LINES / 2);
-				pys[pid] = restLength / 1.1f * j;
-				pzs[pid] = restLength / 1.1f * (k - NUM_LINES / 2);
+				pxs[pid] = equilibriumDistance / 1.1f * (i - NUM_LINES / 2);
+				pys[pid] = equilibriumDistance / 1.1f * j;
+				pzs[pid] = equilibriumDistance / 1.1f * (k - NUM_LINES / 2);
 				vxs[pid] = 0.0f;
 				vys[pid] = 0.0f;
 				vzs[pid] = 0.0f;
@@ -143,7 +143,7 @@ void InitParticleDistributor::placement2_(PointSet& pos, PointSet& velocity, Poi
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void InitParticleDistributor::placement3_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength)
+void InitParticleDistributor::placement3_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance)
 {
 	pos.setSize(10);
 	pos.allocate(HOST);
@@ -160,7 +160,7 @@ void InitParticleDistributor::placement3_(PointSet& pos, PointSet& velocity, Poi
 	for(int i = 0; i < 10; ++i)
 	{
 		pxs[i] = 0;
-		pys[i] = restLength * (9 - i);
+		pys[i] = equilibriumDistance * (9 - i);
 		pzs[i] = 0;
 		vxs[i] = 0.0f;
 		vys[i] = 0.0f;
@@ -174,7 +174,7 @@ void InitParticleDistributor::placement3_(PointSet& pos, PointSet& velocity, Poi
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void InitParticleDistributor::placement4_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength)
+void InitParticleDistributor::placement4_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance)
 {
 	const int NUM_LINES = 50;
 	pos.setSize(NUM_LINES * NUM_LINES * NUM_LINES);
@@ -196,9 +196,9 @@ void InitParticleDistributor::placement4_(PointSet& pos, PointSet& velocity, Poi
 			for(int k = 0; k < NUM_LINES; ++k)
 			{
 				unsigned int pid = i * NUM_LINES * NUM_LINES + j * NUM_LINES + k;
-				pxs[pid] = restLength / 1.0f * (i - NUM_LINES / 2);
-				pys[pid] = restLength / 1.0f * (j - NUM_LINES / 2);
-				pzs[pid] = restLength / 1.0f * (k - NUM_LINES / 2);;
+				pxs[pid] = equilibriumDistance / 1.0f * (i - NUM_LINES / 2);
+				pys[pid] = equilibriumDistance / 1.0f * (j - NUM_LINES / 2);
+				pzs[pid] = equilibriumDistance / 1.0f * (k - NUM_LINES / 2);;
 				vxs[pid] = 0.0f;
 				vys[pid] = 0.0f;
 				vzs[pid] = 0.0f;
@@ -213,7 +213,7 @@ void InitParticleDistributor::placement4_(PointSet& pos, PointSet& velocity, Poi
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void InitParticleDistributor::placement5_(PointSet& pos, PointSet& velocity, PointSet& posWall, float restLength)
+void InitParticleDistributor::placement5_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance)
 {
 	const int NUM_LINES = 10;
 	pos.setSize(NUM_LINES * NUM_LINES * NUM_LINES);
@@ -235,9 +235,9 @@ void InitParticleDistributor::placement5_(PointSet& pos, PointSet& velocity, Poi
 			for (int k = 0; k < NUM_LINES; ++k)
 			{
 				unsigned int pid = i * NUM_LINES * NUM_LINES + j * NUM_LINES + k;
-				pxs[pid] = restLength / 1.1f * (i - NUM_LINES / 2);
-				pys[pid] = restLength / 1.1f * j;
-				pzs[pid] = restLength / 1.1f * (k - NUM_LINES / 2);
+				pxs[pid] = equilibriumDistance / 1.1f * (i - NUM_LINES / 2);
+				pys[pid] = equilibriumDistance / 1.1f * j;
+				pzs[pid] = equilibriumDistance / 1.1f * (k - NUM_LINES / 2);
 				vxs[pid] = 0.0f;
 				vys[pid] = 0.0f;
 				vzs[pid] = 0.0f;
@@ -261,9 +261,9 @@ void InitParticleDistributor::placement5_(PointSet& pos, PointSet& velocity, Poi
 		for(int k = 0; k < NUM_GROUND_LINES; ++k)
 		{
 			unsigned int pid = i * NUM_GROUND_LINES + k;
-			wpxs[pid] = restLength * (i - NUM_GROUND_LINES / 2);
-			wpys[pid] = -restLength * 10;
-			wpzs[pid] = restLength * (k - NUM_GROUND_LINES / 2);
+			wpxs[pid] = equilibriumDistance * (i - NUM_GROUND_LINES / 2);
+			wpys[pid] = -equilibriumDistance * 10;
+			wpzs[pid] = equilibriumDistance * (k - NUM_GROUND_LINES / 2);
 		}
 	}
 

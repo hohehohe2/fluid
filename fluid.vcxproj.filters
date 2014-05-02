@@ -27,6 +27,12 @@
     <ClCompile Include="sph\CalculatorVolume.cpp">
       <Filter>sph</Filter>
     </ClCompile>
+    <ClCompile Include="sph\CalculatorPressurePciSph.cpp">
+      <Filter>sph</Filter>
+    </ClCompile>
+    <ClCompile Include="sph\SphInterpolationFuncs.cpp">
+      <Filter>sph</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\FluidSolverSimpleSph.h">
@@ -60,6 +66,12 @@
       <Filter>sph</Filter>
     </ClInclude>
     <ClInclude Include="sph\CalculatorVolume.h">
+      <Filter>sph</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\CalculatorPressurePciSph.h">
+      <Filter>sph</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\SphInterpolationFuncs.h">
       <Filter>sph</Filter>
     </ClInclude>
   </ItemGroup>

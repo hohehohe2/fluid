@@ -42,12 +42,12 @@ public:
 	void step(ParticlesFluid& particles, ParticlesWall& particlesWall, float deltaT);
 
 	///Get the distance between particles at rest density.
-	float restLength() const {return m_restLength;}
+	float equilibriumDistance() const {return m_equilibriumDistance;}
 
 private:
 
-	///Distance between particles at rest density, just for initial distribution hint. (volume per particle) ^ (1/3).
-	float m_restLength;
+	///Distance between particles at rest density. (volume per particle) ^ (1/3).
+	float m_equilibriumDistance;
 
 	///SPH kernel calculator.
 	SphKernel m_sphKernel;

@@ -49,7 +49,7 @@ private:
 	static const float K;
 
 	///Particle mass.
-	float m_particleMass;
+	const float m_particleMass;
 
 private:
 

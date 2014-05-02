@@ -50,20 +50,20 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 		wsortedIdMaps = particlesWall->m_sortedIdMap->get(HOST);
 	}
 
-	unsigned int size = particles.size();
+	const unsigned int size = particles.size();
 
 	#pragma omp parallel for
 	for (int idP = 0; idP < (int)size; ++idP)
 	{
-		float densityP = ds[idP];
-		float pressureP = densityToPressure_(densityP);
+		const float densityP = ds[idP];
+		const float pressureP = densityToPressure_(densityP);
 
 		//----Pressure Muller 2003.
 		//for (unsigned int i= 0; i < 27; ++i)
 		//{
-		//	bool isValid;
-		//	unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
-		//	if ( ! isValid)
+		//	bool isFilled;
+		//	unsigned int code = ccc.getNeighborCode32(isFilled, pxs[idP], pys[idP], pzs[idP], i);
+		//	if ( ! isFilled)
 		//	{
 		//		continue;
 		//	}
@@ -96,20 +96,21 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 			sumGradW[0] = 0.0f;
 			sumGradW[1] = 0.0f;
 			sumGradW[2] = 0.0f;
+
 			for (unsigned int i= 0; i < 27; ++i)
 			{
-				bool isValid;
-				unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
-				if ( ! isValid)
+				bool isFilled;
+				const unsigned int code = ccc.getNeighborCode32(isFilled, pxs[idP], pys[idP], pzs[idP], i);
+				if ( ! isFilled)
 				{
 					continue;
 				}
 
 				unsigned int index;
-				unsigned int numObjects = cHash.lookup(index, code);
+				const unsigned int numObjects = cHash.lookup(index, code);
 				for (unsigned int j = 0; j < numObjects; ++j)
 				{
-					unsigned int idN = sortedIdMaps[index + j];
+					const unsigned int idN = sortedIdMaps[index + j];
 					float gradW[3];
 					sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
 					sumGradW[0] += gradW[0];
@@ -118,7 +119,7 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 				}
 			}
 
-			float c = - m_particleMass * pressureP / (densityP * densityP);
+			const float c = - m_particleMass * pressureP / (densityP * densityP);
 			axs[idP] += c * sumGradW[0];
 			ays[idP] += c * sumGradW[1];
 			azs[idP] += c * sumGradW[2];
@@ -133,25 +134,25 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 			sumGradW[2] = 0.0f;
 			for (unsigned int i= 0; i < 27; ++i)
 			{
-				bool isValid;
-				unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
-				if ( ! isValid)
+				bool isFilled;
+				const unsigned int code = ccc.getNeighborCode32(isFilled, pxs[idP], pys[idP], pzs[idP], i);
+				if ( ! isFilled)
 				{
 					continue;
 				}
 
 				unsigned int index;
-				unsigned int numObjects = cHashWall->lookup(index, code);
+				const unsigned int numObjects = cHashWall->lookup(index, code);
 				for (unsigned int j = 0; j < numObjects; ++j)
 				{
-					unsigned int idW = wsortedIdMaps[index + j];
+					const unsigned int idW = wsortedIdMaps[index + j];
 					float gradW[3];
 					sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], wpxs[idW], wpys[idW], wpzs[idW]);
 					sumGradW[0] += gradW[0];
 					sumGradW[1] += gradW[1];
 					sumGradW[2] += gradW[2];
 
-					float c = - Constants::RO0 * wvs[idW] * pressureP / (densityP * densityP);
+					const float c = - Constants::RO0 * wvs[idW] * pressureP / (densityP * densityP);
 					axs[idP] += c * sumGradW[0];
 					ays[idP] += c * sumGradW[1];
 					azs[idP] += c * sumGradW[2];

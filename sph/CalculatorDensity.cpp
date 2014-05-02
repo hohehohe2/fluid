@@ -51,21 +51,21 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 		//----Contribution from neightbor fruid particles.
 		for (unsigned int i= 0; i < 27; ++i)
 		{
-			bool isValid;
-			unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
-			if ( ! isValid)
+			bool isFilled;
+			const unsigned int code = ccc.getNeighborCode32(isFilled, pxs[idP], pys[idP], pzs[idP], i);
+			if ( ! isFilled)
 			{
 				continue;
 			}
 			unsigned int index;
-			unsigned int numObjects = cHash.lookup(index, code);
+			const unsigned int numObjects = cHash.lookup(index, code);
 			for (unsigned int j = 0; j < numObjects; ++j)
 			{
-				unsigned int idN = sortedIdMaps[index + j];
-				float distx = pxs[idN] - pxs[idP];
-				float disty = pys[idN] - pys[idP];
-				float distz = pzs[idN] - pzs[idP];
-				float dist2 = distx * distx + disty * disty + distz * distz;
+				const unsigned int idN = sortedIdMaps[index + j];
+				const float distx = pxs[idN] - pxs[idP];
+				const float disty = pys[idN] - pys[idP];
+				const float distz = pzs[idN] - pzs[idP];
+				const float dist2 = distx * distx + disty * disty + distz * distz;
 				sumW += sphKernel.w(dist2);
 			}
 		}
@@ -79,21 +79,21 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 			float densContribWall = 0.0f;
 			for (unsigned int i= 0; i < 27; ++i)
 			{
-				bool isValid;
-				unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
-				if ( ! isValid)
+				bool isFilled;
+				const unsigned int code = ccc.getNeighborCode32(isFilled, pxs[idP], pys[idP], pzs[idP], i);
+				if ( ! isFilled)
 				{
 					continue;
 				}
 				unsigned int index;
-				unsigned int numObjects = cHashWall->lookup(index, code);
+				const unsigned int numObjects = cHashWall->lookup(index, code);
 				for (unsigned int j = 0; j < numObjects; ++j)
 				{
-					unsigned int idW = wsortedIdMaps[index + j];
-					float distx = wpxs[idW] - pxs[idP];
-					float disty = wpys[idW] - pys[idP];
-					float distz = wpzs[idW] - pzs[idP];
-					float dist2 = distx * distx + disty * disty + distz * distz;
+					const unsigned int idW = wsortedIdMaps[index + j];
+					const float distx = wpxs[idW] - pxs[idP];
+					const float disty = wpys[idW] - pys[idP];
+					const float distz = wpzs[idW] - pzs[idP];
+					const float dist2 = distx * distx + disty * disty + distz * distz;
 					densContribWall += Constants::RO0 * wvs[idW] * sphKernel.w(dist2);
 				}
 			}

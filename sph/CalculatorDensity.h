@@ -43,7 +43,7 @@ public:
 private:
 
 	///Particle mass.
-	float m_particleMass;
+	const float m_particleMass;
 
 private:
 

@@ -17,7 +17,7 @@ void ExampleSphApp::reset(unsigned int id)
 	PointSet* velocity = new PointSet("particles velocity");
 	PointSet* posWall = new PointSet("particlesWall pos");
 
-	InitParticleDistributor::set(*pos, *velocity, *posWall, m_ssph.restLength(), id);
+	InitParticleDistributor::set(*pos, *velocity, *posWall, m_ssph.equilibriumDistance(), id);
 
 	m_particles = ParticlesFluid::createInstance(pos->size());
 	m_particles->setPos(pos);

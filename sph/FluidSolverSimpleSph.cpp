@@ -24,8 +24,8 @@ FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 {
 	//Adjust the kernel radius so that several dozens of neighbor particles are in the radius at rest density.
 	float particleVolume = particleMass / Constants::RO0;
-	m_restLength = (float)pow(particleVolume, 1.0 / 3.0);
-	m_sphKernel.setKernelRadius(m_restLength * 4.0f);
+	m_equilibriumDistance = (float)pow(particleVolume, 1.0 / 3.0);
+	m_sphKernel.setKernelRadius(m_equilibriumDistance * 4.0f);
 }
 
 

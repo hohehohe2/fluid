@@ -13,7 +13,7 @@ class CellCodeCalculator;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-///Viscosity calculator for SPH.
+///Viscosity force (acceleration) calculator for SPH.
 class CalculatorViscosity
 {
 
@@ -43,7 +43,7 @@ private:
 	static const float MU;
 
 	///Particle mass.
-	float m_particleMass;
+	const float m_particleMass;
 
 private:
 

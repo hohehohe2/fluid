@@ -22,7 +22,7 @@ void CalculatorVolume::calculation_host_(ParticlesWall& particles, const SphKern
 	const unsigned int* sortedIdMaps = particles.m_sortedIdMap->get(HOST);
 	float* vs = particles.m_volume->get(HOST);
 
-	unsigned int size = particles.size();
+	const unsigned int size = particles.size();
 
 	#pragma omp parallel for
 	for (int idP = 0; idP < (int)size; ++idP)
@@ -31,21 +31,21 @@ void CalculatorVolume::calculation_host_(ParticlesWall& particles, const SphKern
 
 		for (unsigned int i= 0; i < 27; ++i)
 		{
-			bool isValid;
-			unsigned int code = ccc.getNeighborCode32(isValid, pxs[idP], pys[idP], pzs[idP], i);
-			if ( ! isValid)
+			bool isFilled;
+			const unsigned int code = ccc.getNeighborCode32(isFilled, pxs[idP], pys[idP], pzs[idP], i);
+			if ( ! isFilled)
 			{
 				continue;
 			}
 			unsigned int index;
-			unsigned int numObjects = cHash.lookup(index, code);
+			const unsigned int numObjects = cHash.lookup(index, code);
 			for (unsigned int j = 0; j < numObjects; ++j)
 			{
-				unsigned int idN = sortedIdMaps[index + j];
-				float distx = pxs[idN] - pxs[idP];
-				float disty = pys[idN] - pys[idP];
-				float distz = pzs[idN] - pzs[idP];
-				float dist2 = distx * distx + disty * disty + distz * distz;
+				const unsigned int idN = sortedIdMaps[index + j];
+				const float distx = pxs[idN] - pxs[idP];
+				const float disty = pys[idN] - pys[idP];
+				const float distz = pzs[idN] - pzs[idP];
+				const float dist2 = distx * distx + disty * disty + distz * distz;
 				sumW += sphKernel.w(dist2);
 			}
 		}
@@ -71,9 +71,11 @@ void CalculatorVolume::calculation_host_(ParticlesWall& particles, const SphKern
 		//Here (A) is Akinci2012 and (B) is the traditional multi-layer wall particle model.
 		//We need to adjust the scalingFactor so that
 		//sum of forces o gets from 'X's in (A) == sum of forces o gets from 'x's in (B)
-		//It depends on how we choose the kernel.
+		//According to the paper it increases the volume of a wall particle scales by a factor of 1.4 but
+		//in my condition it's about 3 (can be solved analiticall but I just tested with poly6 and cubic spline kernels).
+		//I don't know what makes the difference yet since a factor of 3 seems to be natural to me.
 
-		float scalingFactor = 0.1f;
+		const float scalingFactor = 0.1f;
 		vs[idP] = scalingFactor / sumW;
 
 	}
