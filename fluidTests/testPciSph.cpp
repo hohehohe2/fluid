@@ -18,7 +18,7 @@ TEST(PciSph, create)
 	const int kernelRadiusPerEquilibriumDistance = 4;
 	float equilibriumDistance = 0.1f;
 	SphKernel sphKernel;
-	float deltaT = 0.1f;
+	float deltaT = 0.01f;
 	float particleMass = 1.0f;
 	float kernelRadius = equilibriumDistance * kernelRadiusPerEquilibriumDistance;
 	sphKernel.setKernelRadius(kernelRadius);
