@@ -61,7 +61,7 @@ void CalculatorPressurePciSph::precompute(float equilibriumDistance, int kernelR
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
+void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, const CellCodeCalculator& ccc, const CompactHash& cHash)
 {
 	particles.sync(HOST);
 	unsigned int size = particles.size();
@@ -134,7 +134,7 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 					const float disty = ppys[idN] - ppys[idP];
 					const float distz = ppzs[idN] - ppzs[idP];
 					const float dist2 = distx * distx + disty * disty + distz * distz;
-					sumW += sphKernel.w(dist2);
+					sumW += m_sphKernel.w(dist2);
 				}
 			}
 
@@ -181,7 +181,7 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 				{
 					const unsigned int idN = sortedIdMaps[index + j];
 					float gradW[3];
-					sphKernel.gradW(gradW, ppxs[idP], ppys[idP], ppzs[idP], ppxs[idN], ppys[idN], ppzs[idN]);
+					m_sphKernel.gradW(gradW, ppxs[idP], ppys[idP], ppzs[idP], ppxs[idN], ppys[idN], ppzs[idN]);
 					sumGradW[0] += gradW[0];
 					sumGradW[1] += gradW[1];
 					sumGradW[2] += gradW[2];

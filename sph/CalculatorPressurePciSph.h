@@ -28,15 +28,15 @@ public:
 	void precompute(float equilibriumDistance, int kernelRadiusPerEquilibriumDistance);
 
 	///Main method to calculate the acceleration contribution by the pressure force.
-	void calculation(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType)
+	void calculation(ParticlesFluid& particles, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType)
 	{
 		if (mType == HOST)
 		{
-			calculation_host_(particles, sphKernel, ccc, cHash);
+			calculation_host_(particles, ccc, cHash);
 		}
 		else
 		{
-			calculation_device_(particles, sphKernel, ccc, cHash);
+			calculation_device_(particles, ccc, cHash);
 		}
 
 	}
@@ -64,8 +64,8 @@ private:
 
 private:
 
-	void calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash);
-	void calculation_device_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
+	void calculation_host_(ParticlesFluid& particles, const CellCodeCalculator& ccc, const CompactHash& cHash);
+	void calculation_device_(ParticlesFluid& particles, const CellCodeCalculator& ccc, const CompactHash& cHash)
 	{
 		//To be implemented.
 		assert(false);

@@ -97,7 +97,7 @@ TEST(PciSph, create)
 
 	//--------------PCISPH.
 
-	pcSph.calculation(*particles, sphKernel, ccc, cHash, HOST);
+	pcSph.calculation(*particles, ccc, cHash, HOST);
 
 	//--------------Time integrate.
 
