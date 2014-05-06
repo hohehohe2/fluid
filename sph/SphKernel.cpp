@@ -6,6 +6,9 @@
 using namespace hohehohe2;
 
 
+//TODO: Coefficients should be applied after summation.
+
+
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void SphKernel::setKernelRadius(float radius)

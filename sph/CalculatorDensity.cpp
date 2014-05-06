@@ -101,7 +101,7 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 			ds[idP] += densContribWall;
 		}
 
-		//----Set rest density as minimum to fake air pressure.
+		////----Set rest density as minimum to fake air pressure.
 		//if (ds[idP] < Constants::RO0)
 		//{
 		//	ds[idP] = Constants::RO0;

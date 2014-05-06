@@ -69,7 +69,7 @@ void ExampleSphApp::onKey(unsigned char key)
 //---------------------------------------------------------------------------
 void ExampleSphApp::draw()
 {
-	const float MAX_DENSITY = 2000.0f;
+	const float MAX_DENSITY = 1500.0f;
 	const Point FLUID_RGB(1.0f, 0.0f, 0.0f);
 	const Point WALL_RGB(0.5f, 0.5f, 0.5f);
 
@@ -89,10 +89,6 @@ void ExampleSphApp::draw()
 	for (unsigned int i = 0; i < m_particles->m_pos->size(); ++i)
 	{
 		float scale = ds[i] / MAX_DENSITY;
-		if (scale < 0.2f)
-		{
-			scale = 0.2f;
-		}
 		glColor3f(FLUID_RGB.x() * scale, FLUID_RGB.y() * scale, FLUID_RGB.z() * scale);
 		glVertex3f(pxs[i], pys[i], pzs[i]);
 	}

@@ -20,49 +20,85 @@ FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 	:
 	m_cHash(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
 	m_cHashWall(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
-	m_pressureCalculator(particleMass), m_viscosityCalculator(particleMass), m_densityCalculator(particleMass)
+	//m_pressureCalculator(particleMass),
+	m_pressurePciSphCalculator(particleMass, m_sphKernel, /*tako*/0.01f, 0.01f, 6),
+	m_viscosityCalculator(particleMass), m_densityCalculator(particleMass)
 {
+	const unsigned int KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE = 4;
+
 	//Adjust the kernel radius so that several dozens of neighbor particles are in the radius at rest density.
 	float particleVolume = particleMass / Constants::RO0;
 	m_equilibriumDistance = (float)pow(particleVolume, 1.0 / 3.0);
-	m_sphKernel.setKernelRadius(m_equilibriumDistance * 4.0f);
+	m_sphKernel.setKernelRadius(m_equilibriumDistance * KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE);
+
+	m_pressurePciSphCalculator.precompute(m_equilibriumDistance, KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE);
 }
 
+//tako.
+////-------------------------------------------------------------------
+////-------------------------------------------------------------------
+//void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& particlesWall, float deltaT)
+//{
+//	float remaining = deltaT;
+//	bool loop = true;
+//	do
+//	{
+//		float maxVelocity = particles.m_velocity->calcMaxLength(HOST);
+//		float dt = PET_PEEVE_COURANT_NUMBER * m_sphKernel.r() / maxVelocity;
+//		if (dt > remaining)
+//		{
+//			dt = remaining;
+//			loop = false;
+//		}
+//		remaining -= dt;
+//
+//		std::cout << remaining << ": updateNeighbors - ";
+//		CellCodeCalculator ccc;
+//		updateNeighbors_(particles, particlesWall, ccc);
+//		std::cout << "calcVolume - ";
+//		m_volumeCalculator.calculation(particlesWall, m_sphKernel, ccc, m_cHashWall, HOST);
+//		std::cout << "calcDensity - ";
+//		m_densityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
+//		std::cout << "calculation - ";
+//		initAcceleration_host_(particles);
+//		//m_pressureCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
+//		m_viscosityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST);
+//		m_pressurePciSphCalculator.calculation(particles, ccc, m_cHash, HOST);
+//		std::cout << "integrate\n";
+//		m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
+//
+//	} while(loop);
+//}
 
+
+//tako.
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& particlesWall, float deltaT)
 {
-	float remaining = deltaT;
-	bool loop = true;
-	do
-	{
-		float maxVelocity = particles.m_velocity->calcMaxLength(HOST);
-		float dt = PET_PEEVE_COURANT_NUMBER * m_sphKernel.r() / maxVelocity;
-		if (dt > remaining)
-		{
-			dt = remaining;
-			loop = false;
-		}
-		remaining -= dt;
-
-		std::cout << remaining << ": updateNeighbors - ";
 		CellCodeCalculator ccc;
 		updateNeighbors_(particles, particlesWall, ccc);
-		std::cout << "calcVolume - ";
 		m_volumeCalculator.calculation(particlesWall, m_sphKernel, ccc, m_cHashWall, HOST);
-		std::cout << "calcDensity - ";
 		m_densityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
-		std::cout << "calculation - ";
-		initAcceleration_host_(particles);
-		m_pressureCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
+
+			float* axs = particles.m_acceleration->xs(HOST);
+			float* ays = particles.m_acceleration->ys(HOST);
+			float* azs = particles.m_acceleration->zs(HOST);
+
+			unsigned int size = particles.size();
+
+			for (int idP = 0; idP < (int)size; ++idP)
+			{
+				//----Gravity.
+				axs[idP] = 0.0f;
+				ays[idP] = Constants::G;
+				azs[idP] = 0.0f;
+			}
+
 		m_viscosityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST);
-		std::cout << "integrate\n";
-		m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
-
-	} while(loop);
+		m_pressurePciSphCalculator.calculation(particles, ccc, m_cHash, HOST);
+		m_semiImplicitEulerIntegrateCalculator.integrate(particles, deltaT, HOST);
 }
-
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------

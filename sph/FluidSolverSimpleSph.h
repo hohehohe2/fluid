@@ -10,6 +10,7 @@
 #include "CalculatorPressure.h"
 #include "CalculatorViscosity.h"
 #include "CalculatorSemiImplicitEulerIntegrate.h"
+#include "CalculatorPressurePciSph.h"
 
 namespace hohehohe2
 {
@@ -62,7 +63,9 @@ private:
 
 	CalculatorDensity m_densityCalculator;
 
-	CalculatorPressure m_pressureCalculator;
+	//CalculatorPressure m_pressureCalculator;
+
+	CalculatorPressurePciSph m_pressurePciSphCalculator;
 
 	CalculatorViscosity m_viscosityCalculator;
 

@@ -31,9 +31,9 @@ TEST(PciSph, create)
 
 	//--------------Create particles.
 
-	const unsigned int numLines = kernelRadiusPerEquilibriumDistance * 2 + 1;
+	const unsigned int numLines = kernelRadiusPerEquilibriumDistance * 2 * 2 + 1;
 	const unsigned int numParticles = numLines * numLines * numLines;
-	const unsigned int centerPerticleId = numLines * numLines * kernelRadiusPerEquilibriumDistance + numLines * kernelRadiusPerEquilibriumDistance + kernelRadiusPerEquilibriumDistance;
+	const unsigned int centerPerticleId = numLines * numLines * kernelRadiusPerEquilibriumDistance * 2 + numLines * kernelRadiusPerEquilibriumDistance * 2 + kernelRadiusPerEquilibriumDistance * 2;
 
 	ParticlesFluid* particles = ParticlesFluid::createInstance(numParticles, HOST);
 	float* pxs = particles->m_pos->xs(HOST);
@@ -43,17 +43,15 @@ TEST(PciSph, create)
 	particles->m_acceleration->memset(0, HOST);
 
 	unsigned int id = 0;
-	for (int i = -kernelRadiusPerEquilibriumDistance; i <= kernelRadiusPerEquilibriumDistance; ++i)
+	for (int i = -kernelRadiusPerEquilibriumDistance * 2; i <= kernelRadiusPerEquilibriumDistance * 2; ++i)
 	{
-		for (int j = -kernelRadiusPerEquilibriumDistance; j <= kernelRadiusPerEquilibriumDistance; ++j)
+		for (int j = -kernelRadiusPerEquilibriumDistance * 2; j <= kernelRadiusPerEquilibriumDistance * 2; ++j)
 		{
-			for (int k = -kernelRadiusPerEquilibriumDistance; k <= kernelRadiusPerEquilibriumDistance; ++k)
+			for (int k = -kernelRadiusPerEquilibriumDistance * 2; k <= kernelRadiusPerEquilibriumDistance * 2 ; ++k)
 			{
 				if (id == centerPerticleId)
 				{
-					//pxs[id] = 0.1f;
-					//pys[id] = 0.2f;
-					//pzs[id] = 0.3f;
+					assert(i == 0 && j == 0 && k == 0);
 					pxs[id] = 0.1f;
 					pys[id] = 0.0f;
 					pzs[id] = 0.0f;

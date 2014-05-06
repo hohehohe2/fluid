@@ -126,9 +126,9 @@ void InitParticleDistributor::placement2_(PointSet& pos, PointSet& velocity, Poi
 			for (int k = 0; k < NUM_LINES; ++k)
 			{
 				unsigned int pid = i * NUM_LINES * NUM_LINES + j * NUM_LINES + k;
-				pxs[pid] = equilibriumDistance / 1.1f * (i - NUM_LINES / 2);
-				pys[pid] = equilibriumDistance / 1.1f * j;
-				pzs[pid] = equilibriumDistance / 1.1f * (k - NUM_LINES / 2);
+				pxs[pid] = equilibriumDistance / 1.0f * (i - NUM_LINES / 2);
+				pys[pid] = equilibriumDistance / 1.0f * j;
+				pzs[pid] = equilibriumDistance / 1.0f * (k - NUM_LINES / 2);
 				vxs[pid] = 0.0f;
 				vys[pid] = 0.0f;
 				vzs[pid] = 0.0f;

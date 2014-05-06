@@ -70,6 +70,10 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 	float* ays = particles.m_acceleration->ys(HOST);
 	float* azs = particles.m_acceleration->zs(HOST);
 
+	const float* vxs = particles.m_velocity->xs(HOST);
+	const float* vys = particles.m_velocity->ys(HOST);
+	const float* vzs = particles.m_velocity->zs(HOST);
+
 	const float* pxs = particles.m_pos->xs(HOST);
 	const float* pys = particles.m_pos->ys(HOST);
 	const float* pzs = particles.m_pos->zs(HOST);
@@ -100,15 +104,24 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 	const unsigned int* sortedIdMaps = particles.m_sortedIdMap->get(HOST);
 
 	float maxDensityError = FLT_MAX;
-	for (unsigned int iter = 0; iter < m_numMaxIterations && maxDensityError / Constants::RO0 > m_maxRelativeDensityError; ++iter)
+	//for (unsigned int iter = 0; iter < m_numMaxIterations && maxDensityError / Constants::RO0 > m_maxRelativeDensityError; ++iter)
+	//for (unsigned int iter = 0; iter < 4; ++iter) //tako. Particles unstable.
+	for (unsigned int iter = 0; iter < 1; ++iter) //tako.
 	{
 		//Compute predicted fluid particle positions (time integral).
 		for (unsigned int idP = 0; idP < size; ++idP)
 		{
-			ppxs[idP] = pxs[idP] + (axs[idP] + caxs[idP]) * m_deltaT * m_deltaT;
-			ppys[idP] = pys[idP] + (ays[idP] + cays[idP]) * m_deltaT * m_deltaT;
-			ppzs[idP] = pzs[idP] + (azs[idP] + cazs[idP]) * m_deltaT * m_deltaT;
+			//Implicit Euler.
+			Point deltaXYZ;
+			deltaXYZ[0] = (vxs[idP] + (axs[idP] + caxs[idP]) * m_deltaT) * m_deltaT;
+			deltaXYZ[1] = (vys[idP] + (ays[idP] + cays[idP]) * m_deltaT) * m_deltaT;
+			deltaXYZ[2] = (vzs[idP] + (azs[idP] + cazs[idP]) * m_deltaT) * m_deltaT;
+
+			ppxs[idP] = pxs[idP] + deltaXYZ[0] * m_deltaT;
+			ppys[idP] = pys[idP] + deltaXYZ[1] * m_deltaT;
+			ppzs[idP] = pzs[idP] + deltaXYZ[2] * m_deltaT;
 		}
+		//std::cout << "Center p" << ppxs[2456] << " " << ppys[2456] << " " << ppzs[2456] << "\n"; //tako.
 
 		//Compute density, density error -> update pressure to cancel the density error.
 		maxDensityError = 0.0f;
@@ -140,10 +153,11 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 
 			pds[idP] = m_particleMass * sumW;
 			float densityError = pds[idP] - Constants::RO0;
+			//if (idP == 2456) std::cerr << "ro err=" << densityError << "\n"; //tako.
 
 			//The fluid gets glow up without this due to particle deficiency near the free surface.
 			//Let's keep it non-negative until I implement e.g. ghost SPH.
-			if (densityError < 0.0f) //tako.
+			if (densityError < 0.0f) //tako?.
 			{
 				densityError = 0.0f;
 			}
@@ -151,25 +165,19 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 			maxDensityError = std::max(maxDensityError, fabs(densityError));
 			pps[idP] += m_delta * densityError; //Pressure to be canceled.
 		}
-		std::cerr << "maxDensityError " << maxDensityError << std::endl; //tako.
-		std::cerr << pds[364] - Constants::RO0 << std::endl; //tako.
+		//std::cerr << "iter=" << iter << " maxDensityError=" << maxDensityError << std::endl; //tako.
+		//std::cerr << pds[2456] - Constants::RO0 << std::endl; //tako.
 
 		//Compute acceleration caused by the pressure.
 		for (unsigned int idP = 0; idP < size; ++idP)
 		{
-			float sumGradW[3];
-			sumGradW[0] = 0.0f;
-			sumGradW[1] = 0.0f;
-			sumGradW[2] = 0.0f;
-			float sumCGradW[3];
-			sumCGradW[0] = 0.0f;
-			sumCGradW[1] = 0.0f;
-			sumCGradW[2] = 0.0f;
+			Point sumGradW(0.0f, 0.0f, 0.0f);
+			Point sumCGradW(0.0f, 0.0f, 0.0f);
 
 			for (unsigned int i= 0; i < 27; ++i)
 			{
 				bool isFilled;
-				const unsigned int code = ccc.getNeighborCode32(isFilled, ppxs[idP], ppys[idP], ppzs[idP], i);
+				const unsigned int code = ccc.getNeighborCode32(isFilled, pxs[idP], pys[idP], pzs[idP], i);
 				if ( ! isFilled)
 				{
 					continue;
@@ -182,20 +190,33 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 					const unsigned int idN = sortedIdMaps[index + j];
 					float gradW[3];
 					m_sphKernel.gradW(gradW, ppxs[idP], ppys[idP], ppzs[idP], ppxs[idN], ppys[idN], ppzs[idN]);
-					sumGradW[0] += gradW[0];
-					sumGradW[1] += gradW[1];
-					sumGradW[2] += gradW[2];
+					sumGradW.x() += gradW[0];
+					sumGradW.y() += gradW[1];
+					sumGradW.z() += gradW[2];
 					float c = pps[idN] / (pds[idN] * pds[idN]);
-					sumCGradW[0] += c * gradW[0];
-					sumCGradW[1] += c * gradW[1];
-					sumCGradW[2] += c * gradW[2];
+					sumCGradW.x() += c * gradW[0];
+					sumCGradW.y() += c * gradW[1];
+					sumCGradW.z() += c * gradW[2];
 				}
 			}
 
 			const float c = pps[idP] / (pds[idP] * pds[idP]);
-			caxs[idP] += - m_particleMass * (c * sumGradW[0] + sumCGradW[0]);
-			cays[idP] += - m_particleMass * (c * sumGradW[1] + sumCGradW[1]);
-			cazs[idP] += - m_particleMass * (c * sumGradW[2] + sumCGradW[2]);
+
+
+			Point currentCorrenctedAcceleration = - m_particleMass * (c * sumGradW + sumCGradW);
+
+			//tako?
+			static const float MAX_ACCELERATION = 300.0f; //tako.
+			if (currentCorrenctedAcceleration.squaredNorm() > MAX_ACCELERATION * MAX_ACCELERATION)
+			{
+				currentCorrenctedAcceleration /= currentCorrenctedAcceleration.norm();
+				currentCorrenctedAcceleration*= MAX_ACCELERATION;
+			}
+
+			caxs[idP] += currentCorrenctedAcceleration.x();
+			cays[idP] += currentCorrenctedAcceleration.y();
+			cazs[idP] += currentCorrenctedAcceleration.z();
+
 		}
 	}
 
@@ -205,6 +226,9 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 		ays[idP] += cays[idP];
 		azs[idP] += cazs[idP];
 	}
+
+	//tako.
+	particles.m_density->copyAll(predictedDensitySet, HOST);
 
 	particles.setClean(HOST);
 }
