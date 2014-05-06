@@ -104,9 +104,7 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 	const unsigned int* sortedIdMaps = particles.m_sortedIdMap->get(HOST);
 
 	float maxDensityError = FLT_MAX;
-	//for (unsigned int iter = 0; iter < m_numMaxIterations && maxDensityError / Constants::RO0 > m_maxRelativeDensityError; ++iter)
-	//for (unsigned int iter = 0; iter < 4; ++iter) //tako. Particles unstable.
-	for (unsigned int iter = 0; iter < 1; ++iter) //tako.
+	for (unsigned int iter = 0; iter < m_numMaxIterations && maxDensityError / Constants::RO0 > m_maxRelativeDensityError; ++iter)
 	{
 		//Compute predicted fluid particle positions (time integral).
 		for (unsigned int idP = 0; idP < size; ++idP)
@@ -121,7 +119,6 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 			ppys[idP] = pys[idP] + deltaXYZ[1] * m_deltaT;
 			ppzs[idP] = pzs[idP] + deltaXYZ[2] * m_deltaT;
 		}
-		//std::cout << "Center p" << ppxs[2456] << " " << ppys[2456] << " " << ppzs[2456] << "\n"; //tako.
 
 		//Compute density, density error -> update pressure to cancel the density error.
 		maxDensityError = 0.0f;
@@ -153,11 +150,10 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 
 			pds[idP] = m_particleMass * sumW;
 			float densityError = pds[idP] - Constants::RO0;
-			//if (idP == 2456) std::cerr << "ro err=" << densityError << "\n"; //tako.
 
 			//The fluid gets glow up without this due to particle deficiency near the free surface.
 			//Let's keep it non-negative until I implement e.g. ghost SPH.
-			if (densityError < 0.0f) //tako?.
+			if (densityError < 0.0f)
 			{
 				densityError = 0.0f;
 			}
@@ -165,8 +161,6 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 			maxDensityError = std::max(maxDensityError, fabs(densityError));
 			pps[idP] += m_delta * densityError; //Pressure to be canceled.
 		}
-		//std::cerr << "iter=" << iter << " maxDensityError=" << maxDensityError << std::endl; //tako.
-		//std::cerr << pds[2456] - Constants::RO0 << std::endl; //tako.
 
 		//Compute acceleration caused by the pressure.
 		for (unsigned int idP = 0; idP < size; ++idP)
@@ -205,12 +199,16 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 
 			Point currentCorrenctedAcceleration = - m_particleMass * (c * sumGradW + sumCGradW);
 
-			//tako?
-			static const float MAX_ACCELERATION = 300.0f; //tako.
-			if (currentCorrenctedAcceleration.squaredNorm() > MAX_ACCELERATION * MAX_ACCELERATION)
+			//Acceleration limit. It prevents near free-surface partcles from moving too fast and corrupt the simulation.
+			//Got the idea from OpenWorm (http://www.openworm.org/).
+			//I wonder if there's a way to get rid of this.
+			static const float MAX_DELTA_POS = 0.3f;
+			const float maxAcceleration = MAX_DELTA_POS / (m_deltaT * m_deltaT); //Derived from PCISPH paper eq. (3).
+
+			if (currentCorrenctedAcceleration.squaredNorm() > maxAcceleration * maxAcceleration)
 			{
 				currentCorrenctedAcceleration /= currentCorrenctedAcceleration.norm();
-				currentCorrenctedAcceleration*= MAX_ACCELERATION;
+				currentCorrenctedAcceleration*= maxAcceleration;
 			}
 
 			caxs[idP] += currentCorrenctedAcceleration.x();
