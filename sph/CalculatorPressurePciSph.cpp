@@ -94,13 +94,6 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 	predictedDensitySet.allocate(HOST);
 	float* pds = predictedDensitySet.get(HOST);
 
-	PointSet correctedAccelSet("correctedAccelSet", size);
-	correctedAccelSet.allocate(HOST);
-	correctedAccelSet.memset(0, HOST);
-	float* caxs = correctedAccelSet.xs(HOST);
-	float* cays = correctedAccelSet.ys(HOST);
-	float* cazs = correctedAccelSet.zs(HOST);
-
 	const unsigned int* sortedIdMaps = particles.m_sortedIdMap->get(HOST);
 
 	float maxDensityError = FLT_MAX;
@@ -111,9 +104,9 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 		{
 			//Implicit Euler.
 			Point deltaXYZ;
-			deltaXYZ[0] = (vxs[idP] + (axs[idP] + caxs[idP]) * m_deltaT) * m_deltaT;
-			deltaXYZ[1] = (vys[idP] + (ays[idP] + cays[idP]) * m_deltaT) * m_deltaT;
-			deltaXYZ[2] = (vzs[idP] + (azs[idP] + cazs[idP]) * m_deltaT) * m_deltaT;
+			deltaXYZ[0] = (vxs[idP] + axs[idP] * m_deltaT) * m_deltaT;
+			deltaXYZ[1] = (vys[idP] + ays[idP] * m_deltaT) * m_deltaT;
+			deltaXYZ[2] = (vzs[idP] + azs[idP] * m_deltaT) * m_deltaT;
 
 			ppxs[idP] = pxs[idP] + deltaXYZ[0] * m_deltaT;
 			ppys[idP] = pys[idP] + deltaXYZ[1] * m_deltaT;
@@ -211,22 +204,12 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 				currentCorrenctedAcceleration*= maxAcceleration;
 			}
 
-			caxs[idP] += currentCorrenctedAcceleration.x();
-			cays[idP] += currentCorrenctedAcceleration.y();
-			cazs[idP] += currentCorrenctedAcceleration.z();
+			axs[idP] += currentCorrenctedAcceleration.x();
+			ays[idP] += currentCorrenctedAcceleration.y();
+			azs[idP] += currentCorrenctedAcceleration.z();
 
 		}
 	}
-
-	for (unsigned int idP = 0; idP < size; ++idP)
-	{
-		axs[idP] += caxs[idP];
-		ays[idP] += cays[idP];
-		azs[idP] += cazs[idP];
-	}
-
-	//tako.
-	particles.m_density->copyAll(predictedDensitySet, HOST);
 
 	particles.setClean(HOST);
 }
