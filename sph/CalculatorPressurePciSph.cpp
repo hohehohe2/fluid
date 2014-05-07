@@ -201,7 +201,7 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 
 			//Acceleration limit. It prevents near free-surface partcles from moving too fast and corrupt the simulation.
 			//Got the idea from OpenWorm (http://www.openworm.org/).
-			//Changing the SPH kernel from cubic spline to poly6 stabilized the sim and we can comment this out but setting the minimum densityError to 0 blows the fluid up.
+			//Changing the SPH kernel from cubic spline to poly6 stabilized the sim and we can comment this out, still only if setting the minimum densityError to 0 blows the fluid up.
 			static const float MAX_DELTA_POS = 0.03f; //Approximate max delta pos, won't be exact since we have velocity.
 			const float maxAcceleration = MAX_DELTA_POS / (m_deltaT * m_deltaT) / m_numMaxIterations; //Derived from PCISPH paper eq. (3).
 			if (currentCorrenctedAcceleration.squaredNorm() > maxAcceleration * maxAcceleration)
