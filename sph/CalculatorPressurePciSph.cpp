@@ -151,7 +151,7 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 			pds[idP] = m_particleMass * sumW;
 			float densityError = pds[idP] - Constants::RO0;
 
-			//The fluid gets glow up without this due to particle deficiency near the free surface.
+			//The fluid blows up without this due to particle deficiency near the free surface.
 			//Let's keep it non-negative until I implement e.g. ghost SPH.
 			if (densityError < 0.0f)
 			{
