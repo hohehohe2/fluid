@@ -30,7 +30,7 @@ public:
 	float laplaceW(const float dist2) const;
 
 	///Get the kernel radius.
-	float r() const{return m_r;}
+	float kernelRadius() const{return m_r;}
 
 private:
 

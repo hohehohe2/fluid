@@ -40,7 +40,7 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 	do
 	{
 		float maxVelocity = particles.m_velocity->calcMaxLength(HOST);
-		float dt = PET_PEEVE_COURANT_NUMBER * m_sphKernel.r() / maxVelocity;
+		float dt = PET_PEEVE_COURANT_NUMBER * m_sphKernel.kernelRadius() / maxVelocity;
 		if (dt > remaining)
 		{
 			dt = remaining;
@@ -75,7 +75,7 @@ void FluidSolverSimpleSph::updateNeighbors_(ParticlesFluid& particles, Particles
 {
 
 	//---- Define spatial grid cells and create CellCodeCalculator.
-	const float kernelRaidus = m_sphKernel.r();
+	const float kernelRaidus = m_sphKernel.kernelRadius();
 
 	particles.sync(HOST);
 
