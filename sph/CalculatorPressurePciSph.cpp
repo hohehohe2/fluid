@@ -41,7 +41,7 @@ void CalculatorPressurePciSph::precompute(float equilibriumDistance, int kernelR
 		}
 	}
 
-	//Compute dotSumGradW and sumDotGradW.
+	//Compute sumDotGradW.
 	float sumDotGradW = 0.0f;
 	for (unsigned int id = 0; id < numParticles; ++id)
 	{
