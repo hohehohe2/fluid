@@ -26,8 +26,8 @@ TEST(PciSph, create)
 	unsigned int numMaxIterations = 6;
 
 	//--------------Precompute.
-	CalculatorPressurePciSph pcSph(particleMass, sphKernel, deltaT, maxRelativeDensityError, numMaxIterations);
-	pcSph.precompute(equilibriumDistance, kernelRadiusPerEquilibriumDistance);
+	CalculatorPressurePciSph pcSph(particleMass, sphKernel, maxRelativeDensityError, numMaxIterations);
+	pcSph.precompute(equilibriumDistance, kernelRadiusPerEquilibriumDistance, deltaT);
 
 	//--------------Create particles.
 
