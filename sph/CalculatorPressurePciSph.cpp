@@ -103,14 +103,9 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 		for (unsigned int idP = 0; idP < size; ++idP)
 		{
 			//Implicit Euler.
-			Point deltaXYZ;
-			deltaXYZ[0] = (vxs[idP] + axs[idP] * m_deltaT) * m_deltaT;
-			deltaXYZ[1] = (vys[idP] + ays[idP] * m_deltaT) * m_deltaT;
-			deltaXYZ[2] = (vzs[idP] + azs[idP] * m_deltaT) * m_deltaT;
-
-			ppxs[idP] = pxs[idP] + deltaXYZ[0];
-			ppys[idP] = pys[idP] + deltaXYZ[1];
-			ppzs[idP] = pzs[idP] + deltaXYZ[2];
+			ppxs[idP] = pxs[idP] + (vxs[idP] + axs[idP] * m_deltaT) * m_deltaT;
+			ppys[idP] = pys[idP] + (vys[idP] + ays[idP] * m_deltaT) * m_deltaT;
+			ppzs[idP] = pzs[idP] + (vzs[idP] + azs[idP] * m_deltaT) * m_deltaT;
 		}
 
 		//Compute density, density error -> update pressure to cancel the density error.
@@ -195,7 +190,7 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 			//Acceleration limit. It prevents near free-surface partcles from moving too fast and corrupt the simulation.
 			//Got the idea from OpenWorm (http://www.openworm.org/).
 			//I wonder if there's a way to get rid of this.
-			static const float MAX_DELTA_POS = 0.03f;
+			static const float MAX_DELTA_POS = 0.03f; //Approximate max delta pos, won't be exact since we have velocity.
 			const float maxAcceleration = MAX_DELTA_POS / (m_deltaT * m_deltaT) / m_numMaxIterations; //Derived from PCISPH paper eq. (3).
 
 			if (currentCorrenctedAcceleration.squaredNorm() > maxAcceleration * maxAcceleration)
