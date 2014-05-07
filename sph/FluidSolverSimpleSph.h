@@ -83,6 +83,7 @@ private:
 	static const unsigned int COMPACT_HASH_NUM_HASH_ENTRIES = 2048;
 	static const unsigned int COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST = 256;
 	static const unsigned int COMPACT_HASH_NUM_LISTS = 1024;
+	static const unsigned int KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE = 4;
 
 };
 

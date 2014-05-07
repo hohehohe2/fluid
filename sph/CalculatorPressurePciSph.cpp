@@ -13,8 +13,20 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorPressurePciSph::precompute(float equilibriumDistance, int kernelRadiusPerEquilibriumDistance)
+void CalculatorPressurePciSph::precompute(float equilibriumDistance, int kernelRadiusPerEquilibriumDistance, float deltaT)
 {
+	if (m_lastPrecomputeEquilibriumDistance == equilibriumDistance &&
+		m_lastPrecomputeKernelRadiusPerEquilibriumDistance == kernelRadiusPerEquilibriumDistance &&
+		m_deltaT == deltaT)
+	{
+		//Same parameter as before. No need for recalucation.
+		return;
+	}
+
+	m_lastPrecomputeEquilibriumDistance = equilibriumDistance;
+	m_lastPrecomputeKernelRadiusPerEquilibriumDistance = kernelRadiusPerEquilibriumDistance;
+	m_deltaT = deltaT;
+
 	const unsigned int numLines = kernelRadiusPerEquilibriumDistance * 2 + 1;
 	const unsigned int numParticles = numLines * numLines * numLines;
 	const unsigned int centerPerticleId = numLines * numLines * kernelRadiusPerEquilibriumDistance + numLines * kernelRadiusPerEquilibriumDistance + kernelRadiusPerEquilibriumDistance;
@@ -51,7 +63,7 @@ void CalculatorPressurePciSph::precompute(float equilibriumDistance, int kernelR
 	}
 
 	//Compute m_delta.
-	float beta = m_deltaT * m_deltaT * m_particleMass * m_particleMass * 2.0f / (Constants::RO0 * Constants::RO0);
+	float beta = deltaT * deltaT * m_particleMass * m_particleMass * 2.0f / (Constants::RO0 * Constants::RO0);
 	float denominator = beta * sumDotGradW;
 	m_delta = 1.0f / denominator;
 

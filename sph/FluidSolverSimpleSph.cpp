@@ -21,17 +21,14 @@ FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 	m_cHash(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
 	m_cHashWall(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
 	//m_pressureCalculator(particleMass),
-	m_pressurePciSphCalculator(particleMass, m_sphKernel, 0.01f, 0.01f, 4),
+	m_pressurePciSphCalculator(particleMass, m_sphKernel, 0.01f, 4),
 	m_viscosityCalculator(particleMass), m_densityCalculator(particleMass)
 {
-	const unsigned int KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE = 4;
 
 	//Adjust the kernel radius so that several dozens of neighbor particles are in the radius at rest density.
 	float particleVolume = particleMass / Constants::RO0;
 	m_equilibriumDistance = (float)pow(particleVolume, 1.0 / 3.0);
 	m_sphKernel.setKernelRadius(m_equilibriumDistance * KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE);
-
-	m_pressurePciSphCalculator.precompute(m_equilibriumDistance, KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE);
 }
 
 //-------------------------------------------------------------------
@@ -63,6 +60,7 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 		//m_pressureCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
 		m_viscosityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST);
 		std::cout << "pressure - ";
+		m_pressurePciSphCalculator.precompute(m_equilibriumDistance, KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE, deltaT);
 		m_pressurePciSphCalculator.calculation(particles, ccc, m_cHash, HOST);
 		std::cout << "integrate\n";
 		m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);

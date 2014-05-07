@@ -41,7 +41,7 @@ void ExampleSphApp::onKey(unsigned char key)
 
 	if (key == ' ')
     {
-        m_ssph.step(*m_particles, *m_particlesWall, 0.01f);
+        m_ssph.step(*m_particles, *m_particlesWall, 0.001f);
 		return;
     }
 
