@@ -108,9 +108,9 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 			deltaXYZ[1] = (vys[idP] + ays[idP] * m_deltaT) * m_deltaT;
 			deltaXYZ[2] = (vzs[idP] + azs[idP] * m_deltaT) * m_deltaT;
 
-			ppxs[idP] = pxs[idP] + deltaXYZ[0] * m_deltaT;
-			ppys[idP] = pys[idP] + deltaXYZ[1] * m_deltaT;
-			ppzs[idP] = pzs[idP] + deltaXYZ[2] * m_deltaT;
+			ppxs[idP] = pxs[idP] + deltaXYZ[0];
+			ppys[idP] = pys[idP] + deltaXYZ[1];
+			ppzs[idP] = pzs[idP] + deltaXYZ[2];
 		}
 
 		//Compute density, density error -> update pressure to cancel the density error.
