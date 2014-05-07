@@ -75,6 +75,7 @@ void ExampleSphApp::draw()
 
 	glPointSize(5.0f);
 
+	float ed = m_ssph.equilibriumDistance();
 
 	//----Fluid.
 	m_particles->m_pos->sync(HOST);
@@ -85,14 +86,19 @@ void ExampleSphApp::draw()
 	const float* pzs = m_particles->m_pos->zs(HOST);
 	const float* ds = m_particles->m_density->get(HOST);
 
-	glBegin(GL_POINTS);
+	//glBegin(GL_POINTS);
 	for (unsigned int i = 0; i < m_particles->m_pos->size(); ++i)
 	{
 		float scale = ds[i] / MAX_DENSITY;
 		glColor3f(FLUID_RGB.x() * scale, FLUID_RGB.y() * scale, FLUID_RGB.z() * scale);
-		glVertex3f(pxs[i], pys[i], pzs[i]);
+		//glVertex3f(pxs[i], pys[i], pzs[i]);
+		glPushMatrix();
+		glTranslatef(pxs[i], pys[i], pzs[i]);
+		glutSolidSphere(ed / 2.0f, 16, 16);
+		glPopMatrix();
+
 	}
-	glEnd();
+	//glEnd();
 
 	//----Wall.
 	m_particlesWall->m_pos->sync(HOST);
