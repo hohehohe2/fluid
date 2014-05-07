@@ -65,6 +65,8 @@ float SphKernel::w(float dist2) const
 //---------------------------------------------------------------------------
 void SphKernel::gradW(float result[3], float px, float py, float pz, float nx, float ny, float nz) const
 {
+	//Grad of wSpiky.
+
 	const float dx = px - nx;
 	const float dy = py - ny;
 	const float dz = pz - nz;
