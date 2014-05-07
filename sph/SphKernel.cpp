@@ -18,47 +18,47 @@ void SphKernel::setKernelRadius(float radius)
 	m_r9 = m_r * m_r * m_r * m_r * m_r * m_r * m_r * m_r * m_r;
 }
 
-////---------------------------------------------------------------------------
-////---------------------------------------------------------------------------
-//float SphKernel::w(float dist2) const
-//{
-//	//wPoly6.
-//
-//	if (dist2 < m_r * m_r)
-//	{
-//		float l = m_r * m_r - dist2;
-//		return (float)(315.0 / 64.0 / M_PI / m_r9 * l * l * l);
-//	}
-//	else
-//	{
-//		return 0.0f;
-//	}
-//}
-
-
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 float SphKernel::w(float dist2) const
 {
-	//Cubic spline.
+	//wPoly6.
 
 	if (dist2 < m_r * m_r)
 	{
-		const float q = sqrt(dist2) / m_r;
-		if (q < 0.5f)
-		{
-			return 8.0f / ((float)M_PI * m_r * m_r * m_r) * (1.0f - 6.0f * q * q + 6 * q * q * q);
-		}
-		else
-		{
-			return 8.0f / ((float)M_PI * m_r * m_r * m_r) * 2 * ( 1.0f - q ) * ( 1.0f - q ) * ( 1.0f - q );
-		}
+		float l = m_r * m_r - dist2;
+		return (float)(315.0 / 64.0 / M_PI / m_r9 * l * l * l);
 	}
 	else
 	{
 		return 0.0f;
 	}
 }
+
+
+////---------------------------------------------------------------------------
+////---------------------------------------------------------------------------
+//float SphKernel::w(float dist2) const
+//{
+//	//Cubic spline.
+//
+//	if (dist2 < m_r * m_r)
+//	{
+//		const float q = sqrt(dist2) / m_r;
+//		if (q < 0.5f)
+//		{
+//			return 8.0f / ((float)M_PI * m_r * m_r * m_r) * (1.0f - 6.0f * q * q + 6 * q * q * q);
+//		}
+//		else
+//		{
+//			return 8.0f / ((float)M_PI * m_r * m_r * m_r) * 2 * ( 1.0f - q ) * ( 1.0f - q ) * ( 1.0f - q );
+//		}
+//	}
+//	else
+//	{
+//		return 0.0f;
+//	}
+//}
 
 
 //---------------------------------------------------------------------------
