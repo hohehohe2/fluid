@@ -22,7 +22,6 @@ FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 	m_cHashWall(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
 	//m_pressureCalculator(particleMass),
 	m_pressurePciSphCalculator(particleMass, m_sphKernel, 0.01f, 0.01f, 4),
-	//m_pressurePciSphCalculator(particleMass, m_sphKernel, 0.01f, 0.01f, 1), //tako. for fluid stability.
 	m_viscosityCalculator(particleMass), m_densityCalculator(particleMass)
 {
 	const unsigned int KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE = 4;
