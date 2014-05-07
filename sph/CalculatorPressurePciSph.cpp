@@ -195,7 +195,7 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 			//Acceleration limit. It prevents near free-surface partcles from moving too fast and corrupt the simulation.
 			//Got the idea from OpenWorm (http://www.openworm.org/).
 			//I wonder if there's a way to get rid of this.
-			static const float MAX_DELTA_POS = 0.3f;
+			static const float MAX_DELTA_POS = 0.03f;
 			const float maxAcceleration = MAX_DELTA_POS / (m_deltaT * m_deltaT); //Derived from PCISPH paper eq. (3).
 
 			if (currentCorrenctedAcceleration.squaredNorm() > maxAcceleration * maxAcceleration)
