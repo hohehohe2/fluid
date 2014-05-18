@@ -201,7 +201,7 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 
 			//Acceleration limit. It prevents near free-surface partcles from moving too fast and corrupt the simulation.
 			//Got the idea from OpenWorm (http://www.openworm.org/).
-			//BulletFluid doesn't have this trick. Still haven't got the idea without this.
+			//NOTE: BulletFluid doesn't have this trick but it is quite different from the original PCISPH algorithm (it does not use gradW for pressure force calculation).
 			static const float MAX_DELTA_POS = 0.03f; //Approximate max delta pos, won't be exact since we have velocity.
 			const float maxAcceleration = MAX_DELTA_POS / (m_deltaT * m_deltaT) / m_numMaxIterations; //Derived from PCISPH paper eq. (3).
 			if (currentCorrenctedAcceleration.squaredNorm() > maxAcceleration * maxAcceleration)
