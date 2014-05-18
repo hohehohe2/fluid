@@ -67,7 +67,7 @@ protected:
 		obj->m_velocity->memset(0, HOST);
 		if (useLeapFrog)
 		{
-			obj->m_prevAcceleration->memset(0, HOST);
+			obj->m_acceleration->memset(0, HOST);
 		}
 	}
 

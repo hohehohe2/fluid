@@ -9,7 +9,8 @@
 #include "CalculatorDensity.h"
 #include "CalculatorPressure.h"
 #include "CalculatorViscosity.h"
-#include "CalculatorIntegrateSemiImplicitEuler.h"
+//#include "CalculatorIntegrateSemiImplicitEuler.h"
+#include "CalculatorIntegrateLeapFrog.h"
 #include "CalculatorPressurePciSph.h"
 
 namespace hohehohe2
@@ -69,8 +70,9 @@ private:
 
 	CalculatorViscosity m_viscosityCalculator;
 
-	CalculatorIntegrateSemiImplicitEuler m_semiImplicitEulerIntegrateCalculator;
+	//CalculatorIntegrateSemiImplicitEuler m_semiImplicitEulerIntegrateCalculator;
 
+	CalculatorIntegrateLeapFrog m_leapfromIntegrateCalculator;
 private:
 
 	void updateNeighbors_(ParticlesFluid& particles, ParticlesWall& particlesWall, CellCodeCalculator& ccc);

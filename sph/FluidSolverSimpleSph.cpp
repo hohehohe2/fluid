@@ -48,6 +48,7 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 		}
 		remaining -= dt;
 
+		m_leapfromIntegrateCalculator.copyAcceleration(particles, HOST);
 		std::cout << remaining << ": updateNeighbors - ";
 		CellCodeCalculator ccc;
 		updateNeighbors_(particles, particlesWall, ccc);
@@ -63,7 +64,8 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 		m_pressurePciSphCalculator.precompute(m_equilibriumDistance, KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE, deltaT);
 		m_pressurePciSphCalculator.calculation(particles, ccc, m_cHash, HOST);
 		std::cout << "integrate\n";
-		m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
+		//m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
+		m_leapfromIntegrateCalculator.integrate(particles, dt, HOST);
 
 	} while(loop);
 }

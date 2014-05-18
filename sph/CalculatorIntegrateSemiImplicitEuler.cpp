@@ -9,9 +9,13 @@ using namespace hohehohe2;
 //-------------------------------------------------------------------
 void CalculatorIntegrateSemiImplicitEuler::integrate_host_(ParticlesSph& particles, float deltaT)
 {
+	particles.m_prevAcceleration->sync(HOST);
 	particles.m_acceleration->sync(HOST);
 	particles.m_velocity->sync(HOST);
 	particles.m_pos->sync(HOST);
+	const float* paxs = particles.m_prevAcceleration->xs(HOST);
+	const float* pays = particles.m_prevAcceleration->ys(HOST);
+	const float* pazs = particles.m_prevAcceleration->zs(HOST);
 	const float* axs = particles.m_acceleration->xs(HOST);
 	const float* ays = particles.m_acceleration->ys(HOST);
 	const float* azs = particles.m_acceleration->zs(HOST);
@@ -26,12 +30,12 @@ void CalculatorIntegrateSemiImplicitEuler::integrate_host_(ParticlesSph& particl
 
 	for (unsigned int idP = 0; idP < size; ++idP)
 	{
-		vxs[idP] += axs[idP] * deltaT;
-		vys[idP] += ays[idP] * deltaT;
-		vzs[idP] += azs[idP] * deltaT;
-		pxs[idP] += vxs[idP] * deltaT;
-		pys[idP] += vys[idP] * deltaT;
-		pzs[idP] += vzs[idP] * deltaT;
+		pxs[idP] += vxs[idP] * deltaT + 0.5f * paxs[idP] * deltaT * deltaT;
+		pys[idP] += vys[idP] * deltaT + 0.5f * pays[idP] * deltaT * deltaT;
+		pzs[idP] += vzs[idP] * deltaT + 0.5f * pazs[idP] * deltaT * deltaT;
+		vxs[idP] += 0.5f * (paxs[idP] + axs[idP]) * deltaT;
+		vys[idP] += 0.5f * (pays[idP] + ays[idP]) * deltaT;
+		vzs[idP] += 0.5f * (pazs[idP] + azs[idP]) * deltaT;
 
 		//tako.
 		//Adhoc boundary.

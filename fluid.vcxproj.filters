@@ -33,6 +33,9 @@
     <ClCompile Include="sph\CalculatorIntegrateSemiImplicitEuler.cpp">
       <Filter>sph</Filter>
     </ClCompile>
+    <ClCompile Include="sph\CalculatorIntegrateLeapFrog.cpp">
+      <Filter>sph</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\FluidSolverSimpleSph.h">
@@ -72,6 +75,9 @@
       <Filter>sph</Filter>
     </ClInclude>
     <ClInclude Include="sph\CalculatorIntegrateSemiImplicitEuler.h">
+      <Filter>sph</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\CalculatorIntegrateLeapFrog.h">
       <Filter>sph</Filter>
     </ClInclude>
   </ItemGroup>
