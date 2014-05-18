@@ -64,8 +64,10 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 		m_pressurePciSphCalculator.precompute(m_equilibriumDistance, KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE, deltaT);
 		m_pressurePciSphCalculator.calculation(particles, ccc, m_cHash, HOST);
 		std::cout << "integrate\n";
-		//m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
-		m_leapfromIntegrateCalculator.integrate(particles, dt, HOST);
+		//tako. To enamble leapfrog, just replace this and comment out implEuler related stuff from this class.
+		//tako. PCISPH prediction must be leapfrog eigher.
+		m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
+		//m_leapfromIntegrateCalculator.integrate(particles, dt, HOST);
 
 	} while(loop);
 }
