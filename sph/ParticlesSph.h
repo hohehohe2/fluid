@@ -15,6 +15,9 @@ struct ParticlesSph : public BufferSetSized
 	///Particles position. Always exists.
 	PointSet* m_pos;
 
+	///Particles velocity.
+	PointSet* m_velocity;
+
 	///Particles acceleration.
 	PointSet* m_acceleration;
 
@@ -22,10 +25,13 @@ struct ParticlesSph : public BufferSetSized
 	BufferUInt* m_sortedIdMap;
 
 	///Constructor.
-	ParticlesSph(const std::string& name="ParticlesSph") : BufferSetSized(name), m_pos(NULL), m_acceleration(NULL), m_sortedIdMap(NULL){}
+	ParticlesSph(const std::string& name="ParticlesSph") : BufferSetSized(name), m_pos(NULL), m_velocity(NULL), m_acceleration(NULL), m_sortedIdMap(NULL){}
 
 	///Destructor.
 	virtual ~ParticlesSph(){}
+
+	//Make sure every size is the same.
+	void setVelocity(PointSet* velocity){removeChild(m_velocity); addChild(m_velocity = velocity);}
 
 	virtual unsigned int size() const {return (m_pos)? m_pos->size() : 0;}
 
@@ -45,11 +51,13 @@ protected:
 	static void fillMembers_(ParticlesSph* obj, unsigned int size, MemoryType allocMemoryType)
 	{
 		obj->addChild(obj->m_pos = new PointSet("particle pos"));
+		obj->addChild(obj->m_velocity = new PointSet("particle velocity"));
 		obj->addChild(obj->m_acceleration = new PointSet("particle acceleration"));
 		obj->addChild(obj->m_sortedIdMap = new BufferUInt("particle sortedIdMap"));
 		obj->setSize(size);
 		obj->allocate(allocMemoryType);
 		obj->m_pos->memset(0, HOST);
+		obj->m_velocity->memset(0, HOST);
 	}
 
 };
