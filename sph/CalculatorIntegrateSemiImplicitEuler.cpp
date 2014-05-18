@@ -52,7 +52,7 @@ void CalculatorIntegrateSemiImplicitEuler::integrate_host_(ParticlesSph& particl
 		if (pys[idP] < -0.5f)
 		{
 			pys[idP] = -0.5f;
-			vys[idP] = 0;
+			vys[idP] = -vys[idP] * 0.5f;
 		}
 	}
 

@@ -46,7 +46,7 @@ void CalculatorIntegrateLeapFrog::integrate_host_(ParticlesSph& particles, float
 		if (pys[idP] < -0.5f)
 		{
 			pys[idP] = -0.5f;
-			vys[idP] = 0;
+			vys[idP] = -vys[idP] * 0.5f;
 		}
 	}
 
