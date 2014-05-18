@@ -1,5 +1,5 @@
-#ifndef hohe_CalculatorSemiImplicitEulerIntegrate_H
-#define hohe_CalculatorSemiImplicitEulerIntegrate_H
+#ifndef hohe_CalculatorIntegrateSemiImplicitEuler_H
+#define hohe_CalculatorIntegrateSemiImplicitEuler_H
 
 #include <hohe2Common/cuda/Buffer.h>
 
@@ -14,7 +14,7 @@ class CompactHash;
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
 ///Semi implicit euler time integration.
-class CalculatorSemiImplicitEulerIntegrate
+class CalculatorIntegrateSemiImplicitEuler
 {
 
 public:

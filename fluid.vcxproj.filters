@@ -21,9 +21,6 @@
     <ClCompile Include="sph\CalculatorViscosity.cpp">
       <Filter>sph</Filter>
     </ClCompile>
-    <ClCompile Include="sph\CalculatorSemiImplicitEulerIntegrate.cpp">
-      <Filter>sph</Filter>
-    </ClCompile>
     <ClCompile Include="sph\CalculatorVolume.cpp">
       <Filter>sph</Filter>
     </ClCompile>
@@ -31,6 +28,9 @@
       <Filter>sph</Filter>
     </ClCompile>
     <ClCompile Include="sph\SphInterpolationFuncs.cpp">
+      <Filter>sph</Filter>
+    </ClCompile>
+    <ClCompile Include="sph\CalculatorIntegrateSemiImplicitEuler.cpp">
       <Filter>sph</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,9 +59,6 @@
     <ClInclude Include="sph\CalculatorViscosity.h">
       <Filter>sph</Filter>
     </ClInclude>
-    <ClInclude Include="sph\CalculatorSemiImplicitEulerIntegrate.h">
-      <Filter>sph</Filter>
-    </ClInclude>
     <ClInclude Include="sph\ParticlesWall.h">
       <Filter>sph</Filter>
     </ClInclude>
@@ -72,6 +69,9 @@
       <Filter>sph</Filter>
     </ClInclude>
     <ClInclude Include="sph\SphInterpolationFuncs.h">
+      <Filter>sph</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\CalculatorIntegrateSemiImplicitEuler.h">
       <Filter>sph</Filter>
     </ClInclude>
   </ItemGroup>
