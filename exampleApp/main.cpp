@@ -72,7 +72,17 @@ void  mouse( int button, int state, int mx, int my )
 
 void keyboard(unsigned char key, int x, int y)
 {
-	esa.onKey(key);
+	switch (key)
+	{
+	case 'f':
+		camera_x = 0.0;
+		camera_y = 0.0;
+		camera_z = -30.0;
+		camera_pitch_x = 0.0;
+		camera_pitch_y = 0.0;
+	default:
+		esa.onKey(key);
+	}
 	display();
 }
 
