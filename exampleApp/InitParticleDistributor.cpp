@@ -29,6 +29,9 @@ void InitParticleDistributor::set(PointSet& pos, PointSet& velocity, PointSet& p
 	case 5:
 		placement5_(pos, velocity, posWall, equilibriumDistance);
 		break;
+	case 6:
+		placement6_(pos, velocity, posWall, equilibriumDistance);
+		break;
 	default:
 		placement0_(pos, velocity, posWall, equilibriumDistance);
 		break;
@@ -83,14 +86,14 @@ void InitParticleDistributor::placement1_(PointSet& pos, PointSet& velocity, Poi
 	float* vys = velocity.ys(HOST);
 	float* vzs = velocity.zs(HOST);
 
-	pxs[0] = -equilibriumDistance;
+	pxs[0] = -equilibriumDistance / 2;
 	pys[0] = 0.0f;
 	pzs[0] = 0.0f;
 	vxs[0] = 0.0f;
 	vys[0] = 0.0f;
 	vzs[0] = 0.0f;
 
-	pxs[1] = equilibriumDistance;
+	pxs[1] = equilibriumDistance / 2;
 	pys[1] = 0.0f;
 	pzs[1] = 0.0f;
 	vxs[1] = 0.0f;
@@ -268,4 +271,53 @@ void InitParticleDistributor::placement5_(PointSet& pos, PointSet& velocity, Poi
 	}
 
 	posWall.setClean(HOST);
+}
+
+
+//-------------------------------------------------------------------
+//-------------------------------------------------------------------
+void InitParticleDistributor::placement6_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance)
+{
+	pos.setSize(4);
+	pos.allocate(HOST);
+	velocity.setSize(2);
+	velocity.allocate(HOST);
+
+	float* pxs = pos.xs(HOST);
+	float* pys = pos.ys(HOST);
+	float* pzs = pos.zs(HOST);
+	float* vxs = velocity.xs(HOST);
+	float* vys = velocity.ys(HOST);
+	float* vzs = velocity.zs(HOST);
+
+	pxs[0] = 0.0;
+	pys[0] = 0.0f;
+	pzs[0] = 0.0f;
+	vxs[0] = 0.0f;
+	vys[0] = 0.0f;
+	vzs[0] = 0.0f;
+
+	pxs[1] = equilibriumDistance;
+	pys[1] = 0.0f;
+	pzs[1] = 0.0f;
+	vxs[1] = 0.0f;
+	vys[1] = 0.0f;
+	vzs[1] = 0.0f;
+
+	pxs[2] = 0.0f;
+	pys[2] = equilibriumDistance;
+	pzs[2] = 0.0f;
+	vxs[2] = 0.0f;
+	vys[2] = 0.0f;
+	vzs[2] = 0.0f;
+
+	pxs[3] = equilibriumDistance;
+	pys[3] = equilibriumDistance;
+	pzs[3] = 0.0f;
+	vxs[3] = 0.0f;
+	vys[3] = 0.0f;
+	vzs[3] = 0.0f;
+
+	pos.setClean(HOST);
+	velocity.setClean(HOST);
 }

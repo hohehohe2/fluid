@@ -39,6 +39,9 @@ private:
 	///Small n x n x n with ground particles.
 	static void placement5_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance);
 
+	///4 particles.
+	static void placement6_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance);
+
 };
 
 }
