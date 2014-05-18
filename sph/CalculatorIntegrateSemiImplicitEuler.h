@@ -7,7 +7,7 @@ namespace hohehohe2
 {
 
 class SphKernel;
-struct ParticlesFluid;
+struct ParticlesSph;
 class CompactHash;
 
 
@@ -20,7 +20,7 @@ class CalculatorIntegrateSemiImplicitEuler
 public:
 
 	///Main method to integrate.
-	void integrate(ParticlesFluid& particles, float deltaT, MemoryType mType)
+	void integrate(ParticlesSph& particles, float deltaT, MemoryType mType)
 	{
 		if (mType == HOST)
 		{
@@ -35,8 +35,8 @@ public:
 
 private:
 
-	void integrate_host_(ParticlesFluid& particles, float deltaT);
-	void integrate_device_(ParticlesFluid& particles, float deltaT)
+	void integrate_host_(ParticlesSph& particles, float deltaT);
+	void integrate_device_(ParticlesSph& particles, float deltaT)
 	{
 		//To be implemented.
 		assert(false);

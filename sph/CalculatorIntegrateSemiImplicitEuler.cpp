@@ -1,13 +1,13 @@
 #include "CalculatorIntegrateSemiImplicitEuler.h"
 
-#include "ParticlesFluid.h"
+#include "ParticlesSph.h"
 
 using namespace hohehohe2;
 
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorIntegrateSemiImplicitEuler::integrate_host_(ParticlesFluid& particles, float deltaT)
+void CalculatorIntegrateSemiImplicitEuler::integrate_host_(ParticlesSph& particles, float deltaT)
 {
 	particles.m_acceleration->sync(HOST);
 	particles.m_velocity->sync(HOST);
