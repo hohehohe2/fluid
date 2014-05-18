@@ -22,8 +22,8 @@ protected:
 	virtual void SetUp()
 	{
 		m_ssph = new FluidSolverSimpleSph;
-		m_particles = ParticlesFluid::createInstance(1);
-		m_particlesWall = ParticlesWall::createInstance(1);
+		m_particles = ParticlesFluid::createInstance(false, 1);
+		m_particlesWall = ParticlesWall::createInstance(false, 1);
 		m_sptr = m_particles->getSelfSptr();
 		m_sptrWall = m_particlesWall->getSelfSptr();
 
@@ -57,8 +57,8 @@ TEST_F(Solver, create)
 TEST_F(Solver, singleParticle)
 {
 	FluidSolverSimpleSph ssph;
-	ParticlesFluid* particles = ParticlesFluid::createInstance(1);
-	ParticlesWall* particlesWall = ParticlesWall::createInstance(1);
+	ParticlesFluid* particles = ParticlesFluid::createInstance(false, 1);
+	ParticlesWall* particlesWall = ParticlesWall::createInstance(false, 1);
 	BufferSet::SPtr sptr = particles->getSelfSptr();
 	BufferSet::SPtr sptrWall = particlesWall->getSelfSptr();
 

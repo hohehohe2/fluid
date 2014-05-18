@@ -32,7 +32,7 @@ void CalculatorPressurePciSph::precompute(float equilibriumDistance, int kernelR
 	const unsigned int centerPerticleId = numLines * numLines * kernelRadiusPerEquilibriumDistance + numLines * kernelRadiusPerEquilibriumDistance + kernelRadiusPerEquilibriumDistance;
 
 	//Create prototype particles with uniformly filled placement.
-	ParticlesFluid* particles = ParticlesFluid::createInstance(numParticles, HOST);
+	ParticlesFluid* particles = ParticlesFluid::createInstance(true, numParticles, HOST);
 	float* pxs = particles->m_pos->xs(HOST);
 	float* pys = particles->m_pos->ys(HOST);
 	float* pzs = particles->m_pos->zs(HOST);

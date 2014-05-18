@@ -35,7 +35,7 @@ TEST(PciSph, create)
 	const unsigned int numParticles = numLines * numLines * numLines;
 	const unsigned int centerPerticleId = numLines * numLines * kernelRadiusPerEquilibriumDistance * 2 + numLines * kernelRadiusPerEquilibriumDistance * 2 + kernelRadiusPerEquilibriumDistance * 2;
 
-	ParticlesFluid* particles = ParticlesFluid::createInstance(numParticles, HOST);
+	ParticlesFluid* particles = ParticlesFluid::createInstance(true, numParticles, HOST);
 	float* pxs = particles->m_pos->xs(HOST);
 	float* pys = particles->m_pos->ys(HOST);
 	float* pzs = particles->m_pos->zs(HOST);

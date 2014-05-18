@@ -24,18 +24,18 @@ struct ParticlesFluid : public ParticlesSph
 	virtual unsigned int size() const {return (m_pos)? m_pos->size() : 0;}
 
 	///Create and setup for simulation. m_pos and m_velocity must be filled with initial values before the first step().
-	static ParticlesFluid* createInstance(unsigned int size=0, MemoryType allocMemoryType=HOST)
+	static ParticlesFluid* createInstance(bool useLeapFrog, unsigned int size=0, MemoryType allocMemoryType=HOST)
 	{
 		ParticlesFluid* obj = new ParticlesFluid;
-		fillMembers_(obj, size, allocMemoryType);
+		fillMembers_(useLeapFrog, obj, size, allocMemoryType);
 		return obj;
 	};
 
 protected:
 
-	static void fillMembers_(ParticlesFluid* obj, unsigned int size, MemoryType allocMemoryType)
+	static void fillMembers_(bool useLeapFrog, ParticlesFluid* obj, unsigned int size, MemoryType allocMemoryType)
 	{
-		ParticlesSph::fillMembers_(obj, size, allocMemoryType);
+		ParticlesSph::fillMembers_(useLeapFrog, obj, size, allocMemoryType);
 		obj->addChild(obj->m_density = new BufferFloat("particle density"));
 		obj->setSize(size);
 		obj->allocate(allocMemoryType);

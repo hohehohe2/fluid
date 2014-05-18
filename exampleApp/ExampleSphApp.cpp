@@ -19,12 +19,12 @@ void ExampleSphApp::reset(unsigned int id)
 
 	InitParticleDistributor::set(*pos, *velocity, *posWall, m_ssph.equilibriumDistance(), id);
 
-	m_particles = ParticlesFluid::createInstance(pos->size());
+	m_particles = ParticlesFluid::createInstance(true, pos->size());
 	m_particles->setPos(pos);
 	m_particles->setVelocity(velocity);
     m_sptr = m_particles->getSelfSptr();
 
-	m_particlesWall = ParticlesWall::createInstance(posWall->size());
+	m_particlesWall = ParticlesWall::createInstance(true, posWall->size());
 	m_particlesWall->setPos(posWall);
 	m_sptrWall = m_particlesWall->getSelfSptr();
 }
