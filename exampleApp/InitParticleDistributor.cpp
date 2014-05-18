@@ -280,7 +280,7 @@ void InitParticleDistributor::placement6_(PointSet& pos, PointSet& velocity, Poi
 {
 	pos.setSize(4);
 	pos.allocate(HOST);
-	velocity.setSize(2);
+	velocity.setSize(4);
 	velocity.allocate(HOST);
 
 	float* pxs = pos.xs(HOST);
