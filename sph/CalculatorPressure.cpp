@@ -6,7 +6,6 @@
 #include "ParticlesFluid.h"
 #include "particlesWall.h"
 
-
 using namespace hohehohe2;
 
 
@@ -124,9 +123,11 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kern
 		}
 
 		//----Wall pressure akinci2012.
+
+
 		if (particlesWall)
 		{
-			Point sumGradW(0.0f, 0.0f, 0.0f);
+			Point deltaPPart(0.0f, 0.0f, 0.0f);
 			for (unsigned int i= 0; i < 27; ++i)
 			{
 				bool isFilled;
@@ -143,16 +144,46 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kern
 					const unsigned int idW = wsortedIdMaps[index + j];
 					Point gradWPart;
 					m_sphKernelSpiky.gradWPart(gradWPart, Point(pxs[idP], pys[idP], pzs[idP]), Point(wpxs[idW], wpys[idW], wpzs[idW]));
-					sumGradW += gradWPart * m_sphKernelSpiky.getConstant();
-
-					const float c = - Constants::RO0 * wvs[idW] * pressureP / (densityP * densityP);
-					axs[idP] += c * sumGradW[0];
-					ays[idP] += c * sumGradW[1];
-					azs[idP] += c * sumGradW[2];
-
+					deltaPPart += wvs[idW] * gradWPart;
 				}
 			}
+
+			deltaPPart *= - Constants::RO0 * pressureP / (densityP * densityP) * m_sphKernelSpiky.getConstant();
+			axs[idP] += deltaPPart[0];
+			ays[idP] += deltaPPart[1];
+			azs[idP] += deltaPPart[2];
 		}
+
+
+		//if (particlesWall)
+		//{
+		//	Point sumGradW(0.0f, 0.0f, 0.0f);
+		//	for (unsigned int i= 0; i < 27; ++i)
+		//	{
+		//		bool isFilled;
+		//		const unsigned int code = ccc.getNeighborCode32(isFilled, pxs[idP], pys[idP], pzs[idP], i);
+		//		if ( ! isFilled)
+		//		{
+		//			continue;
+		//		}
+
+		//		unsigned int index;
+		//		const unsigned int numObjects = cHashWall->lookup(index, code);
+		//		for (unsigned int j = 0; j < numObjects; ++j)
+		//		{
+		//			const unsigned int idW = wsortedIdMaps[index + j];
+		//			Point gradWPart;
+		//			m_sphKernelSpiky.gradWPart(gradWPart, Point(pxs[idP], pys[idP], pzs[idP]), Point(wpxs[idW], wpys[idW], wpzs[idW]));
+		//			sumGradW += gradWPart * m_sphKernelSpiky.getConstant();
+
+		//			const float c = - Constants::RO0 * wvs[idW] * pressureP / (densityP * densityP);
+		//			axs[idP] += c * sumGradW[0];
+		//			ays[idP] += c * sumGradW[1];
+		//			azs[idP] += c * sumGradW[2];
+
+		//		}
+		//	}
+		//}
 
 
 	}
