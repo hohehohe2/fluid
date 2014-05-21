@@ -32,6 +32,9 @@ void InitParticleDistributor::set(PointSet& pos, PointSet& velocity, PointSet& p
 	case 6:
 		placement6_(pos, velocity, posWall, equilibriumDistance);
 		break;
+	case 7:
+		placement7_(pos, velocity, posWall, equilibriumDistance);
+		break;
 	default:
 		placement0_(pos, velocity, posWall, equilibriumDistance);
 		break;
@@ -320,4 +323,53 @@ void InitParticleDistributor::placement6_(PointSet& pos, PointSet& velocity, Poi
 
 	pos.setClean(HOST);
 	velocity.setClean(HOST);
+}
+
+
+//-------------------------------------------------------------------
+//-------------------------------------------------------------------
+void InitParticleDistributor::placement7_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance)
+{
+	pos.setSize(1);
+	pos.allocate(HOST);
+	velocity.setSize(1);
+	velocity.allocate(HOST);
+
+	float* pxs = pos.xs(HOST);
+	float* pys = pos.ys(HOST);
+	float* pzs = pos.zs(HOST);
+	float* vxs = velocity.xs(HOST);
+	float* vys = velocity.ys(HOST);
+	float* vzs = velocity.zs(HOST);
+
+	pxs[0] = 0.0f;
+	pys[0] = 0.0f;
+	pzs[0] = 0.0f;
+	vxs[0] = 0.0f;
+	vys[0] = 0.0f;
+	vzs[0] = 0.0f;
+
+	pos.setClean(HOST);
+	velocity.setClean(HOST);
+
+	const int NUM_GROUND_LINES = 100;
+	posWall.setSize(NUM_GROUND_LINES * NUM_GROUND_LINES);
+	posWall.allocate(HOST);
+
+	float* wpxs = posWall.xs(HOST);
+	float* wpys = posWall.ys(HOST);
+	float* wpzs = posWall.zs(HOST);
+
+	for(int i = 0; i < NUM_GROUND_LINES; ++i)
+	{
+		for(int k = 0; k < NUM_GROUND_LINES; ++k)
+		{
+			unsigned int pid = i * NUM_GROUND_LINES + k;
+			wpxs[pid] = equilibriumDistance * (i - NUM_GROUND_LINES / 2);
+			wpys[pid] = -equilibriumDistance * 10;
+			wpzs[pid] = equilibriumDistance * (k - NUM_GROUND_LINES / 2);
+		}
+	}
+
+	posWall.setClean(HOST);
 }

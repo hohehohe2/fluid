@@ -42,6 +42,9 @@ private:
 	///4 particles.
 	static void placement6_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance);
 
+	///Single particle with ground particles.
+	static void placement7_(PointSet& pos, PointSet& velocity, PointSet& posWall, float equilibriumDistance);
+
 };
 
 }
