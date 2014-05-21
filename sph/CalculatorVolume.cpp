@@ -66,20 +66,19 @@ void CalculatorVolume::calculation_host_(ParticlesWall& particles, float kernelR
 		//                  xxxxxxxxxxx
 		//
 		// o is the fluid partcle we are interested in
-		// . are neighbor fluid particles
+		// . are the neighbor fluid particles
 		// X are the weighted wall particles
-		// x are the un weighted wall particles (i.e. same influent as the neighbor fluid particles)
+		// x are the un-weighted wall particles (i.e. same influence as the neighbor fluid particles)
 		//
 		//Here (A) is Akinci2012 and (B) is the traditional multi-layer wall particle model.
 		//We need to adjust the scalingFactor so that
-		//sum of forces o gets from 'X's in (A) == sum of forces o gets from 'x's in (B)
+		//sum of the forces applied to o from 'X's in (A) == sum of the forces applied to o from 'x's in (B)
 		//According to the paper it increases the volume of a wall particle scales by a factor of 1.4 but
-		//in my condition it's about 3 (can be solved analiticall but I just tested with poly6 and cubic spline kernels).
+		//in my condition it's about 3 (can be solved analitically but I just tested with poly6 and cubic spline kernels).
 		//I don't know what makes the difference yet since a factor of 3 seems to be natural to me.
 
-		const float scalingFactor = 0.1f;
+		const float scalingFactor = 0.33f;
 		vs[idP] = scalingFactor / sumW;
-
 	}
 
 	particles.setClean(HOST);
