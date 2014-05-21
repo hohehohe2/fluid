@@ -38,21 +38,21 @@ void CalculatorIntegrateLeapFrog::integrate_host_(ParticlesSph& particles, float
 
 		//tako.
 		//Adhoc boundary.
-		if (pxs[idP] < -0.5f)
-		{
-			pxs[idP] = -0.5f;
-			vxs[idP] = 0;
-		}
-		if (pzs[idP] < -0.5f)
-		{
-			pzs[idP] = -0.5f;
-			vzs[idP] = 0;
-		}
-		if (pys[idP] < -0.5f)
-		{
-			pys[idP] = -0.5f;
-			vys[idP] = -vys[idP] * 0.5f;
-		}
+		//if (pxs[idP] < -0.5f)
+		//{
+		//	pxs[idP] = -0.5f;
+		//	vxs[idP] = 0;
+		//}
+		//if (pzs[idP] < -0.5f)
+		//{
+		//	pzs[idP] = -0.5f;
+		//	vzs[idP] = 0;
+		//}
+		//if (pys[idP] < -0.5f)
+		//{
+		//	pys[idP] = -0.5f;
+		//	vys[idP] = -vys[idP] * 0.5f;
+		//}
 	}
 
 	particles.setClean(HOST);
