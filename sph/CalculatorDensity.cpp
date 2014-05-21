@@ -5,7 +5,6 @@
 #include <hohe2Common/container/CompactHash.h>
 #include "ParticlesFluid.h"
 #include "ParticlesWall.h"
-#include "SphKernel.h"
 
 
 using namespace hohehohe2;
@@ -13,9 +12,11 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash,
+void CalculatorDensity::calculation_host_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash,
 										  const ParticlesWall* particlesWall, const CompactHash* cHashWall)
 {
+	m_sphKernelPoly6.setKernelRadius(kernelRadius);
+
 	particles.m_pos->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);
 	const float* pxs = particles.m_pos->xs(HOST);
@@ -66,9 +67,10 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 				const float disty = pys[idN] - pys[idP];
 				const float distz = pzs[idN] - pzs[idP];
 				const float dist2 = distx * distx + disty * disty + distz * distz;
-				sumW += sphKernel.w(dist2);
+				sumW += m_sphKernelPoly6.wPart(dist2);
 			}
 		}
+		sumW *= m_sphKernelPoly6.getConstant();
 
 		ds[idP] = sumW * m_particleMass;
 
@@ -94,9 +96,10 @@ void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const SphKe
 					const float disty = wpys[idW] - pys[idP];
 					const float distz = wpzs[idW] - pzs[idP];
 					const float dist2 = distx * distx + disty * disty + distz * distz;
-					densContribWall += Constants::RO0 * wvs[idW] * sphKernel.w(dist2);
+					densContribWall += Constants::RO0 * wvs[idW] * m_sphKernelPoly6.wPart(dist2);
 				}
 			}
+			densContribWall *= m_sphKernelPoly6.getConstant();
 
 			ds[idP] += densContribWall;
 		}

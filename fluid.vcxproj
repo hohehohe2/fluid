@@ -163,7 +163,6 @@
     <ClCompile Include="sph\CalculatorVolume.cpp" />
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp" />
     <ClCompile Include="sph\SphInterpolationFuncs.cpp" />
-    <ClCompile Include="sph\SphKernel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sph\CalculatorDensity.h" />
@@ -175,11 +174,15 @@
     <ClInclude Include="sph\CalculatorVolume.h" />
     <ClInclude Include="sph\Constants.h" />
     <ClInclude Include="sph\FluidSolverSimpleSph.h" />
+    <ClInclude Include="sph\kernels\SphKernel.h" />
+    <ClInclude Include="sph\kernels\SphKernelCubicSpline.h" />
+    <ClInclude Include="sph\kernels\SphKernelPoly6.h" />
+    <ClInclude Include="sph\kernels\SphKernelSpiky.h" />
+    <ClInclude Include="sph\kernels\SphKernelViscosity.h" />
     <ClInclude Include="sph\ParticlesFluid.h" />
     <ClInclude Include="sph\ParticlesSph.h" />
     <ClInclude Include="sph\ParticlesWall.h" />
     <ClInclude Include="sph\SphInterpolationFuncs.h" />
-    <ClInclude Include="sph\SphKernel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,7 +6,6 @@
 #include "sph/Constants.h"
 #include "sph/CalculatorPressurePciSph.h"
 #include "sph/ParticlesFluid.h"
-#include "sph/SphKernel.h"
 
 #include <iostream>
 
@@ -17,16 +16,15 @@ TEST(PciSph, create)
 {
 	const int kernelRadiusPerEquilibriumDistance = 4;
 	float equilibriumDistance = 0.1f;
-	SphKernel sphKernel;
 	float deltaT = 0.01f;
 	float particleMass = 1.0f;
 	float kernelRadius = equilibriumDistance * kernelRadiusPerEquilibriumDistance;
-	sphKernel.setKernelRadius(kernelRadius);
 	float maxRelativeDensityError = 0.01f;
 	unsigned int numMaxIterations = 6;
 
 	//--------------Precompute.
-	CalculatorPressurePciSph pcSph(particleMass, sphKernel, maxRelativeDensityError, numMaxIterations);
+	CalculatorPressurePciSph pcSph(particleMass, maxRelativeDensityError, numMaxIterations);
+	pcSph.setKernelRadius(kernelRadius);
 	pcSph.precompute(equilibriumDistance, kernelRadiusPerEquilibriumDistance, deltaT);
 
 	//--------------Create particles.

@@ -5,7 +5,6 @@
 #include <hohe2Common/container/CompactHash.h>
 #include "ParticlesFluid.h"
 #include "particlesWall.h"
-#include "SphKernel.h"
 
 
 using namespace hohehohe2;
@@ -18,9 +17,11 @@ const float CalculatorPressure::K = 20000.0f;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash,
+void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash,
 										   const ParticlesWall* particlesWall, const CompactHash* cHashWall)
 {
+	m_sphKernelSpiky.setKernelRadius(kernelRadius);
+
 	particles.m_pos->sync(HOST);
 	particles.m_density->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);
@@ -74,8 +75,9 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 		//	{
 		//		unsigned int idN = sortedIdMaps[index + j];
 
-		//		float gradW[3];
-		//		sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
+		//		Point gradW;
+		//		m_sphKernelSpiky.gradWPart(gradW, Point(pxs[idP], pys[idP], pzs[idP]), Point(pxs[idN], pys[idN], pzs[idN]));
+		//		gradW *= m_sphKernelSpiky.getConstant(); Do it outside the loop if you uncommnet this code for optimisation.
 
 		//		float densityN = ds[idN];
 		//		float pressureN = densityToPressure_(densityN);
@@ -92,10 +94,7 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 
 		//----Pressure with incompressible approximation.
 		{
-			float sumGradW[3];
-			sumGradW[0] = 0.0f;
-			sumGradW[1] = 0.0f;
-			sumGradW[2] = 0.0f;
+			Point sumGradW(0.0f, 0.0f, 0.0f);
 
 			for (unsigned int i= 0; i < 27; ++i)
 			{
@@ -111,13 +110,12 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 				for (unsigned int j = 0; j < numObjects; ++j)
 				{
 					const unsigned int idN = sortedIdMaps[index + j];
-					float gradW[3];
-					sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], pxs[idN], pys[idN], pzs[idN]);
-					sumGradW[0] += gradW[0];
-					sumGradW[1] += gradW[1];
-					sumGradW[2] += gradW[2];
+					Point gradWPart;
+					m_sphKernelSpiky.gradWPart(gradWPart, Point(pxs[idP], pys[idP], pzs[idP]), Point(pxs[idN], pys[idN], pzs[idN]));
+					sumGradW += gradWPart;
 				}
 			}
+			sumGradW *= m_sphKernelSpiky.getConstant();
 
 			const float c = - m_particleMass * pressureP / (densityP * densityP);
 			axs[idP] += c * sumGradW[0];
@@ -128,10 +126,7 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 		//----Wall pressure akinci2012.
 		if (particlesWall)
 		{
-			float sumGradW[3];
-			sumGradW[0] = 0.0f;
-			sumGradW[1] = 0.0f;
-			sumGradW[2] = 0.0f;
+			Point sumGradW(0.0f, 0.0f, 0.0f);
 			for (unsigned int i= 0; i < 27; ++i)
 			{
 				bool isFilled;
@@ -146,11 +141,9 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const SphK
 				for (unsigned int j = 0; j < numObjects; ++j)
 				{
 					const unsigned int idW = wsortedIdMaps[index + j];
-					float gradW[3];
-					sphKernel.gradW(gradW, pxs[idP], pys[idP], pzs[idP], wpxs[idW], wpys[idW], wpzs[idW]);
-					sumGradW[0] += gradW[0];
-					sumGradW[1] += gradW[1];
-					sumGradW[2] += gradW[2];
+					Point gradWPart;
+					m_sphKernelSpiky.gradWPart(gradWPart, Point(pxs[idP], pys[idP], pzs[idP]), Point(wpxs[idW], wpys[idW], wpzs[idW]));
+					sumGradW += gradWPart * m_sphKernelSpiky.getConstant();
 
 					const float c = - Constants::RO0 * wvs[idW] * pressureP / (densityP * densityP);
 					axs[idP] += c * sumGradW[0];

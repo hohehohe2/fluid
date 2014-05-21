@@ -21,14 +21,15 @@ FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 	m_cHash(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
 	m_cHashWall(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
 	//m_pressureCalculator(particleMass),
-	m_pressurePciSphCalculator(particleMass, m_sphKernel, 0.01f, 4),
+	m_pressurePciSphCalculator(particleMass, 0.01f, 4),
 	m_viscosityCalculator(particleMass), m_densityCalculator(particleMass)
 {
 
 	//Adjust the kernel radius so that several dozens of neighbor particles are in the radius at rest density.
 	float particleVolume = particleMass / Constants::RO0;
 	m_equilibriumDistance = (float)pow(particleVolume, 1.0 / 3.0);
-	m_sphKernel.setKernelRadius(m_equilibriumDistance * KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE);
+	m_kernelRadius = m_equilibriumDistance * KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE;
+	m_pressurePciSphCalculator.setKernelRadius(m_equilibriumDistance * KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE);
 }
 
 //-------------------------------------------------------------------
@@ -40,7 +41,7 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 	do
 	{
 		float maxVelocity = particles.m_velocity->calcMaxLength(HOST);
-		float dt = PET_PEEVE_COURANT_NUMBER * m_sphKernel.kernelRadius() / maxVelocity;
+		float dt = PET_PEEVE_COURANT_NUMBER * m_kernelRadius / maxVelocity;
 		if (dt > remaining)
 		{
 			dt = remaining;
@@ -53,14 +54,14 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 		CellCodeCalculator ccc;
 		updateNeighbors_(particles, particlesWall, ccc);
 		std::cout << "volume - ";
-		m_volumeCalculator.calculation(particlesWall, m_sphKernel, ccc, m_cHashWall, HOST);
+		m_volumeCalculator.calculation(particlesWall, m_kernelRadius, ccc, m_cHashWall, HOST);
 		std::cout << "density - ";
-		m_densityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
+		m_densityCalculator.calculation(particles, m_kernelRadius, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
 		initAcceleration_host_(particles);
 		std::cout << "viscosity - ";
-		//m_pressureCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
-		m_viscosityCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST);
+		m_viscosityCalculator.calculation(particles, m_kernelRadius, ccc, m_cHash, HOST);
 		std::cout << "pressure - ";
+		//m_pressureCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
 		m_pressurePciSphCalculator.precompute(m_equilibriumDistance, KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE, deltaT);
 		m_pressurePciSphCalculator.calculation(particles, ccc, m_cHash, HOST);
 		std::cout << "integrate\n";
@@ -79,7 +80,6 @@ void FluidSolverSimpleSph::updateNeighbors_(ParticlesFluid& particles, Particles
 {
 
 	//---- Define spatial grid cells and create CellCodeCalculator.
-	const float kernelRaidus = m_sphKernel.kernelRadius();
 
 	particles.sync(HOST);
 
@@ -90,9 +90,9 @@ void FluidSolverSimpleSph::updateNeighbors_(ParticlesFluid& particles, Particles
 	bbox.makeUnion(bboxWall);
 
 	//Shift min values a little bit to make sure the particles which have min values are inside the cell.
-	bbox.m_min -= Point(kernelRaidus, kernelRaidus, kernelRaidus) / 100.0f;
+	bbox.m_min -= Point(m_kernelRadius, m_kernelRadius, m_kernelRadius) / 100.0f;
 
-	ccc.reset(bbox.m_min, kernelRaidus);
+	ccc.reset(bbox.m_min, m_kernelRadius);
 
 	//---- Create hash for the fluid particles.
 	//Get the unsorted code list.

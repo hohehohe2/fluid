@@ -4,12 +4,12 @@
     <Filter Include="sph">
       <UniqueIdentifier>{4a1b9616-2990-4788-8c94-4e5b0d27f192}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sph\kernels">
+      <UniqueIdentifier>{4dac0e9d-ea94-47aa-862e-46b674675d41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sph\FluidSolverSimpleSph.cpp">
-      <Filter>sph</Filter>
-    </ClCompile>
-    <ClCompile Include="sph\SphKernel.cpp">
       <Filter>sph</Filter>
     </ClCompile>
     <ClCompile Include="sph\CalculatorDensity.cpp">
@@ -44,9 +44,6 @@
     <ClInclude Include="sph\Constants.h">
       <Filter>sph</Filter>
     </ClInclude>
-    <ClInclude Include="sph\SphKernel.h">
-      <Filter>sph</Filter>
-    </ClInclude>
     <ClInclude Include="sph\ParticlesFluid.h">
       <Filter>sph</Filter>
     </ClInclude>
@@ -79,6 +76,21 @@
     </ClInclude>
     <ClInclude Include="sph\CalculatorIntegrateLeapFrog.h">
       <Filter>sph</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\kernels\SphKernel.h">
+      <Filter>sph\kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\kernels\SphKernelCubicSpline.h">
+      <Filter>sph\kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\kernels\SphKernelPoly6.h">
+      <Filter>sph\kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\kernels\SphKernelSpiky.h">
+      <Filter>sph\kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="sph\kernels\SphKernelViscosity.h">
+      <Filter>sph\kernels</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

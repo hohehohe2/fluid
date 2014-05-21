@@ -2,11 +2,11 @@
 #define hohe_CalculatorViscosity_H
 
 #include <hohe2Common/cuda/Buffer.h>
+#include "kernels/SphKernelViscosity.h"
 
 namespace hohehohe2
 {
 
-class SphKernel;
 struct ParticlesFluid;
 class CompactHash;
 class CellCodeCalculator;
@@ -23,21 +23,24 @@ public:
 	CalculatorViscosity(float particleMass) : m_particleMass(particleMass){}
 
 	///Main method to calculate the acceleration contribution by the pressure force.
-	void calculation(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType)
+	void calculation(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType)
 	{
 		if (mType == HOST)
 		{
-			calculation_host_(particles, sphKernel, ccc, cHash);
+			calculation_host_(particles, kernelRadius, ccc, cHash);
 		}
 		else
 		{
-			calculation_device_(particles, sphKernel, ccc, cHash);
+			calculation_device_(particles, kernelRadius, ccc, cHash);
 		}
 
 	}
 
 
 private:
+
+	///Kernel for viscosity calculation.
+	SphKernelViscosity m_sphKernelViscosity;
 
 	///Viscosity coefficient.
 	static const float MU;
@@ -47,8 +50,8 @@ private:
 
 private:
 
-	void calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash);
-	void calculation_device_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
+	void calculation_host_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash);
+	void calculation_device_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash)
 	{
 		//To be implemented.
 		assert(false);

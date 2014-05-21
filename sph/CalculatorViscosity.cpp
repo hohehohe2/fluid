@@ -4,7 +4,6 @@
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include <hohe2Common/container/CompactHash.h>
 #include "ParticlesFluid.h"
-#include "SphKernel.h"
 
 
 using namespace hohehohe2;
@@ -17,8 +16,10 @@ const float CalculatorViscosity::MU = 0.1f;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorViscosity::calculation_host_(ParticlesFluid& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
+void CalculatorViscosity::calculation_host_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash)
 {
+	m_sphKernelViscosity.setKernelRadius(kernelRadius);
+
 	particles.m_pos->sync(HOST);
 	particles.m_velocity->sync(HOST);
 	particles.m_density->sync(HOST);
@@ -40,6 +41,9 @@ void CalculatorViscosity::calculation_host_(ParticlesFluid& particles, const Sph
 	#pragma omp parallel for
 	for (int idP = 0; idP < (int)size; ++idP)
 	{
+		float deltaAx = 0.0f;
+		float deltaAy = 0.0f;
+		float deltaAz = 0.0f;
 		for (unsigned int i= 0; i < 27; ++i)
 		{
 			bool isFilled;
@@ -59,14 +63,17 @@ void CalculatorViscosity::calculation_host_(ParticlesFluid& particles, const Sph
 				const float disty = pys[idN] - pys[idP];
 				const float distz = pzs[idN] - pzs[idP];
 				const float dist2 = distx * distx + disty * disty + distz * distz;
-				const float laplace = sphKernel.laplaceW(dist2);
-				const float viscosCoef = MU / ds[idN] * laplace;
+				const float viscosCoef = m_sphKernelViscosity.laplaceWPart(dist2) / ds[idN];
 
-                axs[idP] += viscosCoef * (vxs[idN] - vxs[idP]) / m_particleMass;
-                ays[idP] += viscosCoef * (vys[idN] - vys[idP]) / m_particleMass;
-                azs[idP] += viscosCoef * (vzs[idN] - vzs[idP]) / m_particleMass;
+                deltaAx += viscosCoef * (vxs[idN] - vxs[idP]);
+                deltaAy += viscosCoef * (vys[idN] - vys[idP]);
+                deltaAz += viscosCoef * (vzs[idN] - vzs[idP]);
 			}
 		}
+		float multiply = MU * m_sphKernelViscosity.getConstant() / m_particleMass;
+		axs[idP] += deltaAx * multiply;
+        ays[idP] += deltaAy * multiply;
+        azs[idP] += deltaAz * multiply;
 
 	}
 

@@ -4,7 +4,6 @@
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include <hohe2Common/container/CompactHash.h>
 #include "ParticlesWall.h"
-#include "SphKernel.h"
 
 
 using namespace hohehohe2;
@@ -12,8 +11,10 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorVolume::calculation_host_(ParticlesWall& particles, const SphKernel& sphKernel, const CellCodeCalculator& ccc, const CompactHash& cHash)
+void CalculatorVolume::calculation_host_(ParticlesWall& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash)
 {
+	m_sphKernelPoly6.setKernelRadius(kernelRadius);
+
 	particles.m_pos->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);
 	const float* pxs = particles.m_pos->xs(HOST);
@@ -46,9 +47,10 @@ void CalculatorVolume::calculation_host_(ParticlesWall& particles, const SphKern
 				const float disty = pys[idN] - pys[idP];
 				const float distz = pzs[idN] - pzs[idP];
 				const float dist2 = distx * distx + disty * disty + distz * distz;
-				sumW += sphKernel.w(dist2);
+				sumW += m_sphKernelPoly6.wPart(dist2);
 			}
 		}
+		sumW *= m_sphKernelPoly6.getConstant();
 
 		//To be implemented.
 		//Need to adjust the coefficient so that a particle which distance from the wall is the same as the length between particles at the rest density

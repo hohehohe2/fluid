@@ -4,7 +4,6 @@
 #include <hohe2Common/cuda/Buffer.h>
 #include <hohe2Common/geo/basicGeos.h>
 #include <hohe2Common/container/CompactHash.h>
-#include "SphKernel.h"
 #include "CalculatorVolume.h"
 #include "CalculatorDensity.h"
 #include "CalculatorPressure.h"
@@ -51,8 +50,8 @@ private:
 	///Distance between particles at rest density. (volume per particle) ^ (1/3).
 	float m_equilibriumDistance;
 
-	///SPH kernel calculator.
-	SphKernel m_sphKernel;
+	///SPH kernel radius.
+	float m_kernelRadius;
 
 	///Compact hash for neighbor fluid particle search.
 	CompactHash m_cHash;

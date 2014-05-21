@@ -5,10 +5,25 @@
 #include <hohe2Common/container/CompactHash.h>
 #include "ParticlesFluid.h"
 #include "particlesWall.h"
-#include "SphKernel.h"
 
 
 using namespace hohehohe2;
+
+
+//-------------------------------------------------------------------
+//-------------------------------------------------------------------
+CalculatorPressurePciSph::CalculatorPressurePciSph(float particleMass, float maxRelativeDensityError, unsigned int numMaxIterations)
+	: m_particleMass(particleMass), m_deltaT(FLT_MAX), m_maxRelativeDensityError(maxRelativeDensityError), m_numMaxIterations(numMaxIterations),
+	m_lastPrecomputeEquilibriumDistance(FLT_MAX), m_lastPrecomputeKernelRadiusPerEquilibriumDistance(UINT_MAX){}
+
+
+//-------------------------------------------------------------------
+//-------------------------------------------------------------------
+void CalculatorPressurePciSph::setKernelRadius(float radius)
+{
+	m_sphKernelPoly6.setKernelRadius(radius);
+	m_sphKernelSpiky.setKernelRadius(radius);
+}
 
 
 //-------------------------------------------------------------------
@@ -57,10 +72,11 @@ void CalculatorPressurePciSph::precompute(float equilibriumDistance, int kernelR
 	float sumDotGradW = 0.0f;
 	for (unsigned int id = 0; id < numParticles; ++id)
 	{
-		float gradW[3];
-		m_sphKernel.gradW(gradW, 0.0f, 0.0f, 0.0f, pxs[id], pys[id], pzs[id]);
-		sumDotGradW += gradW[0] * gradW[0] + gradW[1] * gradW[1] + gradW[2] * gradW[2];
+		Point gradWPart;
+		m_sphKernelSpiky.gradWPart(gradWPart, Point(0.0f, 0.0f, 0.0f), Point(pxs[id], pys[id], pzs[id]));
+		sumDotGradW += gradWPart.squaredNorm();
 	}
+	sumDotGradW *= m_sphKernelSpiky.getConstant() * m_sphKernelSpiky.getConstant();
 
 	//Compute m_delta.
 	float beta = deltaT * deltaT * m_particleMass * m_particleMass * 2.0f / (Constants::RO0 * Constants::RO0);
@@ -144,9 +160,10 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 					const float disty = ppys[idN] - ppys[idP];
 					const float distz = ppzs[idN] - ppzs[idP];
 					const float dist2 = distx * distx + disty * disty + distz * distz;
-					sumW += m_sphKernel.w(dist2);
+					sumW += m_sphKernelPoly6.wPart(dist2);
 				}
 			}
+			sumW *= m_sphKernelPoly6.getConstant();
 
 			pds[idP] = m_particleMass * sumW;
 			float densityError = pds[idP] - Constants::RO0;
@@ -182,17 +199,15 @@ void CalculatorPressurePciSph::calculation_host_(ParticlesFluid& particles, cons
 				for (unsigned int j = 0; j < numObjects; ++j)
 				{
 					const unsigned int idN = sortedIdMaps[index + j];
-					float gradW[3];
-					m_sphKernel.gradW(gradW, ppxs[idP], ppys[idP], ppzs[idP], ppxs[idN], ppys[idN], ppzs[idN]);
-					sumGradW.x() += gradW[0];
-					sumGradW.y() += gradW[1];
-					sumGradW.z() += gradW[2];
+					Point gradWPart;
+					m_sphKernelSpiky.gradWPart(gradWPart, Point(ppxs[idP], ppys[idP], ppzs[idP]), Point(ppxs[idN], ppys[idN], ppzs[idN]));
+					sumGradW += gradWPart;
 					float c = pps[idN] / (pds[idN] * pds[idN]);
-					sumCGradW.x() += c * gradW[0];
-					sumCGradW.y() += c * gradW[1];
-					sumCGradW.z() += c * gradW[2];
+					sumCGradW += c * gradWPart;
 				}
 			}
+			sumGradW *= m_sphKernelSpiky.getConstant();
+			sumCGradW *= m_sphKernelSpiky.getConstant();
 
 			const float c = pps[idP] / (pds[idP] * pds[idP]);
 

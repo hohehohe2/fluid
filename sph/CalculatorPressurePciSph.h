@@ -2,11 +2,12 @@
 #define hohe_CalculatorPressurePciSph_H
 
 #include <hohe2Common/cuda/Buffer.h>
+#include "kernels/SphKernelPoly6.h"
+#include "kernels/SphKernelSpiky.h"
 
 namespace hohehohe2
 {
 
-class SphKernel;
 struct ParticlesFluid;
 struct ParticlesWall;
 class CompactHash;
@@ -21,9 +22,10 @@ class CalculatorPressurePciSph
 public:
 
 	///Constructor. PCISPH precomputation.
-    CalculatorPressurePciSph::CalculatorPressurePciSph(float particleMass, const SphKernel& sphKernel, float maxRelativeDensityError, unsigned int numMaxIterations)
-		: m_particleMass(particleMass), m_sphKernel(sphKernel), m_deltaT(FLT_MAX), m_maxRelativeDensityError(maxRelativeDensityError), m_numMaxIterations(numMaxIterations),
-		  m_lastPrecomputeEquilibriumDistance(FLT_MAX), m_lastPrecomputeKernelRadiusPerEquilibriumDistance(UINT_MAX){}
+    CalculatorPressurePciSph::CalculatorPressurePciSph(float particleMass, float maxRelativeDensityError, unsigned int numMaxIterations);
+
+	///Set the kernel radius.
+	void setKernelRadius(float radius);
 
 	///PCISPH precomputation, compute m_delta.
 	void precompute(float equilibriumDistance, int kernelRadiusPerEquilibriumDistance, float deltaT);
@@ -49,7 +51,10 @@ private:
 	const float m_particleMass;
 
 	///SPH kernel to use.
-	const SphKernel& m_sphKernel;
+	SphKernelPoly6 m_sphKernelPoly6;
+
+	///SPH kernel to use.
+	SphKernelSpiky m_sphKernelSpiky;
 
 	///Time step.
 	float m_deltaT;
