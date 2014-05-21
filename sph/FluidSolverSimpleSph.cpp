@@ -20,7 +20,7 @@ FluidSolverSimpleSph::FluidSolverSimpleSph(float particleMass)
 	:
 	m_cHash(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
 	m_cHashWall(COMPACT_HASH_NUM_HASH_ENTRIES, COMPACT_HASH_NUM_ELEMENTS_IN_A_LIST, COMPACT_HASH_NUM_LISTS, HOST),
-	//m_pressureCalculator(particleMass),
+	m_pressureCalculator(particleMass),
 	m_pressurePciSphCalculator(particleMass, 0.01f, 4),
 	m_viscosityCalculator(particleMass), m_densityCalculator(particleMass)
 {
@@ -61,9 +61,9 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 		std::cout << "viscosity - ";
 		m_viscosityCalculator.calculation(particles, m_kernelRadius, ccc, m_cHash, HOST);
 		std::cout << "pressure - ";
-		//m_pressureCalculator.calculation(particles, m_sphKernel, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
-		m_pressurePciSphCalculator.precompute(m_equilibriumDistance, KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE, deltaT);
-		m_pressurePciSphCalculator.calculation(particles, ccc, m_cHash, HOST);
+		m_pressureCalculator.calculation(particles, m_kernelRadius, ccc, m_cHash, HOST, &particlesWall, &m_cHashWall);
+		//m_pressurePciSphCalculator.precompute(m_equilibriumDistance, KERNEL_RADIUS_PER_EQUILIBRIUM_DISTANCE, deltaT);
+		//m_pressurePciSphCalculator.calculation(particles, ccc, m_cHash, HOST);
 		std::cout << "integrate\n";
 		//tako. To enamble leapfrog, just replace this and comment out implEuler related stuff from this class.
 		//tako. PCISPH prediction must be leapfrog eigher.

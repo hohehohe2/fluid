@@ -63,7 +63,7 @@ private:
 
 	CalculatorDensity m_densityCalculator;
 
-	//CalculatorPressure m_pressureCalculator;
+	CalculatorPressure m_pressureCalculator;
 
 	CalculatorPressurePciSph m_pressurePciSphCalculator;
 
