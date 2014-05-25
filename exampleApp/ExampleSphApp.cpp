@@ -89,6 +89,10 @@ void ExampleSphApp::draw()
 	{
 		float scale = ds[i] / MAX_DENSITY;
 		glColor3f(FLUID_RGB.x() * scale, FLUID_RGB.y() * scale, FLUID_RGB.z() * scale);
+		if (i == 0)
+		{
+			glColor3f(0, 1, 1);
+		}
 		//glVertex3f(pxs[i], pys[i], pzs[i]);
 		if (m_isSphereDraw)
 		{
