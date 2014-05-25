@@ -77,7 +77,7 @@ void CalculatorVolume::calculation_host_(ParticlesWall& particles, float kernelR
 		//in my condition it's about 3 (can be solved analitically but I just tested with poly6 and cubic spline kernels).
 		//I don't know what makes the difference yet since a factor of 3 seems to be natural to me.
 
-		const float scalingFactor = 0.33f;
+		const float scalingFactor = 1.267f;
 		vs[idP] = scalingFactor / sumW;
 	}
 
