@@ -88,6 +88,7 @@ private:
 
 	void updateNeighbors_(ParticlesFluid& particles, ParticlesWall& particlesWall, CellCodeCalculator& ccc);
 	void initAcceleration_host_(ParticlesFluid& particles);
+	void devideByDensity_(ParticlesFluid& particles);
 
 	///So called Courant number (pet peeve for Prof. Bridson ;).
 	static const float PET_PEEVE_COURANT_NUMBER;

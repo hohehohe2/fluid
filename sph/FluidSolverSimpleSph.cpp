@@ -67,6 +67,7 @@ void FluidSolverSimpleSph::step(ParticlesFluid& particles, ParticlesWall& partic
 		std::cout << "integrate\n";
 		//tako. To enamble leapfrog, just replace this and comment out implEuler related stuff from this class.
 		//tako. PCISPH prediction must be leapfrog eigher.
+		devideByDensity_(particles);
 		m_semiImplicitEulerIntegrateCalculator.integrate(particles, dt, HOST);
 		//m_leapfromIntegrateCalculator.integrate(particles, dt, HOST);
 
@@ -136,6 +137,32 @@ void FluidSolverSimpleSph::initAcceleration_host_(ParticlesFluid& particles)
 		axs[idP] = 0.0f;
 		ays[idP] = Constants::G;
 		azs[idP] = 0.0f;
+	}
+
+	particles.setClean(HOST);
+}
+
+
+
+//-------------------------------------------------------------------
+//-------------------------------------------------------------------
+void FluidSolverSimpleSph::devideByDensity_(ParticlesFluid& particles)
+{
+	//See the left hand side of Navier-Stokes equation.
+	particles.sync(HOST);
+
+	const float* ds = particles.m_density->get(HOST);
+	float* axs = particles.m_acceleration->xs(HOST);
+	float* ays = particles.m_acceleration->ys(HOST);
+	float* azs = particles.m_acceleration->zs(HOST);
+
+	unsigned int size = particles.size();
+
+	for (int idP = 0; idP < (int)size; ++idP)
+	{
+		axs[idP] /= ds[idP];
+		ays[idP] /= ds[idP];
+		azs[idP] /= ds[idP];
 	}
 
 	particles.setClean(HOST);
