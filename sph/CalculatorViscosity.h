@@ -10,6 +10,7 @@ namespace hohehohe2
 struct ParticlesFluid;
 class CompactHash;
 class CellCodeCalculator;
+struct GlobalFluidParameters;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
@@ -23,15 +24,15 @@ public:
 	CalculatorViscosity(float particleMass) : m_particleMass(particleMass){}
 
 	///Main method to calculate the acceleration contribution by the pressure force.
-	void calculation(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType)
+	void calculation(ParticlesFluid& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType)
 	{
 		if (mType == HOST)
 		{
-			calculation_host_(particles, kernelRadius, ccc, cHash);
+			calculation_host_(particles, globalParam, ccc, cHash);
 		}
 		else
 		{
-			calculation_device_(particles, kernelRadius, ccc, cHash);
+			calculation_device_(particles, globalParam, ccc, cHash);
 		}
 
 	}
@@ -50,8 +51,8 @@ private:
 
 private:
 
-	void calculation_host_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash);
-	void calculation_device_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash)
+	void calculation_host_(ParticlesFluid& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash);
+	void calculation_device_(ParticlesFluid& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash)
 	{
 		//To be implemented.
 		assert(false);

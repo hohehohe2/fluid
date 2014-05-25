@@ -5,6 +5,7 @@
 #include <hohe2Common/container/CompactHash.h>
 #include "ParticlesFluid.h"
 #include "ParticlesWall.h"
+#include "FluidSolverSimpleSph.h"
 
 
 using namespace hohehohe2;
@@ -12,10 +13,10 @@ using namespace hohehohe2;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorDensity::calculation_host_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash,
+void CalculatorDensity::calculation_host_(ParticlesFluid& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash,
 										  const ParticlesWall* particlesWall, const CompactHash* cHashWall)
 {
-	m_sphKernelPoly6.setKernelRadius(kernelRadius);
+	m_sphKernelPoly6.setKernelRadius(globalParam.m_kernelRadius);
 
 	particles.m_pos->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);

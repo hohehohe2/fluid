@@ -10,6 +10,7 @@ namespace hohehohe2
 struct ParticlesWall;
 class CompactHash;
 class CellCodeCalculator;
+struct GlobalFluidParameters;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
@@ -20,15 +21,15 @@ class CalculatorVolume
 public:
 
 	///Main method to calculate the acceleration contribution by the pressure force.
-	void calculation(ParticlesWall& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType)
+	void calculation(ParticlesWall& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType)
 	{
 		if (mType == HOST)
 		{
-			calculation_host_(particles, kernelRadius, ccc, cHash);
+			calculation_host_(particles, globalParam, ccc, cHash);
 		}
 		else
 		{
-			calculation_device_(particles, kernelRadius, ccc, cHash);
+			calculation_device_(particles, globalParam, ccc, cHash);
 		}
 
 	}
@@ -39,8 +40,8 @@ private:
 
 private:
 
-	void calculation_host_(ParticlesWall& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash);
-	void calculation_device_(ParticlesWall& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash)
+	void calculation_host_(ParticlesWall& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash);
+	void calculation_device_(ParticlesWall& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash)
 	{
 		//To be implemented.
 		assert(false);

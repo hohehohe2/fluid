@@ -4,7 +4,7 @@
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include <hohe2Common/container/CompactHash.h>
 #include "ParticlesFluid.h"
-
+#include "FluidSolverSimpleSph.h"
 
 using namespace hohehohe2;
 
@@ -16,9 +16,9 @@ const float CalculatorViscosity::MU = 0.1f;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorViscosity::calculation_host_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash)
+void CalculatorViscosity::calculation_host_(ParticlesFluid& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash)
 {
-	m_sphKernelViscosity.setKernelRadius(kernelRadius);
+	m_sphKernelViscosity.setKernelRadius(globalParam.m_kernelRadius);
 
 	particles.m_pos->sync(HOST);
 	particles.m_velocity->sync(HOST);

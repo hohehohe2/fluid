@@ -11,6 +11,8 @@ struct ParticlesFluid;
 class CompactHash;
 class CellCodeCalculator;
 struct ParticlesWall;
+struct GlobalFluidParameters;
+
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
@@ -25,16 +27,16 @@ public:
 
 	///Main method to calculate the acceleration contribution by the pressure force.
 	///if particlesWall/hash is given the density is mofied for Akinci2012.
-	void calculation(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType,
+	void calculation(ParticlesFluid& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash, MemoryType mType,
 		ParticlesWall* particlesWall=NULL, const CompactHash* cHashWall=NULL)
 	{
 		if (mType == HOST)
 		{
-			calculation_host_(particles, kernelRadius, ccc, cHash, particlesWall, cHashWall);
+			calculation_host_(particles, globalParam, ccc, cHash, particlesWall, cHashWall);
 		}
 		else
 		{
-			calculation_device_(particles, kernelRadius, ccc, cHash, particlesWall, cHashWall);
+			calculation_device_(particles, globalParam, ccc, cHash, particlesWall, cHashWall);
 		}
 
 	}
@@ -50,9 +52,9 @@ private:
 
 private:
 
-	void calculation_host_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash,
+	void calculation_host_(ParticlesFluid& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash,
 		const ParticlesWall* particlesWall, const CompactHash* cHashWall);
-	void calculation_device_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash,
+	void calculation_device_(ParticlesFluid& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash,
 		const ParticlesWall* particlesWall, const CompactHash* cHashWall)
 	{
 		//To be implemented.

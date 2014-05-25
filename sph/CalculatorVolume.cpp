@@ -4,16 +4,16 @@
 #include <hohe2Common/container/CellCodeCalculator.h>
 #include <hohe2Common/container/CompactHash.h>
 #include "ParticlesWall.h"
-
+#include "FluidSolverSimpleSph.h"
 
 using namespace hohehohe2;
 
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorVolume::calculation_host_(ParticlesWall& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash)
+void CalculatorVolume::calculation_host_(ParticlesWall& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash)
 {
-	m_sphKernelPoly6.setKernelRadius(kernelRadius);
+	m_sphKernelPoly6.setKernelRadius(globalParam.m_kernelRadius);
 
 	particles.m_pos->sync(HOST);
 	particles.m_sortedIdMap->sync(HOST);

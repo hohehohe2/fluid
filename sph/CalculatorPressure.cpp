@@ -5,6 +5,7 @@
 #include <hohe2Common/container/CompactHash.h>
 #include "ParticlesFluid.h"
 #include "particlesWall.h"
+#include "FluidSolverSimpleSph.h"
 
 using namespace hohehohe2;
 
@@ -16,11 +17,11 @@ const float CalculatorPressure::K = 20000.0f;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
-void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kernelRadius, const CellCodeCalculator& ccc, const CompactHash& cHash,
+void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const GlobalFluidParameters& globalParam, const CellCodeCalculator& ccc, const CompactHash& cHash,
 										   const ParticlesWall* particlesWall, const CompactHash* cHashWall)
 {
-	m_sphKernelSpiky.setKernelRadius(kernelRadius);
-	m_sphKernelPoly6.setKernelRadius(kernelRadius);
+	m_sphKernelSpiky.setKernelRadius(globalParam.m_kernelRadius);
+	m_sphKernelPoly6.setKernelRadius(globalParam.m_kernelRadius);
 
 	particles.m_pos->sync(HOST);
 	particles.m_density->sync(HOST);
@@ -150,7 +151,7 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kern
 
 					const float initContrib = pressureP / (densityP * densityP); //Coefficiant of pressure acceleration, being canceled by the repulsive force.
 
-					const float DP = 0.8f * kernelRadius;
+					const float DP = 0.8f * globalParam.m_kernelRadius;
 					const float fAB = m_sphKernelPoly6.wPart((pi - pj).squaredNorm()) / m_sphKernelPoly6.wPart(DP * DP);
 					const float N = 0.56f; //Fixed the value with try&error using 2 particles example placement and deltaT= 0.001f.
 

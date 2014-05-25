@@ -21,6 +21,22 @@ class CellCodeCalculator;
 
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
+struct GlobalFluidParameters
+{
+	///Volume of a particle at rest density.
+	float m_equilibriumParticleVolume;
+
+	///Distance between particles at rest density. (volume per particle) ^ (1/3).
+	float m_equilibriumDistance;
+
+	///SPH kernel radius.
+	float m_kernelRadius;
+
+};
+
+
+//-------------------------------------------------------------------
+//-------------------------------------------------------------------
 ///Simple SPH.
 /**
 Physical quantities are measured in MKS, not normalized here.
@@ -43,15 +59,11 @@ public:
 	void step(ParticlesFluid& particles, ParticlesWall& particlesWall, float deltaT);
 
 	///Get the distance between particles at rest density.
-	float equilibriumDistance() const {return m_equilibriumDistance;}
+	const GlobalFluidParameters& globalParam() const {return m_globalParam;}
 
 private:
 
-	///Distance between particles at rest density. (volume per particle) ^ (1/3).
-	float m_equilibriumDistance;
-
-	///SPH kernel radius.
-	float m_kernelRadius;
+	GlobalFluidParameters m_globalParam;
 
 	///Compact hash for neighbor fluid particle search.
 	CompactHash m_cHash;
