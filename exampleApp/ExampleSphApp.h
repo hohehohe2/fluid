@@ -9,6 +9,9 @@ namespace hohehohe2
 class ExampleSphApp
 {
 public:
+
+	ExampleSphApp() : m_isSphereDraw(true){}
+
 	void reset(unsigned int id=0);
 	void draw();
 	void onKey(unsigned char key);
@@ -21,6 +24,7 @@ private:
 	BufferSet::SPtr m_sptr;
 	BufferSet::SPtr m_sptrWall;
 
+	bool m_isSphereDraw;
 };
 
 }

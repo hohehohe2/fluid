@@ -34,19 +34,17 @@ void ExampleSphApp::reset(unsigned int id)
 //---------------------------------------------------------------------------
 void ExampleSphApp::onKey(unsigned char key)
 {
-    if (key == 27)
-    {
-		exit(1);
-	}
-
-	if (key == ' ')
-    {
-        m_ssph.step(*m_particles, *m_particlesWall, 0.01f);
-		return;
-    }
-
 	switch (key)
 	{
+	case 27:
+		exit(1);
+	case 'r':
+	case 'R':
+		m_isSphereDraw = ! m_isSphereDraw;
+		return;
+	case ' ':
+        m_ssph.step(*m_particles, *m_particlesWall, 0.01f);
+		return;
 	case '0':
 	case '1':
 	case '2':
@@ -92,11 +90,19 @@ void ExampleSphApp::draw()
 		float scale = ds[i] / MAX_DENSITY;
 		glColor3f(FLUID_RGB.x() * scale, FLUID_RGB.y() * scale, FLUID_RGB.z() * scale);
 		//glVertex3f(pxs[i], pys[i], pzs[i]);
-		glPushMatrix();
-		glTranslatef(pxs[i], pys[i], pzs[i]);
-		glutSolidSphere(ed / 2.0f, 16, 16);
-		glPopMatrix();
-
+		if (m_isSphereDraw)
+		{
+			glPushMatrix();
+			glTranslatef(pxs[i], pys[i], pzs[i]);
+			glutSolidSphere(ed / 2.0f, 16, 16);
+			glPopMatrix();
+		}
+		else
+		{
+			glBegin(GL_POINTS);
+			glVertex3f(pxs[i], pys[i], pzs[i]);
+			glEnd();
+		}
 	}
 	//glEnd();
 
