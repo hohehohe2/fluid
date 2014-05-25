@@ -92,7 +92,7 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kern
 		//}
 
 
-		//----Pressure with incompressible approximation.
+		//----Pressure with weakly incompressible approximation.
 		//{
 		//	Point sumGradW(0.0f, 0.0f, 0.0f);
 
@@ -123,7 +123,7 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kern
 		//	azs[idP] += c * sumGradW[2];
 		//}
 
-		//----Pressure with incompressible approximation and repulsive force (modified Monaghan2000).
+		//----Pressure with weakly incompressible approximation and repulsive force (modified Monaghan2000).
 		{
 			Point deltaA(0.0f, 0.0f, 0.0f); //Delta acceleration.
 
