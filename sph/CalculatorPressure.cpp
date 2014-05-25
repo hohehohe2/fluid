@@ -151,15 +151,15 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, const Glob
 
 					const float initContrib = pressureP / (densityP * densityP); //Coefficiant of pressure acceleration, being canceled by the repulsive force.
 
-					const float DP = 0.8f * globalParam.m_kernelRadius;
+					const float DP = 0.8f * globalParam.m_equilibriumDistance;
 					const float fAB = m_sphKernelPoly6.wPart((pi - pj).squaredNorm()) / m_sphKernelPoly6.wPart(DP * DP);
-					const float N = 0.56f; //Fixed the value with try&error using 2 particles example placement and deltaT= 0.001f.
+					const float N = 2.0f; //Fixed the value with try&error using 2 particles example placement and deltaT= 0.001f.
 
-					float repulsiveContrib = 0.0f;
-					if (pressureP < 0.0f)
+					float repulsiveContrib = initContrib * 0.01f;
+					if (pressureP < 0.0f && idP != idN)
 					{
 						//EPSIRON * initContrib is the amount of cancelation of initContirb when distance to the neighbor is DP, i.e. fAB == 1.
-						const float EPSIRON = 0.2f;
+						const float EPSIRON = 1.10f;
 						repulsiveContrib = - EPSIRON * initContrib * pow(fAB, N);
 					}
 
