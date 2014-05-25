@@ -17,7 +17,7 @@ void ExampleSphApp::reset(unsigned int id)
 	PointSet* velocity = new PointSet("particles velocity");
 	PointSet* posWall = new PointSet("particlesWall pos");
 
-	InitParticleDistributor::set(*pos, *velocity, *posWall, m_ssph.equilibriumDistance(), id);
+	InitParticleDistributor::set(*pos, *velocity, *posWall, m_ssph.globalParam().m_equilibriumDistance, id);
 
 	m_particles = ParticlesFluid::createInstance(true, pos->size());
 	m_particles->setPos(pos);
@@ -73,7 +73,7 @@ void ExampleSphApp::draw()
 
 	glPointSize(5.0f);
 
-	float ed = m_ssph.equilibriumDistance();
+	float ed = m_ssph.globalParam().m_equilibriumDistance;
 
 	//----Fluid.
 	m_particles->m_pos->sync(HOST);
