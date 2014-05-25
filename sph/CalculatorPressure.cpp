@@ -152,7 +152,7 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kern
 
 					const float DP = 0.8f * kernelRadius;
 					const float fAB = m_sphKernelPoly6.wPart((pi - pj).squaredNorm()) / m_sphKernelPoly6.wPart(DP * DP);
-					const float N = 0.56f; //Fixed the value with try&error using 2 particles example placement.
+					const float N = 0.56f; //Fixed the value with try&error using 2 particles example placement and deltaT= 0.001f.
 
 					float repulsiveContrib = 0.0f;
 					if (pressureP < 0.0f)
