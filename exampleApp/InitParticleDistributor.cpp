@@ -343,7 +343,7 @@ void InitParticleDistributor::placement7_(PointSet& pos, PointSet& velocity, Poi
 	float* vzs = velocity.zs(HOST);
 
 	pxs[0] = 0.0f;
-	pys[0] = 0.0f;
+	pys[0] = equilibriumDistance;
 	pzs[0] = 0.0f;
 	vxs[0] = 0.0f;
 	vys[0] = 0.0f;
@@ -366,7 +366,7 @@ void InitParticleDistributor::placement7_(PointSet& pos, PointSet& velocity, Poi
 		{
 			unsigned int pid = i * NUM_GROUND_LINES + k;
 			wpxs[pid] = equilibriumDistance * (i - NUM_GROUND_LINES / 2);
-			wpys[pid] = -equilibriumDistance * 10;
+			wpys[pid] = 0;
 			wpzs[pid] = equilibriumDistance * (k - NUM_GROUND_LINES / 2);
 		}
 	}
