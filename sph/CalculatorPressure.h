@@ -3,6 +3,7 @@
 
 #include <hohe2Common/cuda/Buffer.h>
 #include "kernels/SphKernelSpiky.h"
+#include "kernels/SphKernelPoly6.h"
 
 
 namespace hohehohe2
@@ -53,6 +54,9 @@ private:
 
 	///Kernel for the calculation.
 	SphKernelSpiky m_sphKernelSpiky;
+
+	///Kernel for the calculation.
+	SphKernelPoly6 m_sphKernelPoly6;
 
 private:
 

@@ -20,6 +20,7 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kern
 										   const ParticlesWall* particlesWall, const CompactHash* cHashWall)
 {
 	m_sphKernelSpiky.setKernelRadius(kernelRadius);
+	m_sphKernelPoly6.setKernelRadius(kernelRadius);
 
 	particles.m_pos->sync(HOST);
 	particles.m_density->sync(HOST);
@@ -92,8 +93,39 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kern
 
 
 		//----Pressure with incompressible approximation.
+		//{
+		//	Point sumGradW(0.0f, 0.0f, 0.0f);
+
+		//	for (unsigned int i= 0; i < 27; ++i)
+		//	{
+		//		bool isFilled;
+		//		const unsigned int code = ccc.getNeighborCode32(isFilled, pxs[idP], pys[idP], pzs[idP], i);
+		//		if ( ! isFilled)
+		//		{
+		//			continue;
+		//		}
+
+		//		unsigned int index;
+		//		const unsigned int numObjects = cHash.lookup(index, code);
+		//		for (unsigned int j = 0; j < numObjects; ++j)
+		//		{
+		//			const unsigned int idN = sortedIdMaps[index + j];
+		//			Point gradWPart;
+		//			m_sphKernelSpiky.gradWPart(gradWPart, Point(pxs[idP], pys[idP], pzs[idP]), Point(pxs[idN], pys[idN], pzs[idN]));
+		//			sumGradW += gradWPart;
+		//		}
+		//	}
+		//	sumGradW *= m_sphKernelSpiky.getConstant();
+
+		//	const float c = - m_particleMass * pressureP / (densityP * densityP);
+		//	axs[idP] += c * sumGradW[0];
+		//	ays[idP] += c * sumGradW[1];
+		//	azs[idP] += c * sumGradW[2];
+		//}
+
+		//----Pressure with incompressible approximation and repulsive force (modified Monaghan2000).
 		{
-			Point sumGradW(0.0f, 0.0f, 0.0f);
+			Point deltaA(0.0f, 0.0f, 0.0f); //Delta acceleration.
 
 			for (unsigned int i= 0; i < 27; ++i)
 			{
@@ -109,21 +141,40 @@ void CalculatorPressure::calculation_host_(ParticlesFluid& particles, float kern
 				for (unsigned int j = 0; j < numObjects; ++j)
 				{
 					const unsigned int idN = sortedIdMaps[index + j];
-					Point gradWPart;
-					m_sphKernelSpiky.gradWPart(gradWPart, Point(pxs[idP], pys[idP], pzs[idP]), Point(pxs[idN], pys[idN], pzs[idN]));
-					sumGradW += gradWPart;
+
+					Point gradW;
+					Point pi(pxs[idP], pys[idP], pzs[idP]);
+					Point pj(pxs[idN], pys[idN], pzs[idN]);
+					m_sphKernelSpiky.gradWPart(gradW, pi, pj);
+					gradW *= m_sphKernelSpiky.getConstant();
+
+					const float initContrib = pressureP / (densityP * densityP); //Coefficiant of pressure acceleration, being canceled by the repulsive force.
+
+					const float DP = 0.8f * kernelRadius;
+					const float fAB = m_sphKernelPoly6.wPart((pi - pj).squaredNorm()) / m_sphKernelPoly6.wPart(DP * DP);
+					const float N = 0.56f; //Fixed the value with try&error using 2 particles example placement.
+
+					float repulsiveContrib = 0.0f;
+					if (pressureP < 0.0f)
+					{
+						//EPSIRON * initContrib is the amount of cancelation of initContirb when distance to the neighbor is DP, i.e. fAB == 1.
+						const float EPSIRON = 0.2f;
+						repulsiveContrib = - EPSIRON * initContrib * pow(fAB, N);
+					}
+
+
+					deltaA += (initContrib + repulsiveContrib) * gradW;
+
 				}
 			}
-			sumGradW *= m_sphKernelSpiky.getConstant();
 
-			const float c = - m_particleMass * pressureP / (densityP * densityP);
-			axs[idP] += c * sumGradW[0];
-			ays[idP] += c * sumGradW[1];
-			azs[idP] += c * sumGradW[2];
+			deltaA *= - m_particleMass;
+			axs[idP] += deltaA[0];
+			ays[idP] += deltaA[1];
+			azs[idP] += deltaA[2];
 		}
 
 		//----Wall pressure akinci2012.
-
 
 		Point deltaP(0.0f, 0.0f, 0.0f);
 		if (particlesWall)
